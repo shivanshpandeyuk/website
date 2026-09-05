@@ -14,6 +14,10 @@ export default defineConfig({
   site: 'https://a-lazy-panda.github.io',
   base: '/',
   trailingSlash: 'ignore',
+  image: {
+    layout: 'constrained',
+    responsiveStyles: true,
+  },
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath],
