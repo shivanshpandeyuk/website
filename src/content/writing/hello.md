@@ -7,12 +7,12 @@ draft: false
 tags: [meta]
 ---
 
-I made this because the things I actually build were scattered across folders where they did no work: Cambridge notes in one place, stock pitches in another, a dissertation somewhere else. Put together in one spot, they are a record I can point at and keep adding to.
+I made this because my Cambridge notes, stock pitches and dissertation were scattered across folders. I wanted to be able to point someone to the work, and to have somewhere I could return to it myself without remembering which drive it was on.
 
-Two things will live here.
+Most of what I want to write about here comes back to investing or economics.
 
-One is investing. Companies I have looked at, where I think the numbers and the price disagree, and the occasional post-mortem when a call goes wrong. I would rather be right than interesting, so the figures come with a source and every thesis says what would prove it wrong.
+For investing, I want to set out how I reached a view on a company: what I think the market is missing, which assumptions matter to the valuation, and what would make me change my mind. Writing that down gives me something to check later, including when the call goes wrong.
 
-The other is teaching, mostly economics and statistics, written the way I wish someone had written it for me the first time round. Short, worked through, and honest about the bits that are genuinely hard.
+The economics and statistics notes are the material I worked through at Cambridge. I want them to be useful when you are trying to understand a derivation, including the assumptions that are easy to lose between one line and the next. If I have got something wrong, I would like to know.
 
-That is the whole plan. More soon.
+The pitches, notes, dissertation and programming projects each have their own section. I will add to the writing as I have something worth setting out properly.

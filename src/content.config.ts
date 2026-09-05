@@ -80,4 +80,17 @@ const notes = defineCollection({
   }),
 });
 
-export const collections = { pitches, writing, projects, dissertations, notes };
+const topics = defineCollection({
+  loader: glob({ base: './src/content/topics', pattern: '**/*.md' }),
+  schema: z.object({
+    title: z.string(),
+    paper: z.string(),
+    year: z.string(),
+    section: z.string(),
+    description: z.string(),
+    order: z.number().default(0),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { pitches, writing, projects, dissertations, notes, topics };

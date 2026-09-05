@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import 'katex/dist/katex.min.css';
+
+export async function getStaticPaths() {
+  return (await getCollection('topics')).map(note => ({ params: { id: note.id }, props: { note } }));
+}
+const { note } = Astro.props;
+const { Content, headings } = await render(note);
+const sections = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
+---
+<Base title={note.data.title} description={note.data.description}>
+  <article>
+    <header class="article-head">
+      <a class="link small" href="/notes/">← Cambridge notes</a>
+      <p class="eyebrow" style="margin-top:1.5rem">{note.data.year} · {note.data.paper}</p>
+      <h1>{note.data.title}</h1>
+      <p class="lead">{note.data.description}</p>
+    </header>
+    <details class="contents" data-pagefind-ignore>
+      <summary>On this page</summary>
+      <nav aria-label="Contents">
+        <ul>{sections.map(section => <li class:list={{ subtopic: section.depth === 3 }}><a href={`#${section.slug}`}>{section.text}</a></li>)}</ul>
+      </nav>
+    </details>
+    <div class="prose note-body"><Content /></div>
+    <p class="note-end" data-pagefind-ignore><a class="link" href="/notes/">← Back to all notes</a></p>
+  </article>
+</Base>
+<style>
+  .contents { border-block:1px solid var(--border); padding:1rem 0; margin:0 0 2.5rem; }
+  summary { cursor:pointer; font-weight:600; }
+  nav ul { list-style:none; padding:1rem 0 0; }
+  nav li { margin:.35rem 0; }
+  nav .subtopic { padding-left:1rem; font-size:.9rem; }
+  nav a:hover { color:var(--accent); }
+  .note-body { min-width:0; overflow-wrap:anywhere; }
+  .note-body :global(img) { margin:1.5rem auto; border-radius:var(--radius-sm); background:white; }
+  .note-body :global(.katex-display) { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:.5rem 0; }
+  .note-body :global(h2), .note-body :global(h3) { scroll-margin-top:5rem; }
+  .note-end { margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+</style>

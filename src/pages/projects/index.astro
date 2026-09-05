@@ -22,12 +22,13 @@ const projects = (await getCollection('projects'))
           <div class="card__meta">
             {p.data.status !== 'live' && <span class="tag">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
           </div>
-          <h3>{p.data.title}</h3>
+          <h3><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
           <p class="muted small">{p.data.description}</p>
           <div style="display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.3rem">
             {p.data.tags.map((t) => <span class="tag">{t}</span>)}
           </div>
           <div style="display:flex; gap:.6rem; margin-top:auto; padding-top:.6rem">
+            <a class="link small" href={`/projects/${p.id}/`}>Read about it →</a>
             {p.data.repo && <a class="link small" href={p.data.repo} target="_blank" rel="noopener">Code →</a>}
             {p.data.url && <a class="link small" href={p.data.url} target="_blank" rel="noopener">Live →</a>}
           </div>

@@ -1,14 +1,15 @@
 ---
 title: This website
 date: 2026-09-04
-description: A fast, dependency-light personal site built with Astro — notes, pitches, writing and research in one place, deployed as static HTML.
+description: My notes, research and code in one place, with readable equations and a search across the site.
+repo: https://github.com/A-Lazy-Panda/A-Lazy-Panda.github.io
 tags: [Astro, TypeScript, web]
 status: live
 order: 5
 ---
 
-The site you're reading. Built with **Astro**, hand-written CSS (no framework), and content collections for the notes, pitches, writing and dissertation sections, so publishing something new is a matter of dropping in a Markdown file.
+I wanted somewhere to keep the work itself: a pitch you can read on the page, a derivation you can follow without opening another file, and the code behind a result. The notes and research had accumulated in different folders; this site gives me somewhere to bring them together and keep improving them.
 
-Design goals: fast, readable, no external runtime dependencies (system fonts, inlined styles), dark and light, and simple enough to maintain for years. The whole thing compiles to static HTML and can be hosted anywhere.
+I use Astro to turn Markdown into static pages. The content collections give each type of work its own structure, while the layout and CSS stay shared. KaTeX renders the equations during the build, and Pagefind generates the search index from the finished pages. Reading an article does not require a live content service.
 
-Source will live on GitHub.
+The less visible part is getting the source material into a condition worth publishing. A successful import can still leave a broken equation, a misplaced chart or a claim that needs checking. I keep the original material and import records separately, then review the page and its figures before publication. The build checks catch missing links and rendering errors; they cannot decide whether the argument is right.

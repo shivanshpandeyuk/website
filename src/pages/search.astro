@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Search" description="Search Cambridge notes, stock pitches, writing and projects." searchIndex={false}>
+  <div class="article-head">
+    <p class="eyebrow">Find something</p>
+    <h1>Search</h1>
+    <p class="lead">Look through the notes, pitches, writing and projects.</p>
+  </div>
+  <div id="search">
+    <pagefind-input placeholder="Search notes, pitches and writing"></pagefind-input>
+    <pagefind-summary></pagefind-summary>
+    <pagefind-results></pagefind-results>
+  </div>
+  <noscript><p>Search uses JavaScript. You can also browse the <a class="link" href="/notes/">notes</a> and <a class="link" href="/pitches/">pitches</a>.</p></noscript>
+  <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+  <script is:inline type="module" src="/pagefind/pagefind-component-ui.js"></script>
+</Base>
+<style is:global>
+  #search {
+    --pf-text: var(--text);
+    --pf-text-secondary: var(--muted);
+    --pf-text-muted: var(--muted);
+    --pf-background: var(--surface);
+    --pf-border: var(--border-strong);
+    --pf-border-focus: var(--accent);
+    --pf-hover: var(--surface-2);
+    --pf-mark: var(--accent-soft);
+  }
+  #search pagefind-summary { display:block; margin-block:1rem; }
+  .search-link { display:flex; align-items:center; justify-content:center; min-width:32px; min-height:32px; }
+</style>

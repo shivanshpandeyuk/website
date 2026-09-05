@@ -9,8 +9,9 @@ interface Props {
   description?: string;
   wide?: boolean;
   ogType?: string;
+  searchIndex?: boolean;
 }
-const { title, description = SITE.description, wide = false } = Astro.props;
+const { title, description = SITE.description, wide = false, searchIndex = true } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
 ---
@@ -56,7 +57,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
   </head>
   <body>
     <Header />
-    <main>
+    <main data-pagefind-body={searchIndex || undefined} data-pagefind-ignore={searchIndex ? undefined : 'all'}>
       <div class={wide ? 'wrap-wide' : 'wrap'}>
         <slot />
       </div>
