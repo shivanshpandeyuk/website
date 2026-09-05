@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReaderEnhancements from '../../components/ReaderEnhancements.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -48,6 +49,7 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
     </div>
   </div>
 
+  <p class="figure-help small muted" hidden>Open any figure to view it at full size in a new tab.</p>
   <article class="prose">
     <Content />
   </article>
@@ -55,4 +57,5 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
   <p class="faint small" style="margin-top:2.75rem; border-top:1px solid var(--border); padding-top:1.25rem">
     For information and discussion only. Not investment advice, not a recommendation, and not a solicitation. Figures are tagged [R] reported, [C] calculated, [E] estimate, [U] unverified; check them against primary sources before you rely on any of them.
   </p>
+  <ReaderEnhancements />
 </Base>

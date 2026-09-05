@@ -1,10 +1,11 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReaderEnhancements from '../../components/ReaderEnhancements.astro';
 import { getCollection, render } from 'astro:content';
 import 'katex/dist/katex.min.css';
 
 export async function getStaticPaths() {
-  return (await getCollection('topics')).map(note => ({ params: { id: note.id }, props: { note } }));
+  return (await getCollection('topics', note => import.meta.env.DEV || !note.data.draft)).map(note => ({ params: { id: note.id }, props: { note } }));
 }
 const { note } = Astro.props;
 const { Content, headings } = await render(note);
@@ -15,6 +16,7 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
     <header class="article-head">
       <a class="link small" href="/notes/">← Cambridge notes</a>
       <p class="eyebrow" style="margin-top:1.5rem">{note.data.year} · {note.data.paper}</p>
+      {note.data.draft && <p class="small muted">Draft — local preview only</p>}
       <h1>{note.data.title}</h1>
       <p class="lead">{note.data.description}</p>
     </header>
@@ -28,32 +30,9 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
     <div class="prose note-body"><Content /></div>
     <p class="note-end" data-pagefind-ignore><a class="link" href="/notes/">← Back to all notes</a></p>
   </article>
+  <ReaderEnhancements />
 </Base>
-<script>
-  const figures = document.querySelectorAll<HTMLImageElement>('.note-body img');
-  for (const figure of figures) {
-    if (figure.closest('a')) continue;
-    const link = document.createElement('a');
-    link.href = figure.src;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.className = 'figure-link';
-    link.setAttribute('aria-label', `${figure.alt || 'Figure'} — open full size in a new tab`);
-    figure.before(link);
-    link.append(figure);
-  }
-  const help = document.querySelector<HTMLElement>('.figure-help');
-  if (help && figures.length) help.hidden = false;
-  for (const table of document.querySelectorAll('.note-body table')) {
-    const scroll = document.createElement('div');
-    scroll.className = 'table-scroll';
-    scroll.tabIndex = 0;
-    scroll.setAttribute('role', 'region');
-    scroll.setAttribute('aria-label', 'Table — scroll horizontally if needed');
-    table.before(scroll);
-    scroll.append(table);
-  }
-</script>
+
 <style>
   .contents { border-block:1px solid var(--border); padding:1rem 0; margin:0 0 2.5rem; }
   summary { cursor:pointer; font-weight:600; }
@@ -62,12 +41,7 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
   nav .subtopic { padding-left:1rem; font-size:.9rem; }
   nav a:hover { color:var(--accent); }
   .note-body { min-width:0; overflow-wrap:anywhere; }
-  .note-body :global(th), .note-body :global(td) { overflow-wrap:normal; }
-  .note-body :global(.table-scroll) { max-width:100%; overflow-x:auto; margin:1.5rem 0; }
-  .note-body :global(.table-scroll:focus-visible) { outline:2px solid var(--accent); outline-offset:3px; }
   .note-body :global(img) { margin:1.5rem auto; border-radius:var(--radius-sm); background:white; }
-  .note-body :global(.figure-link) { display:block; cursor:zoom-in; }
-  .note-body :global(.figure-link:focus-visible) { outline:2px solid var(--accent); outline-offset:4px; border-radius:var(--radius-sm); }
   .note-body :global(.katex-display) { max-width:100%; overflow-x:auto; overflow-y:hidden; padding:.5rem 0; }
   .note-body :global(h2), .note-body :global(h3) { scroll-margin-top:5rem; }
   @media (max-width:40rem) {

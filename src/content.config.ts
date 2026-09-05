@@ -83,6 +83,7 @@ const notes = defineCollection({
 const topics = defineCollection({
   loader: glob({ base: './src/content/topics', pattern: '**/*.md' }),
   schema: z.object({
+    draft: z.boolean().default(true),
     title: z.string(),
     paper: z.string(),
     year: z.string(),

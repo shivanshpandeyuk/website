@@ -1,0 +1,33 @@
+<!-- Shared progressive enhancements for article figures and wide tables. -->
+<script>
+  const figures = document.querySelectorAll<HTMLImageElement>('.prose img');
+  for (const figure of figures) {
+    if (figure.closest('a')) continue;
+    const link = document.createElement('a');
+    link.href = figure.src;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.className = 'figure-link';
+    link.setAttribute('aria-label', `${figure.alt || 'Figure'} — open full size in a new tab`);
+    figure.before(link);
+    link.append(figure);
+  }
+  const help = document.querySelector<HTMLElement>('.figure-help');
+  if (help && figures.length) help.hidden = false;
+  for (const table of document.querySelectorAll('.prose table')) {
+    const scroll = document.createElement('div');
+    scroll.className = 'table-scroll';
+    scroll.tabIndex = 0;
+    scroll.setAttribute('role', 'region');
+    scroll.setAttribute('aria-label', 'Table — scroll horizontally if needed');
+    table.before(scroll);
+    scroll.append(table);
+  }
+</script>
+<style is:global>
+  .prose th, .prose td { overflow-wrap:normal; }
+  .prose .table-scroll { max-width:100%; overflow-x:auto; margin:1.5rem 0; }
+  .prose .table-scroll:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  .prose .figure-link { display:block; cursor:zoom-in; }
+  .prose .figure-link:focus-visible { outline:2px solid var(--accent); outline-offset:4px; border-radius:var(--radius-sm); }
+</style>
