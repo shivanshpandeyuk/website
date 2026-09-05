@@ -8,110 +8,102 @@ order: 1
 tags: [economics, consumer-theory]
 ---
 
-## The budget set
+Lecture slides: [L1-notes-Micro-2023-24.pdf](https://www.vle.cam.ac.uk/pluginfile.php/15781371/mod_resource/content/5/L1-notes-Micro-2023-24.pdf). Reading: Varian, Chapter 2.
 
-A consumption bundle tells us how much of each good a consumer buys. With two goods, write it as $(x_1,x_2)$. If prices are $p_1,p_2>0$ and income is $m>0$, the affordable bundles satisfy
+## Consumer choice and the budget set
 
-$$
-p_1x_1+p_2x_2\leq m,\qquad x_1,x_2\geq0.
-$$
+Consumer choice: choosing the best consumption bundle that can be afforded. (Varian)
 
-This is the **budget set**. Its boundary, where the consumer spends the whole budget, is the **budget line**:
+**Consumption bundle:** a list of two numbers, $(x_1,x_2)$.
 
-$$
-x_2=\frac{m}{p_2}-\frac{p_1}{p_2}x_1.
-$$
+- $x_1$: weight/quantity of good 1.
+- $x_2$: weight/quantity of good 2.
 
-The vertical intercept is $m/p_2$, the horizontal intercept is $m/p_1$, and the slope is $-p_1/p_2$. Buying one more unit of good 1 requires giving up $p_1/p_2$ units of good 2 if total spending stays fixed.
+Consider a person with a budget of £4 choosing to buy good A (£1 per kg) vs good B (£2 per kg).
 
-For example, take a £4 budget, with good 1 costing £1 per kg and good 2 costing £2 per kg. The budget line is $x_1+2x_2=4$.
+Thus,
 
-![The affordable set lies on or below the line joining 4 kg of good 1 and 2 kg of good 2. Its slope is minus one half.](/notes/figures/budget/budget-set.svg)
+$$\text{cost}=x_1+2x_2,$$
 
-## Relative prices and the numeraire
+yielding the budget line
 
-Dividing the constraint by $p_2$ gives
+$$x_1+2x_2=4.$$
 
-$$
-\frac{p_1}{p_2}x_1+x_2\leq\frac{m}{p_2}.
-$$
+![Budget set for goods costing £1 and £2 per kilogram: affordable bundles lie below the line joining (0, 2) and (4, 0).](/notes/figures/budget/budget-set.svg)
 
-Good 2 is now the **numeraire**: we measure prices and purchasing power in units of that good. This changes the units in which we describe the budget, not the bundles the consumer can afford.
+So in general the budget set is defined as the set of bundles such that
 
-We can also let the second axis represent money spent on everything other than good 1. That composite good then has a price of one, giving $p_1x_1+x_2\leq m$.
+$$B=\{(x_1,x_2):p_1x_1+p_2x_2\le m,\ x_1,x_2\ge0\}.$$
 
-## Changes in prices and income
+Assume positive prices and income: $p_1,p_2,m>0$.
 
-An increase in income moves both intercepts outwards, with the slope unchanged. A fall in income shifts the line inwards.
+We can reduce parameters by picking a **numeraire good**. The entire budget-line equation can be divided by this numeraire price, $p_2$, to give us
 
-An increase in $p_1$, holding $p_2$ and $m$ fixed, reduces the horizontal intercept. The vertical intercept stays at $m/p_2$, so the budget line becomes steeper. A change in a price changes both relative prices and purchasing power.
+$$\frac{p_1}{p_2}x_1+x_2=\frac{m}{p_2}.$$
 
-Taxes and subsidies can enter through prices or through the consumer's available income:
+Considering more than two goods, we can consider $x_1$ as the consumption good and $x_2$ as the amount of money set aside for everything else, i.e. $x_2$ is a **composite good**. If it is measured in money, its price is one.
 
-| Policy | Change to the constraint |
+## Changes in price and income
+
+The intercepts are $m/p_1$ and $m/p_2$; the slope is $-p_1/p_2$.
+
+A change in the price of good 1 pivots the line around the $x_2$ intercept. A change in income shifts the line in parallel, holding prices fixed. Fixed fees and quantity discounts can give non-linear budget boundaries.
+
+## Taxes and subsidies
+
+| Policy | Effect |
 | --- | --- |
-| Per-unit tax of $t$ on a good | Its price rises from $p$ to $p+t$. |
-| Per-unit subsidy of $s$ | Its price falls from $p$ to $p-s$, assuming the resulting price stays positive. |
-| Ad valorem tax at rate $\tau$ | Its price becomes $(1+\tau)p$. |
-| Ad valorem subsidy at rate $\sigma$ | Its price becomes $(1-\sigma)p$, with $0\leq\sigma<1$ to keep the price positive. |
-| Lump-sum tax of $v$ | Available income falls from $m$ to $m-v$. |
-| Lump-sum subsidy of $u$ | Available income rises from $m$ to $m+u$. |
+| Quantity tax | Raises the price of a good from $p$ to $p+t$. |
+| Quantity subsidy | Reduces the price of a good from $p$ to $p-s$. |
+| Value (ad valorem) tax | Raises the price of a good from $p$ to $(1+\sigma)p$, where $\sigma$ is the tax rate. |
+| Ad valorem subsidy | Reduces the price of a good from $p$ to $(1-\sigma)p$, where $\sigma$ is the subsidy rate. |
+| Lump-sum tax | Regardless of behaviour, a fixed amount of money is taken from the budget. Budget falls from $m$ to $m-u$: a shift inward. |
+| Lump-sum subsidy | Regardless of behaviour, a fixed amount of money is added to the budget. Budget rises from $m$ to $m+u$: a shift outward. |
 
-## Worked example: when does the budget line stay unchanged?
+For the usual downward-sloping budget line, the resulting prices must stay positive: $s<p$ and $0\le\sigma<1$ for the subsidies above.
 
-Suppose the government gives a lump-sum subsidy $u$, taxes each unit of good 1 by $t_1$, and applies an ad valorem tax $\tau_2$ to good 2. The new budget line is
+## Exercise 1: an unchanged budget line
 
-$$
-(p_1+t_1)x_1+(1+\tau_2)p_2x_2=m+u.
-$$
+A budget line is given by $p_1x_1+p_2x_2=m$. The government imposes a lump-sum subsidy of $u$, a quantity tax $t_1$ on good 1, and an ad valorem tax $\tau_2$ on good 2.
 
-To describe the same line as before, all three coefficients must be multiplied by the same positive factor $\lambda$:
+Find the condition on $u,t_1,\tau_2$ such that the new budget line coincides with the original budget line.
 
-$$
-p_1+t_1=\lambda p_1,\qquad
-(1+\tau_2)p_2=\lambda p_2,\qquad
-m+u=\lambda m.
-$$
+The new budget line is
 
-Since $p_2>0$, the middle condition gives $\lambda=1+\tau_2$. Therefore
+$$(p_1+t_1)x_1+(1+\tau_2)p_2x_2=m+u.$$
 
-$$
-\boxed{\frac{t_1}{p_1}=\tau_2=\frac{u}{m}},\qquad 1+\tau_2>0.
-$$
+For it to coincide with the original line, both prices and income must increase in the same proportion:
 
-It is the **proportional changes** that must agree. Equating $t_1$, $\tau_2$ and $u$ directly would compare a tax per unit, a percentage and a cash amount.
+$$\frac{p_1+t_1}{p_1}=1+\tau_2=\frac{m+u}{m}.$$
 
-For a quick check, take $p_1=4$, $p_2=7$ and $m=100$. A 25% tax on good 2, a tax of 1 per unit of good 1 and a subsidy of 25 produce $5x_1+8.75x_2=125$. Dividing by 1.25 recovers the original line, $4x_1+7x_2=100$.
+So the condition is
 
-## Worked example: two shops with entry fees
+$$\boxed{\frac{t_1}{p_1}=\tau_2=\frac{u}{m}}.$$
 
-A consumer has £100 to spend on chocolate $x$ and ice cream $y$, both measured in kg. Shop A charges £10 to enter, then £5 per kg of chocolate and £10 per kg of ice cream. Shop B charges £20 to enter, then £10 per kg of chocolate and £5 per kg of ice cream.
+The quantity tax and lump-sum subsidy are amounts; the ad valorem tax is a rate. They are not generally equal to one another.
 
-There are three relevant shopping choices:
+## Exercise 2: entrance fees at two shops
 
-| Shopping choice | Money left after entry | Budget line |
-| --- | --- | --- |
-| A only | £90 | $5x+10y=90$, or $y=9-x/2$ |
-| B only | £80 | $10x+5y=80$, or $y=16-2x$ |
-| Both shops | £70 | Buy chocolate at A and ice cream at B: $5x+5y=70$, or $y=14-x$. |
+Suppose Bob has £100 that he can spend to buy sweets from shops A and B. Shop A charges an entrance fee of £10 and sells chocolate candies and ice cream at prices of £5 and £10 per kilogram, respectively. Shop B charges an entrance fee of £20 and sells identical chocolate candies and ice cream at prices of £10 and £5 per kilogram.
 
-For each quantity of chocolate, the consumer can choose the shopping arrangement that leaves the most ice cream. The outer boundary is therefore the upper envelope of these three lines, wherever quantities are non-negative.
+Plotting the weight of chocolate candies on the horizontal axis and weight of ice cream on the vertical axis, draw Bob's budget set.
 
-The B-only line meets the both-shops line at $(2,12)$. The both-shops line meets the A-only line at $(10,4)$. This gives
+If Bob goes to shop A, he is left with £90 to spend, and the associated budget line is $5x+10y=90$, that is, $x+2y=18$.
+
+If Bob goes to shop B, he is left with £80 to spend, and the associated budget line is $10x+5y=80$, that is, $2x+y=16$.
+
+We should also consider the line corresponding to shopping at **both shops**. Bob pays £30 in entrance fees, then buys chocolate at A and ice cream at B, each for £5 per kilogram. This gives $5x+5y=70$, or $x+y=14$.
+
+The overall budget frontier is the maximum of the three affordable options:
 
 $$
-y_{\max}(x)=
-\begin{cases}
-16-2x,&0\leq x\leq2,\\
-14-x,&2\leq x\leq10,\\
-9-x/2,&10\leq x\leq18.
+y=\begin{cases}
+16-2x,&0\le x\le2,\\
+14-x,&2\le x\le10,\\
+9-\frac{x}{2},&10\le x\le18.
 \end{cases}
 $$
 
-![The budget frontier runs from 0 kg chocolate and 16 kg ice cream to 2 and 12, then to 10 and 4, and finally to 18 and 0. Shopping at both stores is best along the middle segment.](/notes/figures/budget/two-shops.svg)
+![Bob's budget frontier follows shop B from (0, 16) to (2, 12), both shops to (10, 4), and shop A to (18, 0). Affordable bundles lie below it.](/notes/figures/budget/two-shops.svg)
 
-There are **three segments and two interior corners**. Comparing only A with B misses the middle segment, where paying both entry fees is worthwhile. The fixed fees also make the budget set non-convex: a mixture of two affordable bundles need not itself be affordable.
-
-## Sources
-
-Based on my Cambridge first-year microeconomics notes and the worked examples accompanying [Lecture 1: the budget](https://www.vle.cam.ac.uk/pluginfile.php/15781371/mod_resource/content/5/L1-notes-Micro-2023-24.pdf). The original notes also refer to Chapter 2 of Hal Varian's *Intermediate Microeconomics*. The diagrams here are drawn from the equations above.
+There are **three segments and two interior kinks**, at $(2,12)$ and $(10,4)$. The budget set is not convex: the midpoint $(9,8)$ of the affordable intercepts $(0,16)$ and $(18,0)$ is unaffordable.

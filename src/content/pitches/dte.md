@@ -3,9 +3,9 @@ ticker: DTE
 company: Deutsche Telekom
 exchange: XETRA
 sector: Telecoms
-date: 2025-03-15
+date: 2025-03-14
 recommendation: Long
-thesis: A European telecom priced as a slow incumbent, when most of its value is a controlling stake in a US wireless business that behaves like a growth compounder.
+thesis: Undervalued relative to its subsidiary T-Mobile, relative to other growth stocks, and intrinsically.
 status: published
 pdf: /pitches/deutsche-telekom-dte.pdf
 cover: /pitches/img/dte/cover.png
@@ -13,36 +13,66 @@ tags: [telecoms, europe, t-mobile, sum-of-parts]
 order: 30
 ---
 
-*A Cambridge Student Investment Fund pitch, March 2025, with Jade Chen, Josh Tan, Rafael Karapetian and Yvonne Dai. The target and upside are our estimates at the time, not a live view.*
+*A Cambridge Student Investment Fund pitch, 14 March 2025, with Jade Chen, Josh Tan, Rafael Karapetian and Yvonne Dai. The figures and investment view below are from that pitch.*
 
-Long Deutsche Telekom to a **€50.11 target, about 38% upside [E]**. The pitch comes down to one mismatch: the market values the whole group on a European telco multiple, when the largest piece of it is a controlling stake in a US wireless business that grows and throws off cash like something you would happily pay much more for. Mark that stake at its own market value, look at what is left on its own numbers, and the rest of the group is being valued as if nothing good happens to it.
+**Deutsche Telekom — Long. Target price: €50.11, with 38.49% upside [E, original March 2025 pitch].**
 
-Telecoms is a dull, consolidating market, and dull is the point. Size is close to the only edge that lasts, and Deutsche Telekom has it on both sides of the Atlantic.
+Undervalued relative to its subsidiary T-Mobile, relative to other growth stocks, and intrinsically.
 
-<figure class="figure"><img src="/pitches/img/dte/s1.png" alt="Industry overview and competitive landscape" loading="lazy"/><figcaption>The competitive landscape, and where DTE's scale sits in it.</figcaption></figure>
+## Germany cash cow, US star
 
-<figure class="figure"><img src="/pitches/img/dte/s2.png" alt="DTE and T-Mobile US share price performance" loading="lazy"/><figcaption>DTE and T-Mobile have been the two value-creators in large-cap telecoms over the last five years.</figcaption></figure>
+The company offers fixed-network and mobile communications, broadband solutions and IT services. In Germany, the strategy is not to grow but to extract value by offering fibre to the home. The core strategy is to grow in the US and keep raising its stake in T-Mobile, which pursues an aggressive inorganic growth strategy.
 
-The case rests on three legs.
+Telecoms is a commodity product in an oligopolistic industry, with capital expenditure as a barrier to entry. Competition is mostly on price in theory; however, prices are generally similar, so brand rating and trust, network speed and network coverage matter.
 
-The first is that the bottom-line performance is better than a sleepy-incumbent multiple implies.
+<figure class="figure"><img src="/pitches/img/dte/s1.png" alt="Original industry overview: competition on brand, network speed and coverage, alongside the German and US market outlook." loading="lazy"/><figcaption>Industry overview — original pitch, page 3.</figcaption></figure>
 
-<figure class="figure"><img src="/pitches/img/dte/s3.png" alt="Thesis 1: bottom-line performance" loading="lazy"/><figcaption>Thesis 1: the earnings and cash generation do not look like a business in decline.</figcaption></figure>
+<figure class="figure"><img src="/pitches/img/dte/s2.png" alt="Share-price performance to 10 March 2025 for Deutsche Telekom, T-Mobile US, Orange, AT&T, Verizon and Vodafone." loading="lazy"/><figcaption>Share-price performance to 10 March 2025 — original pitch, page 4.</figcaption></figure>
 
-The second is that the mix is defensive. The revenue is spread across geographies and products in a way that holds up when one market softens, and the group is deleveraging into it.
+## Thesis 1: superb bottom-line performance
 
-<figure class="figure"><img src="/pitches/img/dte/s4.png" alt="Thesis 2: financials and portfolio mix" loading="lazy"/><figcaption>Thesis 2: a portfolio mix that keeps working when any single line does not.</figcaption></figure>
+Management’s calculated bets have paid off. DTE overdelivered on its financial and operating targets: increasing the T-Mobile stake, divestments, deleveraging, dividends and the rollout of fibre to the home in Germany.
 
-The third is the structural one. Telecoms consolidates, scale players take the spoils, and DTE is the scale player.
+Recall this was a period of higher energy costs. DTE started expensive insourcing for resilience and faced COVID deployment disruption. Yet all segments outperformed their EBITDA targets.
 
-<figure class="figure"><img src="/pitches/img/dte/s5.png" alt="Thesis 3: industry consolidation" loading="lazy"/><figcaption>Thesis 3: consolidation rewards the largest operators, which is the seat DTE sits in.</figcaption></figure>
+T-Mobile is an expert at inorganic growth. The Sprint merger has fuelled its EBITDA performance, and the subsequent fibre deals set the grounds for a larger acquisition in the fibre market. The market has not priced in this larger plan.
 
-Put a value on it two ways, a DCF and a public-comps sum-of-parts, and the answer rhymes. When the US stake is marked at its own price and the German and European stub is valued on its own cash flows, you get to roughly **€50 [E]** without heroic assumptions.
+DTE has done the hard yards of investment. We now expect expanding margins as capital intensity eases, especially in the US.
 
-<figure class="figure"><img src="/pitches/img/dte/s6.png" alt="DCF and public comparables valuation" loading="lazy"/><figcaption>Valuation: a DCF and a comps-based sum-of-parts landing in the same place.</figcaption></figure>
+<figure class="figure"><img src="/pitches/img/dte/s3.png" alt="Thesis 1: performance against management targets, T-Mobile acquisitions, free cash flow and earnings growth." loading="lazy"/><figcaption>Superb bottom-line performance — original pitch, page 6.</figcaption></figure>
 
-There is a clear path of things that get the market there, rather than a hope that the multiple simply re-rates.
+## Thesis 2: financials and portfolio mix
 
-<figure class="figure"><img src="/pitches/img/dte/s7.png" alt="Catalyst path" loading="lazy"/><figcaption>The catalyst path: dated events that force the sum-of-parts into view.</figcaption></figure>
+Strong financials, revenue diversification and prior investment have given DTE a competitive edge.
 
-It breaks if US competition intensifies and the wireless business re-rates down, or if the group spends the free cash flow the deleveraging case relies on, on spectrum or deals, rather than letting it reach the equity.
+T-Mobile trades at 27x P/E but DTE trades at 15x P/E. Yet 75% of DTE earnings are earnings from T-Mobile [U, figures stated in the original March 2025 pitch].
+
+In Germany, strong financials enable investment in fibre to the home, increasing broadband revenue and the customer base. Other German operators did not invest in the face of uncertainty and financial issues, so DTE gained market share.
+
+DTE has unique optionality: it can pursue different growth modes in different markets. It deserves to command a premium for this optionality.
+
+<figure class="figure"><img src="/pitches/img/dte/s4.png" alt="Thesis 2: T-Mobile exposure, DTE’s German market position, comparative financials and geographic diversification." loading="lazy"/><figcaption>Financials and portfolio mix — original pitch, page 7.</figcaption></figure>
+
+## Thesis 3: industry consolidation
+
+The European Commission’s proposed competition-policy changes, funds for digital transformation and the move from four to three operators outlined in the Draghi report support consolidation.
+
+Long-term debt allows DTE to weather interest costs better than alternatives. Competitors with higher debt burdens face steeper costs; highly leveraged alternative-network providers are squeezed. Even among incumbents, DTE has healthy leverage and capital expenditure.
+
+<figure class="figure"><img src="/pitches/img/dte/s5.png" alt="Thesis 3: European competition-policy changes, interest rates and roaming demand as factors affecting larger telecom operators." loading="lazy"/><figcaption>Industry consolidation — original pitch, page 8.</figcaption></figure>
+
+## Valuation
+
+The original valuation uses a **DCF and public comparables**. The DCF base case uses a 13% discount rate and a 10x EV/EBIT exit multiple [E, original pitch assumptions]. The sensitivity table gives share prices of €53.11, €50.11 and €47.60 in the bullish, base and bearish cases respectively [E, original pitch].
+
+The valuation slide uses a reference share price of €36.18 and states 38.49% base-case upside [E, original pitch].
+
+<figure class="figure"><img src="/pitches/img/dte/s6.png" alt="DCF valuation and public comparables, with a €50.11 base-case target against a €36.18 reference share price; bull and bear targets are €53.11 and €47.60." loading="lazy"/><figcaption>Valuation and sensitivity analysis — original pitch, page 9. Figures are the estimates used in March 2025.</figcaption></figure>
+
+## Catalyst path
+
+The original catalyst path includes share buybacks, T-Mobile’s acquisition of US Cellular’s wireless operations, coverage milestones, the satellite-service launch, regulatory reforms, AI cost savings and fibre expansion.
+
+<figure class="figure"><img src="/pitches/img/dte/s7.png" alt="Original catalyst timeline for 2025–2027, covering buybacks, acquisitions, network coverage, satellite services, cost savings and fibre expansion." loading="lazy"/><figcaption>The catalyst path as set out in March 2025 — original pitch, page 10.</figcaption></figure>
+
+The risks identified in the deck include intense competition, the cost and execution of network investment, currency fluctuations and economic downturns. The proposed mitigants are strategic acquisitions, technology partnerships, hedging and revenue diversification.
