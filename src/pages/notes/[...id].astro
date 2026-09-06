@@ -11,7 +11,7 @@ const { note } = Astro.props;
 const { Content, headings } = await render(note);
 const sections = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
 ---
-<Base title={note.data.title} description={note.data.description}>
+<Base title={note.data.title} description={note.data.description} ogType="article">
   <article>
     <header class="article-head">
       <a class="link small" href="/notes/">← Cambridge notes</a>

@@ -11,7 +11,7 @@ const { Content } = await render(entry);
 const d = entry.data;
 const fmt = (x: Date) => x.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
-<Base title={d.title} description={d.description}>
+<Base title={d.title} description={d.description} ogType="article">
   <p><a class="back-link" href="/writing">← All writing</a></p>
   <div class="article-head">
     <p class="eyebrow">{d.category}</p>

@@ -13,7 +13,7 @@ const d = entry.data;
 const fmt = (x: Date) => x.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase();
 ---
-<Base title={`${d.company} (${d.ticker})`} description={d.thesis}>
+<Base title={`${d.company} (${d.ticker})`} description={d.thesis} ogType="article">
   <p><a class="back-link" href="/pitches">← All pitches</a></p>
 
   {d.cover && (

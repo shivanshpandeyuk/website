@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 ---
-<Base title={project.data.title} description={project.data.description}>
+<Base title={project.data.title} description={project.data.description} ogType="article">
   <article>
     <header class="article-head">
       <a class="link small" href="/projects/">← Projects</a>
