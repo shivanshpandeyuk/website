@@ -1,26 +1,30 @@
-# Design cues from sunnypatel.net — LIGHT touch, not a rebuild
+# Design cues (from sunnypatel.net) — LIGHT touch, FINANCE style, not a rebuild
 
-Shiv likes the reference but finds the full dark/dramatic treatment too much. Do NOT overhaul the
-homepage into a dark cinematic hero. Keep his current site and voice. Borrow only the tasteful bits
-below, and only where they improve the existing page. Adopt the SYSTEM, never the copy or assets
-(no cloned headlines, no retro-computer 3D, no fabricated content).
+Shiv likes the reference's SMOOTHNESS and its project-card presentation, but his site must read as
+FINANCE / equity-research, NOT developer/coding. The reference leans dev (monospace "coding" font,
+a terminal card, 01/02 code-style numbering). Do NOT copy that flavour. Keep his current homepage,
+layout, content and voice; borrow only the two things below.
 
-## The main takeaway: project / selected-work cards (he called this out as cool)
-Restyle the projects + selected-work cards to this pattern:
-- A real page preview or restrained browser-chrome mock at the top of each card.
-- Title left, year right-aligned in mono.
-- One-line description in muted grey.
-- Small status dot + short label (e.g. "Live", "Ongoing") where true.
-- Subtle hover: slight lift + border warm. Cards link to the real notes/pitches/projects/dissertation.
+## 1. Keep the smoothness (this is the main positive)
+Buttery, restrained motion: fade+rise on section enter (~400ms), smooth hover on links/cards
+(underline grow, slight lift). Respect prefers-reduced-motion. No parallax gimmicks, no bounce.
 
-## Small accents (optional, restrained — skip any that feel dramatic)
-- Mono section kickers: short 24px rule + small uppercase mono label ("SELECTED WORK", "NOTES").
-- One accent colour used sparingly: terracotta ~ #d9663d for a single hover/dot, not large fills.
-- Mono for years / meta / numbers.
+## 2. Project / selected-work cards (he called these cool)
+Restyle the projects + selected-work cards: a real page preview or restrained browser-chrome mock on
+top, title left, year right-aligned, one-line muted description, small status dot where true ("Live",
+"Ongoing"). Subtle hover (lift + border warm). Cards link to the real notes/pitches/projects/dissertation.
+
+## Finance styling, NOT coding
+- NO monospace / terminal / "code" font anywhere as a design motif. NO terminal or "SESSION" card.
+  NO dev-style 01/02 numbered kickers that read as code.
+- Instead: a premium editorial/finance feel. A refined serif or a sharp confident grotesk for display;
+  clean sans for body. Use TABULAR (lining) numerals for any figures/years/percentages so numbers align
+  like a tearsheet. Sophisticated, restrained palette; one subtle accent, used sparingly.
+- Think equity-research / buy-side polish: serious, data-forward, uncluttered. Not startup-dev, not
+  ultra-minimal.
 
 ## Do NOT
-- Do not switch the whole site to near-black or a cinematic hero.
-- Do not enlarge display type to reference scale or add heavy motion.
-- Keep the current homepage layout, résumé access, and content as they are.
+- Do not switch the whole site to near-black or a cinematic hero. Do not enlarge display type to
+  reference scale. Do not add a monospace/terminal aesthetic. Keep current layout, resume access, content.
 
 Verify on a real rendered page (desktop + phone) before deploy: no overflow, KaTeX intact.
