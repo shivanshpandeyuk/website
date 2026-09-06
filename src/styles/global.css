@@ -1,8 +1,48 @@
 /* =========================================================================
    Shivansh Pandey — site design system
-   Minimalist academic. Warm paper, dark ink, one restrained accent.
-   Light + dark via [data-theme] with prefers-color-scheme fallback.
+   Finance-editorial (see DESIGN.md v2). Self-hosted grotesk + one italic-serif
+   display accent, one deliberate accent colour, hairline borders (no blanket
+   shadow), radii set with intent. Light + dark both first-class.
    ========================================================================= */
+
+/* ---- Self-hosted fonts (free / OFL, in public/fonts) ---------------- */
+/* Hanken Grotesk — primary grotesk (SIL OFL). Chosen over Schibsted Grotesk
+   because Schibsted's Google-Fonts build ships a broken `tnum` feature that
+   adds advance width to punctuation and spaces under font-variant-numeric:
+   tabular-nums (the tearsheet numeral requirement). Hanken renders tnum clean. */
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/hanken-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/hanken-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Fraunces italic — display accent, one or two words per headline (SIL OFL). */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/fraunces-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/fraunces-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 /* ---- Tokens: light (default) ------------------------------------------ */
 :root {
@@ -14,21 +54,21 @@
   --faint:     #8a877f;
   --border:    #e6e2d8;
   --border-strong: #d6d1c4;
-  --accent:    #35618a;   /* ink blue */
-  --accent-2:  #22405c;
-  --accent-soft: #eaf1f8;
-  --mark:      #b8552f;    /* terracotta, used very sparingly */
-  --shadow:    0 1px 2px rgba(25,25,23,.04), 0 8px 24px rgba(25,25,23,.05);
+  --accent:    #1f5d4e;   /* deep teal-green — the one deliberate accent */
+  --accent-2:  #164438;
+  --accent-soft: #e6f0ec;
 
-  --font-serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
-  --font-sans:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-mono:  ui-monospace, 'SFMono-Regular', 'JetBrains Mono', 'Menlo', Consolas, monospace;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-accent: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-mono:  ui-monospace, 'SFMono-Regular', 'Menlo', Consolas, monospace;
 
   --measure: 68ch;
   --page:    min(100% - 2.5rem, 46rem);
   --page-wide: min(100% - 2.5rem, 62rem);
-  --radius:  10px;
-  --radius-sm: 7px;
+  --radius:      6px;    /* near-sharp on text surfaces */
+  --radius-sm:   4px;
+  --radius-card: 14px;   /* deliberate larger radius on imagery cards only */
 }
 
 /* ---- Tokens: dark ----------------------------------------------------- */
@@ -41,11 +81,9 @@
   --faint:     #85837a;
   --border:    #2f2e26;
   --border-strong: #3d3b31;
-  --accent:    #8fb6dd;
-  --accent-2:  #b8d2ec;
-  --accent-soft: #1e2a36;
-  --mark:      #d98a63;
-  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  --accent:    #7cc9ac;
+  --accent-2:  #a2ddc6;
+  --accent-soft: #17251f;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
@@ -57,11 +95,9 @@
     --faint:     #85837a;
     --border:    #2f2e26;
     --border-strong: #3d3b31;
-    --accent:    #8fb6dd;
-    --accent-2:  #b8d2ec;
-    --accent-soft: #1e2a36;
-    --mark:      #d98a63;
-    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    --accent:    #7cc9ac;
+    --accent-2:  #a2ddc6;
+    --accent-soft: #17251f;
   }
 }
 
@@ -80,6 +116,7 @@ body {
   line-height: 1.65;
   font-size: 1.02rem;
   letter-spacing: -0.003em;
+  font-variant-numeric: tabular-nums lining-nums;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100dvh;
@@ -95,22 +132,30 @@ section + section { margin-top: 3.25rem; }
 
 /* ---- Typography ------------------------------------------------------- */
 h1, h2, h3, h4 {
-  font-family: var(--font-serif);
-  font-weight: 560;
-  line-height: 1.18;
-  letter-spacing: -0.012em;
+  font-family: var(--font-sans);
+  font-weight: 480;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
   color: var(--text);
 }
 h1 { font-size: clamp(2rem, 5vw, 2.85rem); }
 h2 { font-size: clamp(1.4rem, 3vw, 1.7rem); }
-h3 { font-size: 1.2rem; }
+h3 { font-size: 1.2rem; font-weight: 560; letter-spacing: -0.014em; }
+h4 { font-weight: 560; }
+/* Italic-serif display accent — one or two words per headline. */
+.accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
 p, ul, ol { color: var(--text); }
 .lead { font-size: 1.18rem; color: var(--muted); line-height: 1.6; }
 .eyebrow {
   font-family: var(--font-sans);
   font-size: .74rem; font-weight: 600;
   letter-spacing: .09em; text-transform: uppercase;
-  color: var(--mark);
+  color: var(--accent);
 }
 .muted { color: var(--muted); }
 .faint { color: var(--faint); }
@@ -139,8 +184,8 @@ a { text-decoration: none; }
   padding-block: .85rem; min-height: 56px;
 }
 .brand {
-  font-family: var(--font-serif);
-  font-size: 1.08rem; font-weight: 600; letter-spacing: -0.01em;
+  font-family: var(--font-sans);
+  font-size: 1.08rem; font-weight: 600; letter-spacing: -0.015em;
   white-space: nowrap;
 }
 .brand:hover { color: var(--accent); }
@@ -219,12 +264,12 @@ a { text-decoration: none; }
   display: flex; flex-direction: column; gap: .55rem;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 1.15rem 1.25rem;
-  transition: border-color .15s ease, box-shadow .2s ease, transform .2s ease;
+  transition: border-color .15s ease, transform .2s ease;
 }
-a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-2px); }
+a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
 .card h3 { font-size: 1.12rem; }
 .card__meta { display: flex; flex-wrap: wrap; gap: .4rem .6rem; align-items: center; font-size: .82rem; color: var(--faint); }
-.card__ticker { font-family: var(--font-mono); font-weight: 600; color: var(--accent); letter-spacing: .02em; }
+.card__ticker { font-weight: 600; color: var(--accent); letter-spacing: .04em; font-variant-numeric: tabular-nums lining-nums; }
 
 /* Row list (writing / notes) */
 .rows { border-top: 1px solid var(--border); }
@@ -234,7 +279,7 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
   transition: background .15s ease;
 }
 .row:hover { background: var(--surface-2); }
-.row__title { font-family: var(--font-serif); font-size: 1.12rem; font-weight: 560; }
+.row__title { font-family: var(--font-sans); font-size: 1.12rem; font-weight: 540; letter-spacing: -0.015em; }
 .row a.row__title:hover { color: var(--accent); }
 .row__date { margin-left: auto; color: var(--faint); font-size: .85rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .row__desc { flex-basis: 100%; color: var(--muted); font-size: .95rem; margin-top: .1rem; }
@@ -264,7 +309,7 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 .prose li + li { margin-top: .3rem; }
 .prose blockquote {
   border-left: 3px solid var(--accent); padding-left: 1rem;
-  color: var(--muted); font-style: italic;
+  color: var(--muted); font-family: var(--font-accent); font-style: italic;
 }
 .prose code { font-family: var(--font-mono); font-size: .88em; background: var(--surface-2); padding: .12em .35em; border-radius: 4px; }
 .prose pre { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto; }
@@ -276,7 +321,7 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 .prose th { color: var(--muted); font-weight: 600; }
 
 /* provenance tags used in pitch write-ups: [R] [C] [E] [U] */
-.prov { font-family: var(--font-mono); font-size: .78em; color: var(--faint); }
+.prov { font-size: .78em; font-weight: 600; letter-spacing: .04em; color: var(--faint); font-variant-numeric: tabular-nums lining-nums; }
 
 /* ---- PDF embed -------------------------------------------------------- */
 .doc-embed { width: 100%; aspect-ratio: 8.5 / 11; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); }
@@ -345,7 +390,7 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 /* ---- Image-forward pitch card (Gallery4 style) ------------------------ */
 .pcard {
   position: relative; display: block; overflow: hidden;
-  border-radius: 14px; min-height: 25rem; height: 100%;
+  border-radius: var(--radius-card); min-height: 25rem; height: 100%;
   background: var(--surface-2); border: 1px solid var(--border);
   isolation: isolate;
 }
@@ -365,12 +410,12 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
   padding: 1.4rem 1.5rem; color: #fff;
 }
 .pcard__meta { display: flex; align-items: center; gap: .55rem; margin-bottom: .5rem; }
-.pcard__ticker { font-family: var(--font-mono); font-weight: 600; letter-spacing: .03em; color: #fff; font-size: .9rem; }
+.pcard__ticker { font-weight: 600; letter-spacing: .05em; color: #fff; font-size: .9rem; font-variant-numeric: tabular-nums lining-nums; }
 .pcard__date { margin-left: auto; font-size: .8rem; color: rgba(255,255,255,.72); font-variant-numeric: tabular-nums; }
 .pcard__rec { font-size: .64rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: .16rem .5rem; border-radius: 5px; background: rgba(255,255,255,.16); color: #fff; }
 .pcard__rec--long { background: rgba(90,200,140,.28); }
 .pcard__rec--short { background: rgba(230,120,120,.3); }
-.pcard__title { font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.15; color: #fff; margin-bottom: .4rem; }
+.pcard__title { font-family: var(--font-sans); font-weight: 500; font-size: 1.5rem; line-height: 1.14; letter-spacing: -0.02em; color: #fff; margin-bottom: .4rem; }
 .pcard__thesis { font-size: .92rem; color: rgba(255,255,255,.82); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .pcard__more { display: inline-block; margin-top: .8rem; font-size: .85rem; font-weight: 550; color: #fff; opacity: .9; }
 .pcard:hover .pcard__more { opacity: 1; }
@@ -379,12 +424,12 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 /* ---- Inline pitch figures (Substack flow) ----------------------------- */
 .figure { margin: 1.9rem 0; }
 .figure img {
-  width: 100%; border: 1px solid var(--border); border-radius: 10px;
-  box-shadow: var(--shadow); background: #fff;
+  width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: #fff;
 }
 .figure figcaption { margin-top: .55rem; font-size: .82rem; color: var(--faint); text-align: center; }
 .pitch-hero {
-  position: relative; border-radius: 14px; overflow: hidden; margin-bottom: 1.75rem;
+  position: relative; border-radius: var(--radius-card); overflow: hidden; margin-bottom: 1.75rem;
   min-height: 15rem; display: flex; align-items: flex-end; isolation: isolate;
 }
 .pitch-hero__img { position: absolute; inset: 0; background-size: cover; background-position: center; }
@@ -436,9 +481,9 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 .home-diss {
   display: block; border: 1px solid var(--border); border-radius: var(--radius);
   background: var(--surface); padding: 1.5rem 1.6rem;
-  transition: border-color .2s ease, box-shadow .25s ease, transform .25s ease;
+  transition: border-color .2s ease, transform .25s ease;
 }
-.home-diss:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-2px); }
+.home-diss:hover { border-color: var(--border-strong); transform: translateY(-2px); }
 .home-diss__meta { display: flex; flex-wrap: wrap; gap: .5rem .7rem; align-items: center; margin-bottom: .7rem; }
 .home-diss h3 { font-size: 1.28rem; margin-bottom: .5rem; }
 .home-diss p { color: var(--muted); font-size: .95rem; }
@@ -452,7 +497,7 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
   background: var(--surface); padding: 1.35rem 1.4rem; font-size: .9rem;
 }
 @media (min-width: 60rem) { .home-rail__inner { position: sticky; top: 5.25rem; } }
-.home-rail__name { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; letter-spacing: -0.01em; }
+.home-rail__name { font-family: var(--font-sans); font-size: 1.2rem; font-weight: 600; letter-spacing: -0.015em; }
 .home-rail__cred { color: var(--muted); margin-top: .25rem; font-size: .84rem; }
 .home-rail__links { display: flex; flex-wrap: wrap; gap: .35rem .9rem; margin-top: .85rem; }
 .home-rail__links a { color: var(--accent); font-weight: 550; font-size: .85rem; }

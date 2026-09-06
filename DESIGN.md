@@ -52,3 +52,25 @@ free. Keep resume access and all existing pages working. Before deploy: build pa
 real rendered page at desktop AND phone widths (screenshot), KaTeX intact, reduced-motion honoured.
 Ship in coherent increments (tokens+type first, then cards+metadata, then hero) - do not half-apply a
 new font/palette and leave the rest on the old defaults.
+
+## D. INCREMENT LOG
+### Increment 1 - tokens + type (2026-09-07, claude)
+- Fonts self-hosted in public/fonts (woff2, SIL OFL, no external requests):
+  - Sans / display: Hanken Grotesk (latin + latin-ext, weight axis 400-700). Replaces Inter/system-ui
+    as `--font-sans`. All headings, brand, card/row titles, resume rail now use it at light weight
+    (h1/h2 480, tracking -0.02em). (Schibsted Grotesk was tried first and rejected: its Google-Fonts
+    build has a broken `tnum` feature that spaces out punctuation under tabular-nums.)
+  - Italic-serif accent: Fraunces italic (`--font-accent`), used by `.accent` (one/two headline words -
+    wired per-page in later increments) and `.prose blockquote`.
+- Mono dropped as a motif: `--font-mono` kept ONLY for `.prose code` / `pre` (real code). Tickers,
+  provenance tags and figures render in the sans with `font-variant-numeric: tabular-nums lining-nums`
+  (also set on `body`).
+- One accent colour, documented: deep teal-green `--accent` #1f5d4e (light) / #7cc9ac (dark), with
+  `--accent-2` and `--accent-soft`. Old ink-blue #35618a and terracotta `--mark` #b8552f removed.
+- Shadows: `--shadow` token and every `box-shadow` removed. Cards/dissertation feature/figures now lift
+  on hover via border-colour + a 2px translate only; imagery led by hairline borders.
+- Radii with intent: `--radius` 6px and `--radius-sm` 4px (near-sharp text surfaces); new
+  `--radius-card` 14px for imagery cards (`.pcard`, `.pitch-hero`) only.
+- Not yet done (later increments): tearsheet metadata blocks, imagery-forward card layout with
+  category+service tags and circular-arrow, asymmetric hero + scroll affordance, per-headline accent
+  words, scroll-aware motion review.

@@ -40,14 +40,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
     <meta name="generator" content={Astro.generator} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={SITE.name + ' — Writing'} href="/writing/rss.xml" />
-    <!-- Fonts: self-contained. The CSS falls back to Palatino/Georgia (serif)
-         and system-ui (sans), so the site has zero external dependencies and
-         works on any host, offline. To use Newsreader + Inter instead, uncomment: -->
-    <!--
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,560;6..72,600&display=swap" rel="stylesheet" />
-    -->
+    <!-- Fonts: self-hosted woff2 in /public/fonts (Hanken Grotesk + Fraunces
+         italic, both SIL OFL). No external requests; @font-face lives in
+         global.css and falls back to system-ui / Georgia. -->
+    <link rel="preload" href="/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/fraunces-italic-latin.woff2" as="font" type="font/woff2" crossorigin />
     <!-- theme: set before paint to avoid flash -->
     <script is:inline>
       (() => {
