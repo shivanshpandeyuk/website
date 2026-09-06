@@ -74,3 +74,37 @@ new font/palette and leave the rest on the old defaults.
 - Not yet done (later increments): tearsheet metadata blocks, imagery-forward card layout with
   category+service tags and circular-arrow, asymmetric hero + scroll affordance, per-headline accent
   words, scroll-aware motion review.
+
+### Increment 2 - pitch cards + tearsheet metadata (2026-09-07, claude)
+- `PitchCard.astro` reworked to the Fuselab imagery card: category/venue tags (sector + exchange),
+  large grotesk title, 2-line thesis clamp, a TICKER/STANCE/DATE tearsheet strip on a hairline rule,
+  and a circular-arrow affordance top-right (fills on hover; arrow-nudge under
+  `prefers-reduced-motion: no-preference`). Used on the homepage carousel and `/pitches`.
+- Pitch detail pages get an Unseen-style `.tearsheet` spec strip (TICKER / EXCHANGE / SECTOR / DATE /
+  STANCE) - uppercase micro-labels + tabular values on a hairline top border. `.tearsheet` CSS is
+  generic so projects/notes can reuse it. All values from real pitch frontmatter.
+
+### Increment 3 - asymmetric hero + scroll affordance + accent word (2026-09-07, claude)
+- Homepage hero (`src/pages/index.astro`, `.home-hero` in global.css) made asymmetric: text children
+  capped at `max-width: 40rem` so the column stays left-weighted with deliberate right-side
+  whitespace; on >=48rem a `padding-right: 4rem` reserves the right gutter.
+- One restrained immersive element: a `.home-hero::before` radial wash in `--accent`
+  (`color-mix ... 24%`, opacity .55) top-right, drifting via `hero-drift` 22s
+  ease-in-out alternate. Frozen under `prefers-reduced-motion: reduce`.
+- Thin circular scroll affordance: `.home-hero__scroll` - a 2.75rem hairline circle with a down-arrow
+  SVG, `href="#about"` (the intro `<section id="about">`), `aria-label`. On >=48rem it is
+  `position: absolute; right:0; bottom:.15rem` (bottom-right of the hero, ~20px clear of the
+  "Currently" line); on mobile it stacks under the hero text. Arrow `hero-nudge` bob only under
+  `prefers-reduced-motion: no-preference`; smooth scroll already `auto` under reduced-motion globally.
+- Per-headline italic-serif accent word wired: hero `<h1>` now reads
+  "Economics, *statistics*, and equity research." with "statistics" in `<span class="accent">`
+  (Fraunces italic, `--font-accent`). One word only, per DESIGN.md B "sparingly". No wording change.
+- Scroll-aware motion reviewed: kept as-is. Load entrance is limited to `.home-hero > *` (staggered
+  `home-rise`); scroll reveal is IntersectionObserver-gated on `.home__main > section.reveal` only
+  (4 sections), not blanket AOS; JS bails entirely under `prefers-reduced-motion: reduce`.
+- Verified: `npm run build` errors:0 / 38 pages; skill static audit 38 pages 0 errors 0 warnings;
+  Chrome headless via Playwright - documentElement overflowX == 0 at 390 / 980 / 1366px, light and
+  dark; accent word renders Fraunces italic; affordance bottom-right desktop / stacked mobile;
+  reduced-motion freezes both keyframes.
+- Increment 3 done. Item 1 remainder still open: imagery-forward treatment + circular-arrow for the
+  PROJECTS and NOTES homepage cards (no cover art yet), notes `.tearsheet` (PAPER/YEAR/TOPIC).

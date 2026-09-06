@@ -37,7 +37,7 @@ const dissExcerpt = dissertation
     <div class="home__main">
       <section class="home-hero">
         <p class="eyebrow">Shivansh Pandey</p>
-        <h1>Economics, statistics,<br />and equity research.</h1>
+        <h1>Economics, <span class="accent">statistics</span>,<br />and equity research.</h1>
         <p class="lead">
           I read Economics at Gonville &amp; Caius, Cambridge, and I am starting an M.S.
           in Statistics at LSE this autumn. This site has my Cambridge economics notes,
@@ -54,9 +54,14 @@ const dissExcerpt = dissertation
           <span class="dot">·</span> M.S. Statistics, LSE (from autumn 2026)
           <span class="dot">·</span> last summer, equity research at Rothschild &amp; Co / Redburn Atlantic
         </p>
+        <a class="home-hero__scroll" href="#about" aria-label="Scroll to introduction">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
       </section>
 
-      <section class="reveal">
+      <section id="about" class="reveal">
         <p class="prose home-about">
           At Cambridge I finished with a first, and 84% in my final year. The faculty
           gave my dissertation its prize for the best piece of econometrics that year:
