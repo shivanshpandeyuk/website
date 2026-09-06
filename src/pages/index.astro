@@ -8,90 +8,222 @@ import { SITE, SOCIALS } from '../consts';
 const pitches = (await getCollection('pitches', (p) => p.data.status !== 'draft'))
   .sort((a, b) => (b.data.order - a.data.order) || (b.data.date.valueOf() - a.data.date.valueOf()));
 
+const notes = (await getCollection('topics', (t) => !t.data.draft))
+  .sort((a, b) =>
+    a.data.year.localeCompare(b.data.year, undefined, { numeric: true }) ||
+    a.data.paper.localeCompare(b.data.paper, undefined, { numeric: true }) ||
+    a.data.title.localeCompare(b.data.title, undefined, { numeric: true }));
+const notesShown = notes.slice(0, 6);
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => (b.data.order - a.data.order) || ((b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)));
+
 const writing = (await getCollection('writing', (p) => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 4);
 
+const dissertation = (await getCollection('dissertations'))
+  .sort((a, b) => b.data.order - a.data.order)[0];
+
+const github = SOCIALS.find((s) => s.label === 'GitHub');
+const linkedin = SOCIALS.find((s) => s.label === 'LinkedIn');
 const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
-const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase();
+const dissExcerpt = dissertation
+  ? dissertation.data.abstract.replace(/\s+/g, ' ').trim().slice(0, 320).replace(/[,;:\s]+\S*$/, '') + '…'
+  : '';
 ---
-<Base>
-  <section class="hero">
-    <p class="eyebrow">Shivansh Pandey</p>
-    <h1>Economics, statistics,<br />and equity research.</h1>
-    <p class="lead">
-      I read Economics at Gonville &amp; Caius, Cambridge, and I am starting an M.S.
-      in Statistics at LSE this autumn. This site has my Cambridge economics notes,
-      stock pitches, programming projects and dissertation. I want it to be an
-      investment blog and an education blog at once.
-    </p>
-    <div style="display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.4rem">
-      <a class="btn btn--accent" href="/pitches">Stock pitches</a>
-      <a class="btn" href="/notes">Cambridge notes</a>
-      <a class="btn" href="/writing">Writing</a>
-    </div>
-    <p class="muted small" style="margin-top:.4rem">
-      <strong style="color:var(--text)">Currently</strong>
-      &nbsp;·&nbsp; M.S. Statistics, LSE (from autumn 2026)
-      <span class="dot">·</span> last summer, equity research at Rothschild &amp; Co / Redburn Atlantic
-    </p>
-  </section>
+<Base wide>
+  <div class="home">
+    <div class="home__main">
+      <section class="home-hero">
+        <p class="eyebrow">Shivansh Pandey</p>
+        <h1>Economics, statistics,<br />and equity research.</h1>
+        <p class="lead">
+          I read Economics at Gonville &amp; Caius, Cambridge, and I am starting an M.S.
+          in Statistics at LSE this autumn. This site has my Cambridge economics notes,
+          stock pitches, programming projects and dissertation. I want it to be an
+          investment blog and an education blog at once.
+        </p>
+        <div class="home-hero__cta">
+          <a class="btn btn--accent" href="/pitches">Stock pitches</a>
+          <a class="btn" href="/notes">Cambridge notes</a>
+          <a class="btn" href="/writing">Writing</a>
+        </div>
+        <p class="home-hero__now">
+          <strong>Currently</strong>
+          <span class="dot">·</span> M.S. Statistics, LSE (from autumn 2026)
+          <span class="dot">·</span> last summer, equity research at Rothschild &amp; Co / Redburn Atlantic
+        </p>
+      </section>
 
-  <section>
-    <p class="prose" style="max-width:var(--measure)">
-      At Cambridge I finished with a first, and 84% in my final year. The faculty
-      gave my dissertation its prize for the best piece of econometrics that year:
-      it looked at the UK's superfast broadband subsidies and found a "copper trap",
-      where subsidies for copper broadband held back the rollout of fibre.
-      I spent summer 2026 on Rothschild
-      &amp; Co / Redburn Atlantic's software and cloud desk, building the JFrog and
-      Garmin models from scratch and a live tracker of the datacentre build-out
-      worldwide; before that a $500m software acquisition at Bending Spoons, and
-      infrastructure valuations at EY-Parthenon.
-    </p>
-  </section>
+      <section class="reveal">
+        <p class="prose home-about">
+          At Cambridge I finished with a first, and 84% in my final year. The faculty
+          gave my dissertation its prize for the best piece of econometrics that year:
+          it looked at the UK's superfast broadband subsidies and found a "copper trap",
+          where subsidies for copper broadband held back the rollout of fibre.
+          I spent summer 2026 on Rothschild
+          &amp; Co / Redburn Atlantic's software and cloud desk, building the JFrog and
+          Garmin models from scratch and a live tracker of the datacentre build-out
+          worldwide; before that a $500m software acquisition at Bending Spoons, and
+          infrastructure valuations at EY-Parthenon.
+        </p>
+      </section>
 
-  {pitches.length > 0 && (
-    <Carousel title="Selected pitches" moreHref="/pitches" moreLabel="All pitches">
-      {pitches.map((p) => <PitchCard entry={p} />)}
-    </Carousel>
-  )}
+      {pitches.length > 0 && (
+        <Carousel title="Selected pitches" moreHref="/pitches" moreLabel="All pitches">
+          {pitches.map((p) => <PitchCard entry={p} />)}
+        </Carousel>
+      )}
 
-  {writing.length > 0 && (
-    <section>
-      <div class="section-head">
-        <h2>Recent writing</h2>
-        <a class="more" href="/writing">All writing →</a>
-      </div>
-      <div class="rows">
-        {writing.map((w) => (
-          <div class="row">
-            <a class="row__title" href={`/writing/${w.id}`}>{w.data.title}</a>
-            <span class="row__date">{w.data.category} · {fmt(w.data.date)}</span>
-            <p class="row__desc">{w.data.description}</p>
+      {notesShown.length > 0 && (
+        <section class="reveal">
+          <div class="home-sec__head">
+            <h2>Cambridge notes</h2>
+            <a class="more" href="/notes">All notes →</a>
           </div>
-        ))}
-      </div>
-    </section>
-  )}
+          <p class="home-sec__lead">
+            My economics notes from Cambridge, organised by year, paper and topic. Shared
+            in the spirit of the notes friends shared with me.
+          </p>
+          <div class="rows">
+            {notesShown.map((n) => (
+              <div class="row">
+                <a class="row__title" href={`/notes/${n.id}`}>{n.data.title}</a>
+                <span class="row__date">{n.data.year} · {n.data.paper}</span>
+                <p class="row__desc">{n.data.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-  <section>
-    <div class="section-head"><h2>Elsewhere</h2></div>
-    <div style="display:grid; grid-template-columns: 1fr auto; gap:1.5rem; align-items:start">
-      <p class="muted">
-        Reach me at <a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a>.
-        {SOCIALS.filter((s) => s.href.startsWith('http')).map((s) => (
-          <> <span class="dot">·</span> <a class="link" href={s.href} target="_blank" rel="me noopener">{s.label}</a></>
-        ))}
-        <br /><br />
-        Corrections on anything here are welcome, especially on the notes and the numbers.
-      </p>
-      <div class="li-badge">
-        <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="shivansh-pandey-uk" data-version="v1">
-          <a class="badge-base__link LI-simple-link" href="https://uk.linkedin.com/in/shivansh-pandey-uk?trk=profile-badge">Shivansh P.</a>
+      {writing.length > 0 && (
+        <section class="reveal">
+          <div class="home-sec__head">
+            <h2>Writing</h2>
+            <a class="more" href="/writing">All writing →</a>
+          </div>
+          <div class="rows">
+            {writing.map((w) => (
+              <div class="row">
+                <a class="row__title" href={`/writing/${w.id}`}>{w.data.title}</a>
+                <span class="row__date">{w.data.category} · {fmt(w.data.date)}</span>
+                <p class="row__desc">{w.data.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {projects.length > 0 && (
+        <section class="reveal">
+          <div class="home-sec__head">
+            <h2>Projects</h2>
+            <a class="more" href="/projects">All projects →</a>
+          </div>
+          <div class="card-grid">
+            {projects.map((p) => (
+              <a class="card" href={`/projects/${p.id}/`}>
+                <div class="card__meta">
+                  {p.data.status !== 'live' && <span class="tag">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
+                  {p.data.tags.slice(0, 3).map((t) => <span class="tag">{t}</span>)}
+                </div>
+                <h3>{p.data.title}</h3>
+                <p class="muted small">{p.data.description}</p>
+                <span class="link small" style="margin-top:auto; padding-top:.5rem">Read about it →</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {dissertation && (
+        <section class="reveal">
+          <div class="home-sec__head">
+            <h2>Dissertation</h2>
+            <a class="more" href="/dissertations">Read in full →</a>
+          </div>
+          <a class="home-diss" href="/dissertations">
+            <div class="home-diss__meta">
+              <span class="eyebrow">{dissertation.data.level}</span>
+              {dissertation.data.grade && <span class="badge badge--long">{dissertation.data.grade}</span>}
+              <span class="row__date">{dissertation.data.year}</span>
+            </div>
+            <h3>{dissertation.data.title}</h3>
+            <p>{dissExcerpt}</p>
+            <span class="home-diss__more">Read the dissertation →</span>
+          </a>
+        </section>
+      )}
+    </div>
+
+    <aside class="home-rail">
+      <div class="home-rail__inner">
+        <p class="home-rail__name">Shivansh Pandey</p>
+        <p class="home-rail__cred">B.A. Economics, Cambridge · M.S. Statistics, LSE</p>
+        <p class="home-rail__links">
+          <a href={linkedin?.href} target="_blank" rel="me noopener">LinkedIn</a>
+          <a href={github?.href} target="_blank" rel="me noopener">GitHub</a>
+          <a href={`mailto:${SITE.email}`}>Email</a>
+        </p>
+
+        <h3>Experience</h3>
+        <div class="home-rail__item">
+          <b>Rothschild &amp; Co / Redburn Atlantic</b>
+          <span>Software and cloud equity research</span>
+          <time>Summer 2026</time>
+        </div>
+        <div class="home-rail__item">
+          <b>Bending Spoons</b>
+          <span>$500m software acquisition</span>
+        </div>
+        <div class="home-rail__item">
+          <b>EY-Parthenon</b>
+          <span>Infrastructure valuations</span>
+        </div>
+
+        <h3>Education</h3>
+        <div class="home-rail__item">
+          <b>University of Cambridge</b>
+          <span>B.A. Economics — first, 84% in final year; faculty prize for the best dissertation in econometrics</span>
+        </div>
+        <div class="home-rail__item">
+          <b>London School of Economics</b>
+          <span>M.S. Statistics</span>
+          <time>From autumn 2026</time>
+        </div>
+
+        <hr />
+        <p class="muted small">
+          Reach me at <a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          Corrections on anything here are welcome, especially on the notes and the numbers.
+        </p>
+        <div class="li-badge">
+          <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="shivansh-pandey-uk" data-version="v1">
+            <a class="badge-base__link LI-simple-link" href="https://uk.linkedin.com/in/shivansh-pandey-uk?trk=profile-badge">Shivansh P.</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </aside>
+  </div>
+
   <script is:inline src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+  <script>
+    (() => {
+      const els = Array.from(document.querySelectorAll('.home__main > section.reveal'));
+      if (!els.length) return;
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+      els.forEach((el, i) => {
+        el.classList.add('reveal--armed');
+        (el as HTMLElement).style.setProperty('--reveal-delay', (i % 3) * 70 + 'ms');
+      });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('reveal--in'); io.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+      els.forEach((el) => io.observe(el));
+    })();
+  </script>
 </Base>

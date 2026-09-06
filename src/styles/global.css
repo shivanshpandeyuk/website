@@ -394,3 +394,95 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 /* ---- Pitch card grid -------------------------------------------------- */
 .pcard-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
 @media (min-width: 40rem) { .pcard-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); } }
+
+/* =========================================================================
+   Homepage — editorial portfolio layout with a sticky résumé rail
+   ========================================================================= */
+.home { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; }
+@media (min-width: 60rem) {
+  .home { grid-template-columns: minmax(0, 1fr) 17.5rem; gap: 3.25rem; align-items: start; }
+}
+.home__main { min-width: 0; }
+.home__main > section + section { margin-top: 3.75rem; }
+
+/* ---- Hero ---- */
+.home-hero { display: grid; gap: 1.05rem; }
+.home-hero h1 {
+  font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.07;
+  letter-spacing: -0.02em; margin-block: .1rem;
+}
+.home-hero .lead { max-width: 46ch; }
+.home-hero__cta { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .45rem; }
+.home-hero__now {
+  margin-top: .55rem; font-size: .85rem; color: var(--muted);
+  border-top: 1px solid var(--border); padding-top: .9rem;
+}
+.home-hero__now strong { color: var(--text); }
+.home-hero__now .dot { padding-inline: .3rem; }
+
+/* ---- Homepage section heads ---- */
+.home-sec__head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.15rem;
+  padding-bottom: .55rem; border-bottom: 1px solid var(--border);
+}
+.home-sec__head h2 { font-size: clamp(1.35rem, 3vw, 1.7rem); }
+.home-sec__head .more { font-size: .86rem; color: var(--accent); white-space: nowrap; font-weight: 550; }
+.home-sec__head .more:hover { text-decoration: underline; }
+.home-sec__lead { color: var(--muted); max-width: var(--measure); margin: -.15rem 0 1.15rem; }
+.home-about { max-width: var(--measure); }
+
+/* ---- Dissertation feature ---- */
+.home-diss {
+  display: block; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); padding: 1.5rem 1.6rem;
+  transition: border-color .2s ease, box-shadow .25s ease, transform .25s ease;
+}
+.home-diss:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-2px); }
+.home-diss__meta { display: flex; flex-wrap: wrap; gap: .5rem .7rem; align-items: center; margin-bottom: .7rem; }
+.home-diss h3 { font-size: 1.28rem; margin-bottom: .5rem; }
+.home-diss p { color: var(--muted); font-size: .95rem; }
+.home-diss__more { display: inline-block; margin-top: .9rem; font-size: .87rem; font-weight: 550; color: var(--accent); }
+.home-diss:hover .home-diss__more { text-decoration: underline; }
+
+/* ---- Résumé rail ---- */
+.home-rail { min-width: 0; }
+.home-rail__inner {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); padding: 1.35rem 1.4rem; font-size: .9rem;
+}
+@media (min-width: 60rem) { .home-rail__inner { position: sticky; top: 5.25rem; } }
+.home-rail__name { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; letter-spacing: -0.01em; }
+.home-rail__cred { color: var(--muted); margin-top: .25rem; font-size: .84rem; }
+.home-rail__links { display: flex; flex-wrap: wrap; gap: .35rem .9rem; margin-top: .85rem; }
+.home-rail__links a { color: var(--accent); font-weight: 550; font-size: .85rem; }
+.home-rail__links a:hover { text-decoration: underline; }
+.home-rail h3 {
+  font-family: var(--font-sans); font-size: .7rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--faint);
+  margin: 1.4rem 0 .7rem;
+}
+.home-rail__item + .home-rail__item { margin-top: .8rem; }
+.home-rail__item b { font-weight: 600; display: block; }
+.home-rail__item span { color: var(--muted); font-size: .84rem; display: block; }
+.home-rail__item time { color: var(--faint); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.home-rail hr { border: none; border-top: 1px solid var(--border); margin: 1.3rem 0; }
+.home-rail .li-badge { margin-top: 1.1rem; min-height: 1px; }
+
+/* ---- Entrance animation (progressive, reduced-motion safe) ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .home-hero > * { animation: home-rise .7s cubic-bezier(.22,.61,.36,1) both; }
+  .home-hero > *:nth-child(1) { animation-delay: .04s; }
+  .home-hero > *:nth-child(2) { animation-delay: .11s; }
+  .home-hero > *:nth-child(3) { animation-delay: .18s; }
+  .home-hero > *:nth-child(4) { animation-delay: .25s; }
+  .home-hero > *:nth-child(5) { animation-delay: .32s; }
+  @keyframes home-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  .reveal.reveal--armed { opacity: 0; transform: translateY(14px); }
+  .reveal.reveal--in {
+    opacity: 1; transform: none;
+    transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+}
