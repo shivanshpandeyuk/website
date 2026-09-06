@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { reviewedTopics } from './loaders/reviewed-topics';
 
 // --- Stock pitches ------------------------------------------------------
 const pitches = defineCollection({
@@ -81,7 +82,7 @@ const notes = defineCollection({
 });
 
 const topics = defineCollection({
-  loader: glob({ base: './src/content/topics', pattern: '**/*.md' }),
+  loader: reviewedTopics(),
   schema: z.object({
     draft: z.boolean().default(true),
     title: z.string(),

@@ -81,4 +81,15 @@ The site uses a system serif/sans stack by default (renders as Palatino/Iowan + 
 
 ## Deploy
 
-See `DEPLOY.md`.
+Run `npm run build`, inspect the output, then use `./redeploy.sh` to publish to
+https://a-lazy-panda.github.io via the existing `gh-pages` branch.
+
+Production loads only topic notes explicitly marked `draft: false`, before
+Markdown processing can emit their images. Local development previews all topics.
+Review a candidate's content, figures, maths and mobile rendering before publishing it.
+
+Production copies only the files listed in `scripts/public-files.json` from
+`public/`. Add a file to that list only after review; unlisted files stay local.
+The build also runs `scripts/audit-publication.mjs` to check the complete note
+route set and scan all output files for unreviewed source bytes, including renamed
+copies. This complements the static link audit and rendered-page review.
