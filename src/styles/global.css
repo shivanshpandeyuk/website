@@ -296,6 +296,14 @@ a.card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); tr
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
+/* Below the width where the brand and full nav stop fitting on one line,
+   the nav drops to its own row under the brand and packs from the left,
+   instead of wrap-staggering against the right edge. */
+@media (max-width: 44rem) {
+  .site-header__inner { flex-wrap: wrap; row-gap: .25rem; padding-block: .5rem; min-height: 0; }
+  .nav { margin-left: 0; width: 100%; gap: .1rem; }
+}
+
 @media (max-width: 34rem) {
   .nav a { padding: .35rem .45rem; }
   .brand { font-size: 1rem; }
