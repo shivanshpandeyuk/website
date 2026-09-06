@@ -27,8 +27,8 @@ Keep the smooth motion. Finance feel, NOT coding. Real content and Shiv voice on
    hairline borders, or one intentional elevation. No blanket box-shadow.
 6. --radius 10px / --radius-sm 7px applied uniformly  ->  set radii with intent: near-sharp on text
    surfaces (Sway/Unseen), a deliberate larger radius only on imagery cards (Fuselab ~14-16px).
-7. Predictable centered hero + uniform section rhythm + fade-up-on-everything  ->  asymmetric editorial
-   layout, one deliberate hero element, intentional scroll-aware motion (not blanket AOS on every block).
+7. Predictable centered hero + a fully STATIC page  ->  asymmetric editorial layout with one deliberate,
+   animated hero element. The site must MOVE - see section C. Motion.
 8. Lazy pill chips / status dots / any emoji  ->  remove or make deliberate.
 
 ## B. THE NEW SYSTEM
@@ -42,10 +42,33 @@ Metadata as a tearsheet (Unseen): uppercase micro-labels + values. Pitches: TICK
 Hero: one deliberate immersive element - a restrained animated CSS gradient (Sway) OR a strong static
   visual - with a large light-weight headline, ONE italic-serif accent word, confident asymmetric
   placement, a thin circular scroll / arrow affordance. Not a default centered text block.
-Motion: smooth and scroll-aware (Sway/Unseen), intentional per section, respect prefers-reduced-motion.
+Motion: see section C - a first-class requirement, the current site is far too static.
 Palette: deliberate and documented; light AND dark both first-class; one accent, used sparingly.
 
-## C. GUARDRAILS
+## C. MOTION AND INTERACTION (this was missing - the site is far too static)
+The references are motion-led; the site must feel alive. Rich but intentional, performant, GPU-friendly.
+- Hero: a living background - a slow continuously-drifting animated CSS gradient/mesh (Sway), and a
+  staggered entrance where the headline reveals line-by-line (clip/mask rise + fade, ~500-700ms,
+  cubic-bezier(0.16,1,0.3,1)); the italic-serif accent word reveals last.
+- Scroll reveals: every major section and card animates in on viewport enter via IntersectionObserver -
+  fade + rise (16-24px) or a clip-path wipe, staggered ~60-90ms across items, once only.
+- Number count-ups: percentages, weights, 86/100, years and portfolio figures count up from 0 when
+  scrolled into view, in tabular numerals - reads like a live tearsheet.
+- Marquee: one slow continuous horizontal marquee (coverage tickers / skills / a section label) as a
+  persistent moving element; pause on hover.
+- Cards: hover = image scale ~1.03-1.05, card lift, tint/overlay shift, the circular arrow slides/rotates,
+  tags fade in; 300-450ms ease.
+- Nav: shrinks and gains a hairline + slight backdrop blur on scroll; a thin top scroll-progress bar; the
+  circular scroll cue drifts subtly then fades after first scroll.
+- Links/buttons: underline grows from left; gentle hover shift; optional subtle magnetic pull on the CTA.
+- Page-to-page: use Astro View Transitions so navigation cross-fades/slides, never a hard cut.
+- Build: lightweight vanilla JS (IntersectionObserver + requestAnimationFrame for count-ups and the
+  gradient) plus CSS transitions/keyframes; a tiny smooth-scroll is fine; NO heavy framework. Animate
+  transform/opacity only, target 60fps, no layout thrash, no horizontal scroll.
+- prefers-reduced-motion: reduce  ->  disable gradient drift, count-ups, marquee autoplay and entrance
+  transforms; show final static states instantly. Motion never blocks or hides content.
+
+## D. GUARDRAILS
 Finance/equity-research, not developer/startup. Only real facts and Shiv voice - no invented bio, role,
 date, metric. Fully responsive, never any horizontal scroll. Static Astro + CSS; fonts self-hosted and
 free. Keep resume access and all existing pages working. Before deploy: build passes, and VERIFY on a
@@ -53,7 +76,14 @@ real rendered page at desktop AND phone widths (screenshot), KaTeX intact, reduc
 Ship in coherent increments (tokens+type first, then cards+metadata, then hero) - do not half-apply a
 new font/palette and leave the rest on the old defaults.
 
-## D. INCREMENT LOG
+HARD COMPLETION GATE: item 1 is NOT done, and must not be marked [done], until Section C. MOTION is
+fully implemented - the current site reads as too static. Still required: number count-ups on figures,
+a slow marquee, richer card hover (image scale + arrow slide + tag reveal), staggered scroll reveals
+across more than the 4 homepage sections, and Astro View Transitions for page-to-page. Keep it all
+under prefers-reduced-motion. The homepage PROJECTS and NOTES cards also still need the imagery-forward
+treatment with circular-arrow, and notes need a PAPER/YEAR/TOPIC tearsheet.
+
+## INCREMENT LOG
 ### Increment 1 - tokens + type (2026-09-07, claude)
 - Fonts self-hosted in public/fonts (woff2, SIL OFL, no external requests):
   - Sans / display: Hanken Grotesk (latin + latin-ext, weight axis 400-700). Replaces Inter/system-ui
