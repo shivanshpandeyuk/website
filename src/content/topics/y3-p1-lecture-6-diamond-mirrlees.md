@@ -153,7 +153,7 @@ This is trivially satisfied, only one consumer so we don’t have to worry about
 
 #### Producer’s Diagram (PPF)
 
-![](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/07.png)
+![Production frontiers with labour increasing leftwards and output upwards; the government’s labour requirement shifts the frontier left. The price diagram shows the wage normalisation and zero-profit output price.](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/07.png)
 The production frontier shows the maximum amount of output that can be produced with the resources available and is a straight line because of constant returns to scale.
 
 So the blue and red lines show the PPF $x_1 \leq \frac{l_0}{c_1}$, productive efficient outcomes are on those lines.
@@ -178,14 +178,14 @@ These points are plotted.
 
 #### Consumer’s Diagram (ICs + Budget)
 
-The consumer is trading off x1 and l0, in other words the consumption good and lesiure.
+The consumer is trading off x1 and l0, in other words the consumption good and labour.
 $$
 max \ U(x_1, l_0) \ s.t. \ q_1x_1 = l_0
 $$
 The utility function can be draws as indifference curves. Utility is increasing towards north-east (less labour, more consumption).
 
-The income constraint can be drawn as budget lines, these are upward sloping because as more labour is worked the more consumption can be afforded at the slope of $\frac{1}{q_1}$
-![](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/08.png)
+The income constraint can be drawn as budget lines: as more labour is worked, more consumption can be afforded, at the rate of $\frac{1}{q_1}$ per unit of labour. Labour increases to the left in the diagram, so the budget lines slope downwards on the page.
+![Consumer budget lines and indifference curves with labour increasing leftwards; their tangencies trace the curve labelled contract curve. A higher consumption price gives a flatter budget line.](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/08.png)
 On the right-hand we have $q_1, q_0$ space. 
 - $q_0 = 1$ by normalisation
 - $q_1$ so we choose this by the tax
@@ -435,13 +435,13 @@ This frees up resources that can be move to<br>other sectors and increase the ou
 - After meeting **R**, the economy has constant returns to scale.
 - **Equilibrium Price (p):** Normalizing the wage rate to 1, **p** is the only output price leading to zero profit (competitive behavior). 
     - The firm is indifferent to where it produces on the frontier given **p**.
-    ![](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/13.png)
+    ![Hindriks and Myles: consumption on the vertical axis and labour supplied leftwards; the production frontier is displaced left from the origin by the government’s resource requirement.](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/13.png)
 
-**2. Consumer Choice and the Offer Curve**<br>**Budget Constraint:** With wage = 1 and consumer price of output = **q**, the budget is **qx=l**. This is up-sloping and passes the origin.<br>
+**2. Consumer Choice and the Offer Curve**<br>**Budget Constraint:** With wage = 1 and consumer price of output = **q**, the budget is **qx=l**. This passes the origin and slopes downwards on the page because labour increases to the left.<br>
 - **Tax:** The difference between **q** (consumer price) and **p** (producer price) is the tax on the consumption good. Note: Labor is not taxed (a normalization).
 - **Preferences:** Indifference curves are downward sloping because labor supply causes disutility.
 - **Offer Curve:** Varying **q** traces out the **offer curve **— the locus of optimal choices. **These are the only points consistent with utility maximization** in the absence of lump-sum taxation. Utility rises as you move up the offer curve.
-    ![](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/14.png)
+    ![Hindriks and Myles: budget lines through the origin slope downwards on the page, with labour supplied leftwards; tangencies with indifference curves trace the offer curve. Consumer and producer price vectors appear to the right.](../../assets/notes/y3-p1-lecture-6-diamond-mirrlees/14.png)
 
 3. The Optimal Tax Solution<br>Superimposing the production and consumption diagrams reveals the optimal tax.
 - **Consumer’s Set:** The only points consistent with consumer choice are on the offer curve.
