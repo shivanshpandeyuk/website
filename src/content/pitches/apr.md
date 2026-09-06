@@ -19,7 +19,7 @@ order: 40
 
 This is the fastest-growing company in a stable and consolidating sector where size is the only competitive advantage, with an estimated European market share of 1.7% [E, original summary].
 
-This is a typical value stock. It is a family-run, high-growth company in a mature and boring sector. It has already shown that it can expand successfully and still has plenty of room to grow in Poland and beyond. The intended holding period was two to three years.
+This is a typical value stock. It is a family-run, high-growth company in a mature and boring sector. It has already shown that it can expand successfully and still has plenty of room to grow in Poland and beyond. The intended holding period was two to three years [E, original summary].
 
 ## Operations and clients
 
