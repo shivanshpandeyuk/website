@@ -131,21 +131,25 @@ $$
 
 In this model the pareto conditions (of PE, PME, CE) are simply
 
-    **Production Efficiency** 
-    $$
-    PE: \ \ \ x_1 = \frac{l_0-R}{c_1}
-    $$
-    Since there is only one input to the production process, production efficiency simply requires that the employed workers produce the maximum amount of output.
-    - otherwise it’s also about using best combination of inputs
+**Production Efficiency**
 
-    **Product Mix Efficiency**
-    $$
-    PME: \ \ MRS_{l_0, x_1} = MRT_{l_0, x_1} = \frac{1}{c_1}
-    $$
-    Product mix efficiency says that the marginal rate of transformation in production between output and labour is equal to the marginal rate of substitution between the two in consumption
+$$
+PE: \ \ \ x_1 = \frac{l_0-R}{c_1}
+$$
 
-    **Consumption Efficiency**
-    This is trivially satisfied, only one consumer so we don’t have to worry about some pareto improving re-allocation across consumers being possible… there are no other consumers
+Since there is only one input to the production process, production efficiency simply requires that the employed workers produce the maximum amount of output.
+- otherwise it’s also about using best combination of inputs
+
+**Product Mix Efficiency**
+
+$$
+PME: \ \ MRS_{l_0, x_1} = MRT_{l_0, x_1} = \frac{1}{c_1}
+$$
+
+Product mix efficiency says that the marginal rate of transformation in production between output and labour is equal to the marginal rate of substitution between the two in consumption
+
+**Consumption Efficiency**
+This is trivially satisfied, only one consumer so we don’t have to worry about some pareto improving re-allocation across consumers being possible… there are no other consumers
 
 #### Producer’s Diagram (PPF)
 
