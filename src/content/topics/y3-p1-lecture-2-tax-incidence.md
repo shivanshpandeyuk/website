@@ -3,7 +3,7 @@ title: "Lecture #2 - Tax Incidence"
 paper: "Paper 1 — Microeconomics"
 year: "Year 3 (Part IIB)"
 section: "Theory of Second Best"
-description: "Theory of Second Best notes: Lecture Notes; Lump Sum Taxes; Principles of Tax Incidence."
+description: "Theory of Second Best: lump-sum taxes and the principles of tax incidence, including tax liability equivalence and Dalton's formula."
 order: 3
 tags: ["economics"]
 ---

@@ -3,7 +3,7 @@ title: "Lecture #6 - Diamond Mirrlees"
 paper: "Paper 1 — Microeconomics"
 year: "Year 3 (Part IIB)"
 section: "Theory of Second Best"
-description: "Theory of Second Best notes: Lecture Notes; Diamond-Mirrlees Assumptions; A1-A7."
+description: "Theory of Second Best: the Diamond-Mirrlees assumptions and production efficiency result, and what it implies for optimal taxation."
 order: 1
 tags: ["economics"]
 draft: true

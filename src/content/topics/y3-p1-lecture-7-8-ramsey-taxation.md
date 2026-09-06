@@ -3,7 +3,7 @@ title: "Lecture #7-8 - Ramsey Taxation"
 paper: "Paper 1 — Microeconomics"
 year: "Year 3 (Part IIB)"
 section: "Theory of Second Best"
-description: "Theory of Second Best notes: Lecture Notes; Baseline Model; First-Best Tax Structure."
+description: "Theory of Second Best: deriving the Ramsey optimal commodity tax rule, the inverse-elasticity and independent-demand cases, and equity considerations."
 order: 5
 tags: ["economics"]
 ---
