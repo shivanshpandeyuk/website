@@ -15,11 +15,15 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
   <article>
     <header class="article-head">
       <a class="link small" href="/notes/">← Cambridge notes</a>
-      <p class="eyebrow" style="margin-top:1.5rem">{note.data.year} · {note.data.paper}</p>
-      {note.data.draft && <p class="small muted">Draft — local preview only</p>}
-      <h1>{note.data.title}</h1>
+      {note.data.draft && <p class="small muted" style="margin-top:1.5rem;margin-bottom:0">Draft — local preview only</p>}
+      <h1 style={note.data.draft ? 'margin-top:.4rem' : 'margin-top:1.5rem'}>{note.data.title}</h1>
       <p class="lead">{note.data.description}</p>
     </header>
+    <dl class="tearsheet">
+      <div><dt>Paper</dt><dd>{note.data.paper}</dd></div>
+      <div><dt>Year</dt><dd>{note.data.year}</dd></div>
+      <div><dt>Topic</dt><dd>{note.data.section}</dd></div>
+    </dl>
     <details class="contents" data-pagefind-ignore>
       <summary>On this page</summary>
       <nav aria-label="Contents">
