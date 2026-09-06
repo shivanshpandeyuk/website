@@ -1,14 +1,19 @@
 ---
 title: BDUK broadband evaluation pipeline
 date: 2026-01-15
-description: The R codebase behind my dissertation, from raw Ofcom data through matching and difference-in-differences to the final figures.
+description: The R codebase behind my dissertation — panel construction, genetic matching, heterogeneity-robust DiD, event studies, Bacon decomposition and Monte Carlo, from raw Ofcom data to final figures.
 tags: [R, causal-inference, panel-data, data-engineering]
 status: live
 order: 20
 ---
 
-The engine behind [the broadband dissertation](/dissertations). It takes raw administrative and physical-measurement data and produces the paper's estimates and every figure in it.
+The empirical engine behind [the broadband-subsidies dissertation](/dissertations). It takes raw administrative and physical-measurement data and produces the paper's estimates and every figure.
 
-It builds an exchange-level panel out of Ofcom data, BDUK allocations, ONS postcode and demographic files and ThinkBroadband speed measurements; matches treated and untreated areas with genetic matching; and runs a heterogeneity-robust difference-in-differences as the main estimator, with event-study pre-trend checks, a Goodman-Bacon decomposition and placebo and Monte Carlo robustness. The figures (event studies, love plots, common-support and density diagnostics) are generated straight from the scripts.
+Roughly what it does:
 
-It is written in R with a staged structure, inputs to cleaning to matching to estimation to exports, so the results regenerate from source rather than from whatever happened to be in memory.
+- **Panel construction** from Ofcom exchange data, BDUK allocations, ONS postcode and demographic files, and ThinkBroadband speed measurements — cleaned into a matched exchange-level panel.
+- **Genetic matching** to build a credible control group for the endogenously-selected treated areas.
+- **Heterogeneity-robust difference-in-differences** as the main estimator, with **event-study** pre-trend diagnostics, a **Goodman–Bacon decomposition**, and **placebo-in-time** and **Monte Carlo** robustness.
+- Reproducible figure/table exports (the event-study plots, love plots, common-support and density diagnostics) generated straight from the scripts.
+
+Built in R with a scripted, staged structure (inputs → cleaning → matching → estimation → exports) so the results regenerate from source.

@@ -1,14 +1,19 @@
 ---
 title: Reproducible treatment-effect workflow (Stata + R)
 date: 2024-01-26
-description: A parallel Stata and R implementation of AIPW estimation with randomisation inference and a step-down multiple-testing correction, written up as a guide.
+description: A parallel Stata/R implementation of AIPW estimation with randomisation inference and step-down multiple-testing correction, written up as a workflow guide.
 tags: [Stata, R, causal-inference, reproducibility]
 status: live
 order: 30
 ---
 
-A worked pipeline for estimating average treatment effects and doing the inference honestly. Every step is written twice, once in Stata and once in R, so the two can be checked against each other.
+A worked, reproducible pipeline for estimating average treatment effects and doing inference honestly. Every step is implemented **twice — once in Stata, once in R** — so the two can be cross-checked against each other.
 
-It covers augmented inverse-probability-weighting by strata for the ATE; building the null by re-randomising treatment and comparing that to the bootstrap, rather than leaning on asymptotics; and a Romano-Wolf-style step-down correction so that "significant" still means something once you have tested a handful of outcomes at once. A LaTeX guide documents the master scripts, the simulations and the output tables so the whole thing reruns end to end.
+What it covers:
 
-The reason for building it was less any single result than the discipline of it: a clean split between simulation, estimation and output, and inference that does not quietly assume the thing it is meant to be testing.
+- **AIPW by strata** — augmented inverse-probability-weighting estimators of the ATE.
+- **Randomisation vs. bootstrap distributions** — building the null by re-randomising treatment, and comparing to the bootstrap, rather than leaning on asymptotics.
+- **Step-down p-values** — a Romano–Wolf-style multiple-testing correction so that "significant" survives testing many outcomes at once.
+- A LaTeX **workflow guide** documenting the master scripts, the simulation programs, and the output tables so the whole thing reruns end to end.
+
+The point of the project was less any single result than the discipline: a clean separation of simulation, estimation and output, and inference that doesn't quietly assume the thing it's trying to test.
