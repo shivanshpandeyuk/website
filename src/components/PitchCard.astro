@@ -1,21 +1,28 @@
 ---
-// Image-forward pitch card: cover image, gradient overlay, text at the bottom.
+// Image-forward pitch card (Fuselab-style): cover image, gradient overlay,
+// category/venue tags, large title, a tearsheet metadata strip
+// (TICKER / STANCE / DATE) and a circular-arrow affordance. Real pitch data only.
 interface Props { entry: any; }
 const { entry } = Astro.props;
 const d = entry.data;
 const fmt = (x: Date) => x.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
-const badgeClass = (r?: string) => 'pcard__rec pcard__rec--' + (r ?? 'watch').toLowerCase();
 ---
 <a class="pcard" href={`/pitches/${entry.id}`} style={d.cover ? `--cover:url('${d.cover}')` : ''}>
   <div class="pcard__img"></div>
+  <span class="pcard__arrow" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+  </span>
   <div class="pcard__body">
-    <div class="pcard__meta">
-      <span class="pcard__ticker">{d.ticker}</span>
-      {d.recommendation && <span class={badgeClass(d.recommendation)}>{d.recommendation}</span>}
-      <span class="pcard__date">{fmt(d.date)}</span>
+    <div class="pcard__tags">
+      {d.sector && <span class="pcard__tag">{d.sector}</span>}
+      {d.exchange && <span class="pcard__tag">{d.exchange}</span>}
     </div>
     <h3 class="pcard__title">{d.company}</h3>
     <p class="pcard__thesis">{d.thesis}</p>
-    <span class="pcard__more">Read the pitch →</span>
+    <dl class="pcard__sheet">
+      <div><dt>Ticker</dt><dd>{d.ticker}</dd></div>
+      {d.recommendation && <div><dt>Stance</dt><dd>{d.recommendation}</dd></div>}
+      <div><dt>Date</dt><dd>{fmt(d.date)}</dd></div>
+    </dl>
   </div>
 </a>

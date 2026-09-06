@@ -42,12 +42,20 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
       </>
     )}
     <p class="lead" style="font-size:1.15rem">{d.thesis}</p>
-    <div class="article-meta">
-      <span>{fmt(d.date)}</span>
-      {d.sector && (<><span class="dot">·</span><span>{d.sector}</span></>)}
-      {d.pdf && (<><span class="dot">·</span><a class="link" href={d.pdf} target="_blank" rel="noopener">Full deck (PDF)</a></>)}
-    </div>
+    {d.pdf && (
+      <div class="article-meta">
+        <a class="link" href={d.pdf} target="_blank" rel="noopener">Full deck (PDF)</a>
+      </div>
+    )}
   </div>
+
+  <dl class="tearsheet">
+    <div><dt>Ticker</dt><dd>{d.ticker}</dd></div>
+    {d.exchange && <div><dt>Exchange</dt><dd>{d.exchange}</dd></div>}
+    {d.sector && <div><dt>Sector</dt><dd>{d.sector}</dd></div>}
+    <div><dt>Date</dt><dd>{fmt(d.date)}</dd></div>
+    {d.recommendation && <div><dt>Stance</dt><dd>{d.recommendation}</dd></div>}
+  </dl>
 
   <p class="figure-help small muted" hidden>Open any figure to view it at full size in a new tab.</p>
   <article class="prose">

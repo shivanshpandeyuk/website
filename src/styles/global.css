@@ -409,17 +409,74 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   position: absolute; inset-inline: 0; bottom: 0; z-index: 2;
   padding: 1.4rem 1.5rem; color: #fff;
 }
+/* meta row still used by the pitch detail hero */
 .pcard__meta { display: flex; align-items: center; gap: .55rem; margin-bottom: .5rem; }
 .pcard__ticker { font-weight: 600; letter-spacing: .05em; color: #fff; font-size: .9rem; font-variant-numeric: tabular-nums lining-nums; }
 .pcard__date { margin-left: auto; font-size: .8rem; color: rgba(255,255,255,.72); font-variant-numeric: tabular-nums; }
 .pcard__rec { font-size: .64rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: .16rem .5rem; border-radius: 5px; background: rgba(255,255,255,.16); color: #fff; }
 .pcard__rec--long { background: rgba(90,200,140,.28); }
 .pcard__rec--short { background: rgba(230,120,120,.3); }
-.pcard__title { font-family: var(--font-sans); font-weight: 500; font-size: 1.5rem; line-height: 1.14; letter-spacing: -0.02em; color: #fff; margin-bottom: .4rem; }
-.pcard__thesis { font-size: .92rem; color: rgba(255,255,255,.82); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.pcard__more { display: inline-block; margin-top: .8rem; font-size: .85rem; font-weight: 550; color: #fff; opacity: .9; }
-.pcard:hover .pcard__more { opacity: 1; }
+
+/* category / venue tags, top of the card body */
+.pcard__tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .7rem; }
+.pcard__tag {
+  font-size: .66rem; font-weight: 500; letter-spacing: .05em; text-transform: uppercase;
+  padding: .18rem .55rem; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.34); color: rgba(255,255,255,.9);
+}
+.pcard__title { font-family: var(--font-sans); font-weight: 500; font-size: 1.55rem; line-height: 1.12; letter-spacing: -0.02em; color: #fff; margin-bottom: .45rem; }
+.pcard__thesis { font-size: .9rem; color: rgba(255,255,255,.8); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* tearsheet metadata strip: uppercase micro-labels + values */
+.pcard__sheet {
+  display: flex; flex-wrap: wrap; gap: .4rem 1.4rem;
+  margin-top: .9rem; padding-top: .8rem;
+  border-top: 1px solid rgba(255,255,255,.22);
+}
+.pcard__sheet > div { display: flex; flex-direction: column; gap: .12rem; }
+.pcard__sheet dt {
+  font-size: .58rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(255,255,255,.62);
+}
+.pcard__sheet dd {
+  font-size: .82rem; font-weight: 500; color: #fff;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* circular-arrow affordance */
+.pcard__arrow {
+  position: absolute; top: 1.3rem; right: 1.4rem; z-index: 2;
+  display: grid; place-items: center;
+  width: 2.4rem; height: 2.4rem; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.4);
+  color: #fff; background: rgba(20,15,18,.28);
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.pcard__arrow svg { width: 1.05rem; height: 1.05rem; }
+.pcard:hover .pcard__arrow { background: #fff; color: #14140f; border-color: #fff; }
+@media (prefers-reduced-motion: no-preference) {
+  .pcard__arrow svg { transition: transform .25s ease; }
+  .pcard:hover .pcard__arrow svg { transform: translateX(2px); }
+}
+
 .car__track > .pcard { width: min(85%, 21rem); }
+
+/* tearsheet spec strip on detail pages (Unseen-style) */
+.tearsheet {
+  display: flex; flex-wrap: wrap; gap: .9rem 2.2rem;
+  max-width: var(--measure);
+  margin: -.35rem 0 1.9rem;
+  padding-top: .95rem; border-top: 1px solid var(--border);
+}
+.tearsheet > div { display: flex; flex-direction: column; gap: .15rem; }
+.tearsheet dt {
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--faint);
+}
+.tearsheet dd {
+  font-size: .92rem; font-weight: 500; color: var(--text);
+  font-variant-numeric: tabular-nums lining-nums;
+}
 
 /* ---- Inline pitch figures (Substack flow) ----------------------------- */
 .figure { margin: 1.9rem 0; }
