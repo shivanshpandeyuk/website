@@ -256,12 +256,17 @@ const dissExcerpt = dissertation
   <script is:inline src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
   <script>
     (() => {
-      const els = Array.from(document.querySelectorAll('.home__main > section.reveal'));
+      const els = Array.from(document.querySelectorAll('.home__main > section.reveal, .home__main > .car'));
       if (!els.length) return;
       if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+      const itemSel = '.gcard, .rows > .row, .car__track > *';
       els.forEach((el, i) => {
-        el.classList.add('reveal--armed');
+        el.classList.add('reveal', 'reveal--armed');
         (el as HTMLElement).style.setProperty('--reveal-delay', (i % 3) * 70 + 'ms');
+        Array.from(el.querySelectorAll(itemSel)).forEach((c, n) => {
+          c.classList.add('reveal-item');
+          (c as HTMLElement).style.setProperty('--reveal-item-delay', Math.min(n, 6) * 55 + 'ms');
+        });
       });
       const io = new IntersectionObserver((entries) => {
         entries.forEach((e) => {

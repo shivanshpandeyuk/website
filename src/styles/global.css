@@ -743,4 +743,12 @@ a.gcard:hover .gcard__arrow { background: var(--accent); color: #fff; border-col
     transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1);
     transition-delay: var(--reveal-delay, 0ms);
   }
+
+  /* Per-item stagger inside a section as it scrolls in */
+  .reveal.reveal--armed .reveal-item { opacity: 0; transform: translateY(12px); }
+  .reveal.reveal--in .reveal-item {
+    opacity: 1; transform: none;
+    transition: opacity .55s cubic-bezier(.22,.61,.36,1), transform .55s cubic-bezier(.22,.61,.36,1);
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms));
+  }
 }
