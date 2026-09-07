@@ -163,3 +163,19 @@ circular-arrow, the notes PAPER/YEAR/TOPIC tearsheet, and the slow coverage marq
 - Item 1 remainder still open (HARD COMPLETION GATE): number count-ups on figures, richer imagery-card
   hover (image scale + arrow slide + tag reveal), staggered scroll reveals beyond the 4 homepage
   sections, Astro View Transitions page-to-page - all under prefers-reduced-motion.
+
+### Card hover and keyboard interaction (2026-09-07, codex)
+- Pitch cards and homepage Notes/Projects cards share a 3px lift, 350–450ms image/wash
+  zoom and arrow slide/rotation. Pitch covers gain a restrained accent tint below the
+  existing text scrim. Wash zoom stays clipped inside its band; no new imagery or copy.
+- Existing tags stay readable at rest and on touch devices. Hover and keyboard focus
+  replay a brief fade/rise with a 55ms stagger. Focus also gets the arrow fill and title
+  colour previously limited to hover. Pointer motion requires a fine, hover-capable input.
+- All transforms/tag animations are inside `prefers-reduced-motion: no-preference`.
+  Reduced motion keeps static tags and instant colour/focus feedback, including fixing
+  the previously unconditional pitch zoom and gallery-card lift.
+- Card lift uses `translate` separately from the scroll-reveal `transform`; the reveal
+  transition explicitly preserves lift timing without inheriting the entrance delay.
+  Carousel top padding leaves room for the lift and focus outline.
+- Item 1 remains open: count-ups and Astro View Transitions are still outstanding;
+  review the full Section C completion gate before closing the overall item.

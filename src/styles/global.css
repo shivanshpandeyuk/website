@@ -372,7 +372,7 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
 .car__track {
   display: flex; gap: 1rem; overflow-x: auto;
   scroll-snap-type: x mandatory; scroll-padding-left: 0;
-  padding-bottom: .4rem; margin-inline: -.15rem; padding-inline: .15rem;
+  padding-block: .3rem .4rem; margin-inline: -.15rem; padding-inline: .15rem;
   scrollbar-width: none; -ms-overflow-style: none;
 }
 .car__track::-webkit-scrollbar { display: none; }
@@ -398,9 +398,11 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   position: absolute; inset: 0;
   background-image: var(--cover, linear-gradient(160deg, var(--accent), var(--accent-2)));
   background-size: cover; background-position: center;
-  transition: transform .5s ease;
 }
-.pcard:hover .pcard__img { transform: scale(1.05); }
+.pcard::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: var(--accent); opacity: 0; pointer-events: none;
+}
 .pcard::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(180deg, rgba(15,10,14,0) 25%, rgba(15,10,14,.45) 55%, rgba(15,10,14,.88) 100%);
@@ -453,11 +455,7 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
 .pcard__arrow svg { width: 1.05rem; height: 1.05rem; }
-.pcard:hover .pcard__arrow { background: #fff; color: #14140f; border-color: #fff; }
-@media (prefers-reduced-motion: no-preference) {
-  .pcard__arrow svg { transition: transform .25s ease; }
-  .pcard:hover .pcard__arrow svg { transform: translateX(2px); }
-}
+.pcard:is(:hover, :focus-visible) .pcard__arrow { background: #fff; color: #14140f; border-color: #fff; }
 
 .car__track > .pcard { width: min(85%, 21rem); }
 
@@ -507,11 +505,15 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   overflow: hidden; isolation: isolate;
   border: 1px solid var(--border); border-radius: var(--radius-card);
   background: var(--surface);
-  transition: border-color .2s ease, transform .25s ease;
+  transition: border-color .2s ease;
 }
-a.gcard:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+a.gcard:is(:hover, :focus-visible) { border-color: var(--border-strong); }
 .gcard__wash {
+  position: relative; overflow: hidden;
   height: 4.5rem; flex: none; border-bottom: 1px solid var(--border);
+}
+.gcard__wash::before {
+  content: ""; position: absolute; inset: 0;
   background:
     radial-gradient(circle at 82% 22%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 68%),
     linear-gradient(120deg, var(--surface-2), color-mix(in oklab, var(--accent) 10%, var(--surface-2)));
@@ -531,7 +533,7 @@ a.gcard:hover { border-color: var(--border-strong); transform: translateY(-2px);
   font-family: var(--font-sans); font-weight: 540; letter-spacing: -0.015em;
   font-size: 1.18rem; line-height: 1.2; margin-top: .1rem;
 }
-a.gcard:hover .gcard__title { color: var(--accent); }
+a.gcard:is(:hover, :focus-visible) .gcard__title { color: var(--accent); }
 .gcard__desc {
   color: var(--muted); font-size: .92rem; line-height: 1.5;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
@@ -558,11 +560,44 @@ a.gcard:hover .gcard__title { color: var(--accent); }
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
 .gcard__arrow svg { width: 1rem; height: 1rem; }
-a.gcard:hover .gcard__arrow { background: var(--accent); color: #fff; border-color: var(--accent); }
-:root[data-theme='dark'] a.gcard:hover .gcard__arrow { color: #14140f; }
+a.gcard:is(:hover, :focus-visible) .gcard__arrow { background: var(--accent); color: #fff; border-color: var(--accent); }
+:root[data-theme='dark'] a.gcard:is(:hover, :focus-visible) .gcard__arrow { color: #14140f; }
+/* Card interaction uses translate independently of the scroll reveal's transform.
+   Tags remain readable at rest; interaction replays a short staggered reveal. */
 @media (prefers-reduced-motion: no-preference) {
-  .gcard__arrow svg { transition: transform .25s ease; }
-  a.gcard:hover .gcard__arrow svg { transform: translateX(2px); }
+  .pcard, a.gcard { transition: translate .4s ease, border-color .4s ease; }
+  .pcard__img, .gcard__wash::before { transition: transform .45s ease; }
+  .pcard::before { transition: opacity .4s ease; }
+  .pcard__arrow svg, .gcard__arrow svg { transition: transform .35s ease; }
+
+  .pcard:focus-visible, a.gcard:focus-visible { translate: 0 -3px; }
+  .pcard:focus-visible .pcard__img { transform: scale(1.04); }
+  a.gcard:focus-visible .gcard__wash::before { transform: scale(1.05); }
+  .pcard:focus-visible::before { opacity: .16; }
+  .pcard:focus-visible .pcard__arrow svg,
+  a.gcard:focus-visible .gcard__arrow svg { transform: translateX(3px) rotate(-8deg); }
+  .pcard:focus-visible .pcard__tag,
+  a.gcard:focus-visible .gcard__tag { animation: card-tag-reveal .4s ease both; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pcard:hover, a.gcard:hover { translate: 0 -3px; }
+    .pcard:hover .pcard__img { transform: scale(1.04); }
+    a.gcard:hover .gcard__wash::before { transform: scale(1.05); }
+    .pcard:hover::before { opacity: .16; }
+    .pcard:hover .pcard__arrow svg,
+    a.gcard:hover .gcard__arrow svg { transform: translateX(3px) rotate(-8deg); }
+    .pcard:hover .pcard__tag,
+    a.gcard:hover .gcard__tag { animation: card-tag-reveal .4s ease both; }
+  }
+  .pcard .pcard__tag:nth-child(2), .gcard .gcard__tag:nth-child(2) { animation-delay: 55ms; }
+  .gcard .gcard__tag:nth-child(3) { animation-delay: 110ms; }
+  @keyframes card-tag-reveal {
+    from { opacity: .55; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcard, a.gcard, .pcard__arrow, .gcard__arrow { transition: none; }
 }
 
 /* =========================================================================
@@ -748,7 +783,9 @@ a.gcard:hover .gcard__arrow { background: var(--accent); color: #fff; border-col
   .reveal.reveal--armed .reveal-item { opacity: 0; transform: translateY(12px); }
   .reveal.reveal--in .reveal-item {
     opacity: 1; transform: none;
-    transition: opacity .55s cubic-bezier(.22,.61,.36,1), transform .55s cubic-bezier(.22,.61,.36,1);
-    transition-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms));
+    transition: opacity .55s cubic-bezier(.22,.61,.36,1), transform .55s cubic-bezier(.22,.61,.36,1),
+      translate .4s ease, border-color .4s ease;
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms)),
+      calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms)), 0ms, 0ms;
   }
 }
