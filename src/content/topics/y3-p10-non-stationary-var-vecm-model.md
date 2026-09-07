@@ -1,4 +1,5 @@
 ---
+draft: false
 title: "Vector error-correction models"
 paper: "Paper 10 — Econometrics"
 year: "Year 3 (Part IIB)"
@@ -7,6 +8,8 @@ description: "Cointegration rank, the Johansen procedure, identification and adj
 order: 90
 tags: ["economics"]
 ---
+
+Part IIB Econometrics (Paper 10), Time Series. Reading: Pesaran, *Time Series and Panel Data Econometrics*, Ch. 22. The numbered hypothesis panels are extracts from the course lecture notes and the multi-part worked question below is Cambridge Economics Tripos Paper 10, 2016; the dark-background screenshot is the author's own notes. The derivations otherwise follow the lectures.
 
 ## Lecture Notes
 
@@ -43,7 +46,7 @@ The matix $\zeta_0$ is the key to understanding how many long-run relationships 
 $$
 \zeta_0 = \underbrace{\alpha}_{n\times r} \underbrace{\beta '}_{r\times n} 
 $$
-- Notice that $ζ_0$ is an n × n matrix of rank r.<br>
+- Notice that $\zeta_0$ is an n × n matrix of rank r.<br>
 $\beta'$** (The Cointegrating Vectors / The "Target")**
 <br>$\beta$ contains the weights of the long-run equilibrium.
 - When you multiply $\beta'$ by the variables $x_t$, the result is $\beta' x_t$.
@@ -91,7 +94,7 @@ $$
 - You start at $r=0$. 
 - If you reject, you move to $r=1$. 
 - You keep going and then stop the first time you **fail to reject**.
-![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/01.png)
+![Lecture-note extract: the trace test null H_r, Rank(Pi) = r < n, against the alternative H_n, Rank(Pi) = n, for r = 0, 1, 2, ..., n − 1.](../../assets/notes/y3-p10-non-stationary-var-vecm-model/01.png)
 
 B. The Maximum Eigenvalue Test ($\lambda_{max}$)
 This is a specific test. It checks only the very next eigenvalue. 
@@ -100,7 +103,7 @@ L_{max}(r, r+1) = -T \ln(1 - \hat{\lambda}_{r+1})
 $$
 - **Null (**$H_0$**):** There are exactly $r$ cointegrating vectors.
 - **Alternative (**$H_1$**):** There are exactly $r+1$ vectors.
-    ![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/02.png)
+    ![Lecture-note extract: the maximum-eigenvalue test null H_r, Rank(Pi) = r < n, against the alternative H_{r+1}, Rank(Pi) = r + 1, for r = 0, 1, 2, ..., n − 1.](../../assets/notes/y3-p10-non-stationary-var-vecm-model/02.png)
 
 The "Critical Values" for the tests above change depending on whether you assume the data has a trend or an intercept.
 
@@ -142,7 +145,7 @@ You run the Johansen VECM procedure without forcing any specific numbers on $\be
 - This represents the **best possible fit** the data can achieve.
 
 Step 2: Estimate the Restricted Model
-You re-run the VECM, but this time you hard-code the matrix $\beta$Q to be your theoretical matrix.
+You re-run the VECM, but this time you hard-code the matrix $\beta$ to be your theoretical matrix.
 - The software optimizes the *other* parameters ($\alpha$, $\Gamma$, etc.) around this fixed $\beta$.
 - It calculates the "Restricted Log-Likelihood" ($L_R$).
 - *Note: Since you constrained the model, *$L_R$* will always be lower (worse) than *$L_U$*. The question is: how much worse?*
@@ -167,7 +170,7 @@ You compare your calculated LR statistic to a **Chi-Squared (**$\chi^2$**)** dis
 
 #### **Summary**
 
-The LR test is a "penalty check." It calculates how much accuracy you lose by forcing the tea prices to follow your theoretical rules (\$T_1 = T_2\$ and \$T_1 = T_3\$). If you lose too much accuracy, the test fails, and your theory is rejected.
+The LR test is a "penalty check." It calculates how much accuracy you lose by forcing the tea prices to follow your theoretical rules ($T_1 = T_2$ and $T_1 = T_3$). If you lose too much accuracy, the test fails, and your theory is rejected.
 
 #### **The "Granger Causal" Requirement**
 
@@ -178,7 +181,7 @@ This creates a **Granger Causality** chain:
 - It doesn't care about the long-run error; other variables must do the work to move toward *it*.
 
 **Example: dividend-price ratio should be I(0)**
-![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/03.png)
+![Lecture-note extract: in the dividend discount model, dividends and prices are both I(1) but the dividend–price ratio is stationary. Two error-correction equations, Δp_t = +α_p (d_{t−1} − p_{t−1}) + ... + ε^p_t and Δd_t = −α_d (d_{t−1} − p_{t−1}) + ... + ε^d_t; α_d and α_p cannot both be zero, which implies at least one-way Granger causality between the variables.](../../assets/notes/y3-p10-non-stationary-var-vecm-model/03.png)
 If Prices ($p$) and Dividends ($d$) drift apart, the "dividend yield" $(d-p)$ becomes the error term.
 - If $\alpha_p$is significant, it means **Prices** adjust to meet Dividends.
 - If $\alpha_d$ is significant, it means **Dividends** adjust to meet Prices.
@@ -199,7 +202,7 @@ This shows that since the sum of any two cointegrating vectors will itself be a 
 **The Problem:** The computer might output a $\tilde \beta$ that is statistically correct but economically gibberish.
 
 **The Rule:** To identify "structural" cointegrating vectors, we must impose $r^2$ restrictions.
-![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/04.png)
+![Author's own notes: any linear combination of β is also a valid β (a "rotation" problem), fixed by imposing r² restrictions in two parts — Part A, normalisation (r restrictions), setting one coefficient per vector to 1; Part B, selection/exclusion (r(r − 1) restrictions), forcing chosen variables to have zero weight in chosen vectors.](../../assets/notes/y3-p10-non-stationary-var-vecm-model/04.png)
 
 ### Interpreting the estimated VECM
 
@@ -209,7 +212,7 @@ Really what we care about are the **common stochastic trends** and the **impulse
 
 There is a beautiful symmetry between cointegration and trends:
 - In a system of $n$ variables with **no** cointegration, there are $n$ independent "random walks" (permanent shocks) driving the system.
-- If there are **\$r\$** cointegrating vectors (bonds), they "tie" the variables together.
+- If there are **$r$** cointegrating vectors (bonds), they "tie" the variables together.
 - This leaves only $k = n - r$ independent permanent shocks, known as **Common Stochastic Trends**.
 
 **Example:** If you have 3 interest rates ($n=3$) that are all tied to 2 long-run spreads ($r=2$), then there is only $3 - 2 = \mathbf{1}$ common trend (e.g., the general level of market volatility) driving all of them.
@@ -222,20 +225,25 @@ In a stationary VAR, we just flip the lags to the other side to see how shocks $
 $$
 x_t = (I + \alpha\beta')x_{t-1} + \varepsilon_t
 $$
-The term $(I + \alpha\beta')$ has a unit root \[literally the ‘1’ i.e. I\]. If you try to invert it, the math "breaks" because the shocks never die out—they accumulate forever into a trend. 
-    <details>
-    <summary>*Where is this term from? Expand to see*</summary>
-        This term comes from a simple derivation, beginning with a VAR in levels 
-        $$
-        x_t = A x_{t-1} + \varepsilon_t
-        $$
-        Subtract by $x_{t-1}$ on both sides and you get 
-        $$
-        \Delta x_t =  (A-I) x_{t-1} + \varepsilon_t
-        $$
-        And recall that we defined the coefficient on $x_{t-1} = \alpha \beta ' \implies A - I = a\beta '$
+The term $(I + \alpha\beta')$ has a unit root [literally the ‘1’ i.e. I]. If you try to invert it, the math "breaks" because the shocks never die out—they accumulate forever into a trend. 
+<details>
+<summary>*Where is this term from? Expand to see*</summary>
 
-    </details>
+This term comes from a simple derivation, beginning with a VAR in levels
+
+$$
+x_t = A x_{t-1} + \varepsilon_t
+$$
+
+Subtract by $x_{t-1}$ on both sides and you get
+
+$$
+\Delta x_t =  (A-I) x_{t-1} + \varepsilon_t
+$$
+
+And recall that we defined the coefficient on $x_{t-1} = \alpha \beta ' \implies A - I = a\beta '$
+
+</details>
 
 **Use a stacking trick again**
 To fix this, we stop looking at $x_t$ (the "exploding" level) and look at two things that are I(0)
@@ -295,12 +303,15 @@ I & -\alpha \\
 0 & -\beta'\alpha 
 \end{bmatrix}
 $$
-Use the partitioned inverse formula on it: $\begin{bmatrix} A & B \\ 0 & D \end{bmatrix}^{-1} = \begin{bmatrix} A^{-1} & -A^{-1}BD^{-1} \\ 0 & D^{-1} \end{bmatrix}$
+Use the partitioned inverse formula on it:
+
+$$
+\begin{bmatrix} A & B \\ 0 & D \end{bmatrix}^{-1} = \begin{bmatrix} A^{-1} & -A^{-1}BD^{-1} \\ 0 & D^{-1} \end{bmatrix}
+$$
 
 So 
 $$
 C(1) = J \begin{bmatrix} I_n & -\alpha(\beta'\alpha)^{-1} \\ 0 & -(\beta'\alpha)^{-1} \end{bmatrix} \begin{bmatrix} I \\ \beta' \end{bmatrix} \\ \ \\ \implies C(1) = I_n - \alpha(\beta'\alpha)^{-1}\beta'
-
 $$
 So substitute this into the delta equation
 $$
@@ -330,16 +341,12 @@ Note here, the matrix $C(1)$ has **Reduced Rank** ($n-r$).
 - If the trend pushes Income up by US\$1,000, the $C(1)$ matrix ensures it also pushes Consumption up by exactly the amount needed to keep the ratio identical.
 - The "Trend" moves the variables, but it **cannot move the relationship between them.**
 
-## Pesaran Ch.22
-
 ## Past Paper
 
-### Q7 - 2015
+### Q3 – 2016
 
-### Q3- 2016
-
-![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/05.png)
+![Tripos Paper 10, 2016, Q3: preliminary analysis does not reject that lgas_t (ln US natural gas price) and lwti_t (ln West Texas Intermediate price) are I(1) in levels but I(0) in first differences. A VAR X_t = A_0 + A_1 X_{t−1} + A_2 X_{t−2} + ε_t is estimated, with Π = A_1 + A_2 − I. Part (a): explain the econometric consequences of Rank(Π) = 2 (Π invertible), Rank(Π) = 1 (Π = αβ' with α, β both 2×1), and Rank(Π) = 0 (Π a 2×2 zero matrix).](../../assets/notes/y3-p10-non-stationary-var-vecm-model/05.png)
 Oil and grass prices can just drift arbitrarily forever, no correction mechanism to bring them to some equilibrium as there is no LR equilibrium.
-![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/06.png)
+![Tripos Paper 10, 2016, Q3 part (b): the hypothesis Rank(Π) = 1 is not rejected. A table reports estimated coefficients (π_11, π_12, π_21, π_22 or α_1, α_2, β_1, β_2 with standard errors) and the maximised log-likelihood (LLF) under three restriction sets — unrestricted (LLF 543.50), β_1 = 1 (LLF 543.50), and β_1 = 1 & β_2 = −1 (LLF 543.24). Use the results to explain what can be concluded about the oil–natural gas price relationship.](../../assets/notes/y3-p10-non-stationary-var-vecm-model/06.png)
 Okay, so we already did the first half of the Johansen’s procedure and thankfully found that $\det \Pi=0$ i.e. $Rank(\Pi) = 1$, this is a restriction we can impose. Next we impose some restriction on our hypothesis of the nature of $\beta'$
-![](../../assets/notes/y3-p10-non-stationary-var-vecm-model/07.png)
+![Tripos Paper 10, 2016, Q3 part (c): since 2008 hydraulic fracturing has raised US shale gas production with limited export capacity. ADF unit-root tests (lag order 4 by AIC, constant, no trend) for (lwti_t − lgas_t) give t = −3.0830 over 1986:01–2008:12 (271 obs) and t = −1.5492 over 1986:01–2012:12 (319 obs). How would you interpret this for the VECM as a forecasting system in recent years?](../../assets/notes/y3-p10-non-stationary-var-vecm-model/07.png)
