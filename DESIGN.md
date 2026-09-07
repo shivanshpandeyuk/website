@@ -78,10 +78,10 @@ new font/palette and leave the rest on the old defaults.
 
 HARD COMPLETION GATE: item 1 is NOT done, and must not be marked [done], until Section C. MOTION is
 fully implemented - the current site reads as too static. Still required: number count-ups on figures,
-a slow marquee, richer card hover (image scale + arrow slide + tag reveal), staggered scroll reveals
+richer card hover (image scale + arrow slide + tag reveal), staggered scroll reveals
 across more than the 4 homepage sections, and Astro View Transitions for page-to-page. Keep it all
-under prefers-reduced-motion. The homepage PROJECTS and NOTES cards also still need the imagery-forward
-treatment with circular-arrow, and notes need a PAPER/YEAR/TOPIC tearsheet.
+under prefers-reduced-motion. (Done so far: the imagery-forward PROJECTS/NOTES homepage cards with
+circular-arrow, the notes PAPER/YEAR/TOPIC tearsheet, and the slow coverage marquee - see the log.)
 
 ## INCREMENT LOG
 ### Increment 1 - tokens + type (2026-09-07, claude)
@@ -138,3 +138,28 @@ treatment with circular-arrow, and notes need a PAPER/YEAR/TOPIC tearsheet.
   reduced-motion freezes both keyframes.
 - Increment 3 done. Item 1 remainder still open: imagery-forward treatment + circular-arrow for the
   PROJECTS and NOTES homepage cards (no cover art yet), notes `.tearsheet` (PAPER/YEAR/TOPIC).
+
+### Notes tearsheet + imagery-forward PROJECTS/NOTES cards (2026-09-07, claude)
+- Commits 2cb22bf (notes detail `.tearsheet` PAPER/YEAR/TOPIC) and 58df922 (homepage `.gcard`
+  imagery-forward NOTES + PROJECTS cards: tinted `--accent` wash band for absent cover art,
+  category/service tags, circular-arrow affordance, hairline spec strip). Both deployed and
+  live-verified in earlier passes. Full detail in AGENT_BATON.md.
+
+### Coverage marquee (2026-09-07, claude)
+- `src/pages/index.astro` + `.home-ticker*` in global.css. One slow continuous horizontal marquee
+  (DESIGN.md C "Marquee"): a hairline-bordered band between the hero and the intro `#about` section,
+  listing the five real pitch companies as `TICKER  Company  Sector` from pitch frontmatter (no
+  fabrication). Two identical `<ul>` rows in a `width:max-content` flex track; CSS `ticker-scroll`
+  translates the track `translate3d(-50%,0,0)` over 46s linear infinite; the duplicate row is
+  `aria-hidden`. Edge fade via `mask-image` linear-gradient. Pause on hover
+  (`animation-play-state: paused`).
+- Under `prefers-reduced-motion: reduce`: animation removed, the duplicate row is `display:none`,
+  and the remaining row `flex-wrap: wrap`s so it never introduces horizontal scroll.
+- Verified: `npm run build` errors:0 / 38 pages / reviewedNotes:21 / excludedDrafts:65; skill static
+  audit 38 pages 0 errors 0 warnings; Playwright + installed Chromium on `/` at 1366 + 390px, light
+  and dark, both motion modes: `documentElement.scrollWidth - clientWidth == 0`, marquee present,
+  animation `ticker-scroll` with motion / `none` under reduced-motion, 0 `.katex-error`; desktop and
+  mobile-dark band screenshots clean.
+- Item 1 remainder still open (HARD COMPLETION GATE): number count-ups on figures, richer imagery-card
+  hover (image scale + arrow slide + tag reveal), staggered scroll reveals beyond the 4 homepage
+  sections, Astro View Transitions page-to-page - all under prefers-reduced-motion.

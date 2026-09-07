@@ -61,6 +61,24 @@ const dissExcerpt = dissertation
         </a>
       </section>
 
+      {pitches.length > 0 && (
+        <section class="home-ticker" aria-label="Companies I have covered">
+          <div class="home-ticker__track">
+            {[0, 1].map((dup) => (
+              <ul class="home-ticker__row" aria-hidden={dup === 1 ? 'true' : undefined}>
+                {pitches.map((p) => (
+                  <li class="home-ticker__item">
+                    <span class="home-ticker__tk">{p.data.ticker}</span>
+                    <span class="home-ticker__co">{p.data.company}</span>
+                    <span class="home-ticker__sec">{p.data.sector}</span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section id="about" class="reveal">
         <p class="prose home-about">
           At Cambridge I finished with a first, and 84% in my final year. The faculty

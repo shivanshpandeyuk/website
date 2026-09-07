@@ -637,6 +637,46 @@ a.gcard:hover .gcard__arrow { background: var(--accent); color: #fff; border-col
   }
 }
 
+/* ---- Coverage ticker (one slow persistent marquee, pause on hover) ---- */
+.home-ticker {
+  overflow: hidden;
+  border-block: 1px solid var(--border);
+  padding-block: .8rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.home-hero + .home-ticker { margin-top: 2rem; }
+.home-ticker__track { display: flex; width: max-content; }
+.home-ticker__row {
+  display: flex; flex-shrink: 0;
+  margin: 0; padding: 0; list-style: none;
+}
+.home-ticker__item {
+  display: flex; align-items: baseline; gap: .5rem;
+  padding-inline: 1.4rem;
+  border-right: 1px solid var(--border);
+  font-size: .86rem; white-space: nowrap;
+}
+.home-ticker__tk {
+  font-weight: 600; letter-spacing: .05em; color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.home-ticker__co { color: var(--text); }
+.home-ticker__sec { color: var(--faint); font-size: .8rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-ticker__track { animation: ticker-scroll 46s linear infinite; }
+  .home-ticker:hover .home-ticker__track { animation-play-state: paused; }
+  @keyframes ticker-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-ticker__row { flex-wrap: wrap; gap: .4rem 0; }
+  .home-ticker__row[aria-hidden] { display: none; }
+}
+
 /* ---- Homepage section heads ---- */
 .home-sec__head {
   display: flex; align-items: baseline; justify-content: space-between;
