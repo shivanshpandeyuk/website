@@ -91,13 +91,25 @@ const dissExcerpt = dissertation
             My economics notes from Cambridge, organised by year, paper and topic. Shared
             in the spirit of the notes friends shared with me.
           </p>
-          <div class="rows">
+          <div class="gcard-grid">
             {notesShown.map((n) => (
-              <div class="row">
-                <a class="row__title" href={`/notes/${n.id}`}>{n.data.title}</a>
-                <span class="row__date">{n.data.year} · {n.data.paper}</span>
-                <p class="row__desc">{n.data.description}</p>
-              </div>
+              <a class="gcard" href={`/notes/${n.id}`}>
+                <span class="gcard__arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+                </span>
+                <div class="gcard__wash" aria-hidden="true"></div>
+                <div class="gcard__body">
+                  <div class="gcard__tags">
+                    <span class="gcard__tag">{n.data.section}</span>
+                    <span class="gcard__tag">{n.data.year}</span>
+                  </div>
+                  <h3 class="gcard__title">{n.data.title}</h3>
+                  <p class="gcard__desc">{n.data.description}</p>
+                  <dl class="gcard__sheet">
+                    <div><dt>Paper</dt><dd>{n.data.paper}</dd></div>
+                  </dl>
+                </div>
+              </a>
             ))}
           </div>
         </section>
@@ -127,16 +139,26 @@ const dissExcerpt = dissertation
             <h2>Projects</h2>
             <a class="more" href="/projects">All projects →</a>
           </div>
-          <div class="card-grid">
+          <div class="gcard-grid">
             {projects.map((p) => (
-              <a class="card" href={`/projects/${p.id}/`}>
-                <div class="card__meta">
-                  {p.data.status !== 'live' && <span class="tag">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
-                  {p.data.tags.slice(0, 3).map((t) => <span class="tag">{t}</span>)}
+              <a class="gcard" href={`/projects/${p.id}/`}>
+                <span class="gcard__arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+                </span>
+                <div class="gcard__wash" aria-hidden="true"></div>
+                <div class="gcard__body">
+                  <div class="gcard__tags">
+                    {p.data.status !== 'live' && <span class="gcard__tag gcard__tag--status">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
+                    {p.data.tags.slice(0, 2).map((t) => <span class="gcard__tag">{t}</span>)}
+                  </div>
+                  <h3 class="gcard__title">{p.data.title}</h3>
+                  <p class="gcard__desc">{p.data.description}</p>
+                  {p.data.date && (
+                    <dl class="gcard__sheet">
+                      <div><dt>Year</dt><dd>{p.data.date.getFullYear()}</dd></div>
+                    </dl>
+                  )}
                 </div>
-                <h3>{p.data.title}</h3>
-                <p class="muted small">{p.data.description}</p>
-                <span class="link small" style="margin-top:auto; padding-top:.5rem">Read about it →</span>
               </a>
             ))}
           </div>

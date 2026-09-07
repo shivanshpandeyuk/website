@@ -497,6 +497,74 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
 .pcard-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
 @media (min-width: 40rem) { .pcard-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); } }
 
+/* ---- Gallery card (imagery-forward, no cover art) -------------------
+   A tinted accent wash band stands in for cover art; category / service
+   tags, a circular-arrow affordance and a hairline spec strip match the
+   pitch cards. Used for the Projects and Notes sections on the homepage. */
+.gcard-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
+.gcard {
+  position: relative; display: flex; flex-direction: column;
+  overflow: hidden; isolation: isolate;
+  border: 1px solid var(--border); border-radius: var(--radius-card);
+  background: var(--surface);
+  transition: border-color .2s ease, transform .25s ease;
+}
+a.gcard:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.gcard__wash {
+  height: 4.5rem; flex: none; border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 82% 22%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 68%),
+    linear-gradient(120deg, var(--surface-2), color-mix(in oklab, var(--accent) 10%, var(--surface-2)));
+}
+.gcard__body {
+  flex: 1 1 auto; display: flex; flex-direction: column; gap: .5rem;
+  padding: 1.1rem 1.25rem 1.2rem;
+}
+.gcard__tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.gcard__tag {
+  font-size: .64rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: .18rem .55rem; border-radius: 999px;
+  border: 1px solid var(--border-strong); color: var(--muted);
+}
+.gcard__tag--status { color: var(--accent); border-color: var(--accent); }
+.gcard__title {
+  font-family: var(--font-sans); font-weight: 540; letter-spacing: -0.015em;
+  font-size: 1.18rem; line-height: 1.2; margin-top: .1rem;
+}
+a.gcard:hover .gcard__title { color: var(--accent); }
+.gcard__desc {
+  color: var(--muted); font-size: .92rem; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.gcard__sheet {
+  display: flex; flex-wrap: wrap; gap: .35rem 1.4rem;
+  margin-top: auto; padding-top: .8rem; border-top: 1px solid var(--border);
+}
+.gcard__sheet > div { display: flex; flex-direction: column; gap: .1rem; }
+.gcard__sheet dt {
+  font-size: .58rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--faint);
+}
+.gcard__sheet dd {
+  font-size: .8rem; font-weight: 500; color: var(--text);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.gcard__arrow {
+  position: absolute; top: 1rem; right: 1rem; z-index: 2;
+  display: grid; place-items: center;
+  width: 2.2rem; height: 2.2rem; border-radius: 999px;
+  border: 1px solid var(--border-strong); color: var(--muted);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.gcard__arrow svg { width: 1rem; height: 1rem; }
+a.gcard:hover .gcard__arrow { background: var(--accent); color: #fff; border-color: var(--accent); }
+:root[data-theme='dark'] a.gcard:hover .gcard__arrow { color: #14140f; }
+@media (prefers-reduced-motion: no-preference) {
+  .gcard__arrow svg { transition: transform .25s ease; }
+  a.gcard:hover .gcard__arrow svg { transform: translateX(2px); }
+}
+
 /* =========================================================================
    Homepage — editorial portfolio layout with a sticky résumé rail
    ========================================================================= */
