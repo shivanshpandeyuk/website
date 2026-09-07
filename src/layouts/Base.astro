@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE } from '../consts';
@@ -38,6 +39,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL('/og.png', Astro.site ?? SITE.url).href} />
     <meta name="generator" content={Astro.generator} />
+    <ClientRouter />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={SITE.name + ' — Writing'} href="/writing/rss.xml" />
     <!-- Fonts: self-hosted woff2 in /public/fonts (Hanken Grotesk + Fraunces

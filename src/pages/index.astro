@@ -255,12 +255,14 @@ const dissExcerpt = dissertation
 
   <script is:inline src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
   <script>
-    (() => {
+    const armHomeReveals = () => {
       const els = Array.from(document.querySelectorAll('.home__main > section.reveal, .home__main > .car'));
       if (!els.length) return;
       if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+      if ((els[0] as HTMLElement).dataset.revealArmed) return;
       const itemSel = '.gcard, .rows > .row, .car__track > *';
       els.forEach((el, i) => {
+        (el as HTMLElement).dataset.revealArmed = '1';
         el.classList.add('reveal', 'reveal--armed');
         (el as HTMLElement).style.setProperty('--reveal-delay', (i % 3) * 70 + 'ms');
         Array.from(el.querySelectorAll(itemSel)).forEach((c, n) => {
@@ -274,6 +276,9 @@ const dissExcerpt = dissertation
         });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
       els.forEach((el) => io.observe(el));
-    })();
+    };
+    armHomeReveals();
+    // Re-arm after client-side navigation (Astro view transitions).
+    document.addEventListener('astro:page-load', armHomeReveals);
   </script>
 </Base>

@@ -1,28 +1,34 @@
 <!-- Shared progressive enhancements for article figures and wide tables. -->
 <script>
-  const figures = document.querySelectorAll<HTMLImageElement>('.prose img');
-  for (const figure of figures) {
-    if (figure.closest('a')) continue;
-    const link = document.createElement('a');
-    link.href = figure.src;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.className = 'figure-link';
-    link.setAttribute('aria-label', `${figure.alt || 'Figure'} — open full size in a new tab`);
-    figure.before(link);
-    link.append(figure);
+  function enhanceReader() {
+    const figures = document.querySelectorAll<HTMLImageElement>('.prose img');
+    for (const figure of figures) {
+      if (figure.closest('a')) continue;
+      const link = document.createElement('a');
+      link.href = figure.src;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.className = 'figure-link';
+      link.setAttribute('aria-label', `${figure.alt || 'Figure'} — open full size in a new tab`);
+      figure.before(link);
+      link.append(figure);
+    }
+    const help = document.querySelector<HTMLElement>('.figure-help');
+    if (help && figures.length) help.hidden = false;
+    for (const table of document.querySelectorAll('.prose table')) {
+      if (table.closest('.table-scroll')) continue;
+      const scroll = document.createElement('div');
+      scroll.className = 'table-scroll';
+      scroll.tabIndex = 0;
+      scroll.setAttribute('role', 'region');
+      scroll.setAttribute('aria-label', 'Table — scroll horizontally if needed');
+      table.before(scroll);
+      scroll.append(table);
+    }
   }
-  const help = document.querySelector<HTMLElement>('.figure-help');
-  if (help && figures.length) help.hidden = false;
-  for (const table of document.querySelectorAll('.prose table')) {
-    const scroll = document.createElement('div');
-    scroll.className = 'table-scroll';
-    scroll.tabIndex = 0;
-    scroll.setAttribute('role', 'region');
-    scroll.setAttribute('aria-label', 'Table — scroll horizontally if needed');
-    table.before(scroll);
-    scroll.append(table);
-  }
+  enhanceReader();
+  // Re-run after client-side navigation (Astro view transitions).
+  document.addEventListener('astro:page-load', enhanceReader);
 </script>
 <style is:global>
   .prose th, .prose td { overflow-wrap:normal; }

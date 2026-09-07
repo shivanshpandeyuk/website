@@ -105,7 +105,14 @@
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  /* Page-to-page view transitions: no cross-fade / morph under reduced motion.
+     Astro ships the same guard; kept here explicitly too. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
 img, svg, video { display: block; max-width: 100%; height: auto; }
 a { color: inherit; }
 

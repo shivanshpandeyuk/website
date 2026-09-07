@@ -127,11 +127,13 @@ const files = (await getCollection('notes')).filter(n => n.data.files.length > 0
 </Base>
 
 <script>
+function setupLibraryFilters() {
   const form = document.querySelector<HTMLFormElement>('#library-filters');
   const query = document.querySelector<HTMLInputElement>('#topic-query');
   const year = document.querySelector<HTMLSelectElement>('#year-filter');
   const paper = document.querySelector<HTMLSelectElement>('#paper-filter');
   const items = [...document.querySelectorAll<HTMLElement>('.topic-item')];
+  if (!form || form.dataset.ready) return;
   function filterNotes() {
     const words = query!.value.trim().toLocaleLowerCase('en-GB').split(/\s+/).filter(Boolean);
     let count = 0;
@@ -148,11 +150,16 @@ const files = (await getCollection('notes')).filter(n => n.data.files.length > 0
     (document.querySelector('#no-notes') as HTMLElement).hidden = count !== 0;
   }
   if (form && query && year && paper) {
+    form.dataset.ready = '1';
     form.hidden = false;
     form.addEventListener('submit', event => event.preventDefault());
     form.addEventListener('input', filterNotes);
     form.addEventListener('reset', () => { query.value = ''; year.value = ''; paper.value = ''; filterNotes(); });
   }
+}
+setupLibraryFilters();
+// Re-run after client-side navigation (Astro view transitions).
+document.addEventListener('astro:page-load', setupLibraryFilters);
 </script>
 <style>
   .article-head { max-width:46rem; }

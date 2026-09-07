@@ -32,6 +32,8 @@ const cid = id ?? 'car-' + Math.random().toString(36).slice(2, 8);
 <script>
   (() => {
     const init = (root) => {
+      if (root.dataset.carReady) return;
+      root.dataset.carReady = '1';
       const track = root.querySelector('[data-track]');
       const prev = root.querySelector('[data-prev]');
       const next = root.querySelector('[data-next]');
@@ -64,6 +66,9 @@ const cid = id ?? 'car-' + Math.random().toString(36).slice(2, 8);
       window.addEventListener('resize', update);
       update();
     };
-    document.querySelectorAll('[data-car]').forEach(init);
+    const run = () => document.querySelectorAll('[data-car]').forEach(init);
+    run();
+    // Re-init after client-side navigation (Astro view transitions).
+    document.addEventListener('astro:page-load', run);
   })();
 </script>
