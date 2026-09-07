@@ -731,6 +731,11 @@ a.gcard:is(:hover, :focus-visible) .gcard__arrow { background: var(--accent); co
 .home-sec__lead { color: var(--muted); max-width: var(--measure); margin: -.15rem 0 1.15rem; }
 .home-about { max-width: var(--measure); }
 
+/* Count-up figures: fixed-width numerals so the roll never reflows the line. */
+.countup { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: "tnum" 1, "lnum" 1; }
+/* Stay inline: the résumé rail sets `span { display: block }` on its items. */
+.home-rail__item .countup { display: inline; }
+
 /* ---- Dissertation feature ---- */
 .home-diss {
   display: block; border: 1px solid var(--border); border-radius: var(--radius);

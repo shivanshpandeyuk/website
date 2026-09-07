@@ -179,3 +179,32 @@ circular-arrow, the notes PAPER/YEAR/TOPIC tearsheet, and the slow coverage marq
   Carousel top padding leaves room for the lift and focus outline.
 - Item 1 remains open: count-ups and Astro View Transitions are still outstanding;
   review the full Section C completion gate before closing the overall item.
+
+### Number count-ups on figures (2026-09-07, claude)
+- `src/pages/index.astro` (a second `<script>` + four `<span class="countup">` wraps) and a
+  `.countup` rule in global.css. DESIGN.md C "Number count-ups": the figures already on the
+  homepage roll 0 -> value the first time they are scrolled into view. Wrapped, with NO wording
+  change: the intro paragraph's `84`% final-year mark and `$500`m Bending Spoons acquisition, and
+  the résumé rail's `$500`m and `84`% (same two real facts). Years were deliberately left un-wrapped
+  - a four-digit year spinning up from 0 reads worse than it helps.
+- `.countup { font-variant-numeric: tabular-nums lining-nums }` so the digits are fixed-width and
+  the line never reflows mid-count; `.home-rail__item .countup { display:inline }` overrides the
+  rail's `span { display:block }`.
+- Vanilla JS: each span is set to `0`, then a rAF-throttled `scroll` sweep (plus one initial call)
+  animates any span once its top passes 92% of the viewport, easing `1-(1-t)^3` over 900ms; a
+  `data-countup-done` flag makes it fire once; detached spans are dropped and the listener removed
+  when nothing is pending. Re-runs on `astro:page-load` for view-transition nav.
+- `prefers-reduced-motion: reduce` -> the script writes every final value immediately and never
+  sets `0` or attaches a listener. Same fallback if `IntersectionObserver` is missing.
+- Verified: `npm run build` errors:0 / 38 pages / reviewedNotes:21 / excludedDrafts:65;
+  `scripts/audit-publication.mjs` errors:0. Playwright + Chromium on `/` at 1366 + 390px x
+  prefers-reduced-motion {no-preference, reduce}: `documentElement.scrollWidth - clientWidth == 0`,
+  4 `.countup` spans, all settle to their `data-countup-to` value, all computed
+  `font-variant-numeric` includes `tabular-nums`, 0 `.katex-error`, 0 pageerror; a top-to-bottom
+  human-style scroll pass lands every figure on its final value; desktop light/dark + mobile-dark
+  screenshots clean (`.rota-review/countup-*.png`).
+- This was the last item in the HARD COMPLETION GATE's "Still required" list (count-ups, richer
+  card hover [db40f95], staggered scroll reveals beyond 4 sections [16b015c], Astro View
+  Transitions [2ba4321]) - all now shipped under reduced-motion. Residual Section C flourishes not
+  built (nav scroll-progress bar, underline-grow-from-left on links, optional magnetic CTA) are
+  tracked as a new P6 polish item, not gate blockers.

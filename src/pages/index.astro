@@ -81,14 +81,14 @@ const dissExcerpt = dissertation
 
       <section id="about" class="reveal">
         <p class="prose home-about">
-          At Cambridge I finished with a first, and 84% in my final year. The faculty
+          At Cambridge I finished with a first, and <span class="countup" data-countup-to="84">84</span>% in my final year. The faculty
           gave my dissertation its prize for the best piece of econometrics that year:
           it looked at the UK's superfast broadband subsidies and found a "copper trap",
           where subsidies for copper broadband held back the rollout of fibre.
           I spent summer 2026 on Rothschild
           &amp; Co / Redburn Atlantic's software and cloud desk, building the JFrog and
           Garmin models from scratch and a live tracker of the datacentre build-out
-          worldwide; before that a $500m software acquisition at Bending Spoons, and
+          worldwide; before that a $<span class="countup" data-countup-to="500">500</span>m software acquisition at Bending Spoons, and
           infrastructure valuations at EY-Parthenon.
         </p>
       </section>
@@ -221,7 +221,7 @@ const dissExcerpt = dissertation
         </div>
         <div class="home-rail__item">
           <b>Bending Spoons</b>
-          <span>$500m software acquisition</span>
+          <span>$<span class="countup" data-countup-to="500">500</span>m software acquisition</span>
         </div>
         <div class="home-rail__item">
           <b>EY-Parthenon</b>
@@ -231,7 +231,7 @@ const dissExcerpt = dissertation
         <h3>Education</h3>
         <div class="home-rail__item">
           <b>University of Cambridge</b>
-          <span>B.A. Economics — first, 84% in final year; faculty prize for the best dissertation in econometrics</span>
+          <span>B.A. Economics — first, <span class="countup" data-countup-to="84">84</span>% in final year; faculty prize for the best dissertation in econometrics</span>
         </div>
         <div class="home-rail__item">
           <b>London School of Economics</b>
@@ -280,5 +280,50 @@ const dissExcerpt = dissertation
     armHomeReveals();
     // Re-arm after client-side navigation (Astro view transitions).
     document.addEventListener('astro:page-load', armHomeReveals);
+  </script>
+  <script>
+    // Tearsheet-style number count-ups: figures roll 0 -> value on scroll-in,
+    // tabular numerals so the line never reflows. Reduced-motion shows the value at once.
+    const runCountUps = () => {
+      const els = Array.from(document.querySelectorAll('.countup[data-countup-to]')) as HTMLElement[];
+      if (!els.length) return;
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) {
+        els.forEach((el) => { el.textContent = el.dataset.countupTo ?? el.textContent; });
+        return;
+      }
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+      const animate = (el: HTMLElement) => {
+        const to = parseInt(el.dataset.countupTo ?? '0', 10);
+        if (!Number.isFinite(to)) { el.textContent = el.dataset.countupTo ?? ''; return; }
+        const dur = 900;
+        const start = performance.now();
+        const step = (now: number) => {
+          const p = Math.min(1, (now - start) / dur);
+          el.textContent = String(Math.round(ease(p) * to));
+          if (p < 1) requestAnimationFrame(step); else el.textContent = String(to);
+        };
+        requestAnimationFrame(step);
+      };
+      let pending = els.filter((el) => !el.dataset.countupDone);
+      pending.forEach((el) => { el.textContent = '0'; });
+      let ticking = false;
+      const sweep = () => {
+        ticking = false;
+        const vh = window.innerHeight;
+        pending = pending.filter((el) => {
+          if (!el.isConnected) return false;
+          const r = el.getBoundingClientRect();
+          if (r.top < vh * 0.92 && r.bottom > 0) { el.dataset.countupDone = '1'; animate(el); return false; }
+          return true;
+        });
+        if (!pending.length) window.removeEventListener('scroll', onScroll);
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(sweep); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      sweep();
+    };
+    runCountUps();
+    document.addEventListener('astro:page-load', runCountUps);
   </script>
 </Base>
