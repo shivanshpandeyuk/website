@@ -14,3 +14,4 @@ node_modules/
 # screenshot helpers (dev only)
 shot.mjs
 shot2.mjs
+_withheld/

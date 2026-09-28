@@ -9,4 +9,4 @@ tags: [meta]
 
 I wanted my own site with all my Cambridge economics notes, my stock pitches, my own programming projects and my dissertation. An investment blog and an education blog at once.
 
-The stock pitches are APR, Garmin, Deutsche Telekom, Tokyo Electron and Duolingo. The notes are from my Economics degree at Cambridge.
+The stock pitches are APR, Deutsche Telekom, Tokyo Electron and Duolingo. The notes are from my Economics degree at Cambridge.
