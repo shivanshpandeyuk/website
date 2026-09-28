@@ -295,21 +295,42 @@ a { text-decoration: none; }
 @media (max-width: 44rem) {
   .nav-indicator { display: none; }
 }
+/* Light/dark toggle knob (E4): a sliding switch rather than a plain icon
+   button. The knob (not the track) carries the sun/moon icon and moves
+   between two fixed resting spots via independent left/right insets, the
+   same two-edge technique as .nav-indicator above -- Header.astro's click
+   handler knows the direction up front (only ever two states) and sets
+   the leading edge to a faster spring than the trailing edge, so the knob
+   stretches toward its new spot then the trailing edge settles. */
 .theme-toggle {
-  display: inline-grid; place-items: center;
-  width: 34px; height: 34px; margin-left: .35rem;
-  border: 1px solid var(--border); border-radius: var(--radius-sm);
-  background: var(--surface); color: var(--muted); cursor: pointer;
-  transition: color .15s, border-color .15s, background .15s;
+  position: relative;
+  display: inline-flex; align-items: center;
+  width: 42px; height: 24px; padding: 0; margin-left: .35rem;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); cursor: pointer;
+  transition: border-color .15s, background .15s;
 }
-.theme-toggle:hover { color: var(--text); border-color: var(--border-strong); }
-.theme-toggle svg { width: 17px; height: 17px; }
-.theme-toggle .moon { display: none; }
-:root[data-theme='dark'] .theme-toggle .sun { display: none; }
-:root[data-theme='dark'] .theme-toggle .moon { display: block; }
+.theme-toggle:hover { border-color: var(--border-strong); }
+.theme-toggle__knob {
+  position: absolute; top: 2px; left: 2px; right: 20px; z-index: 0;
+  display: inline-grid; place-items: center;
+  width: 18px; height: 18px; border-radius: 999px;
+  background: var(--text); color: var(--bg);
+  transition: left var(--knob-left-dur, .3s) cubic-bezier(.22, 1.04, .36, 1),
+    right var(--knob-right-dur, .3s) cubic-bezier(.22, 1.04, .36, 1);
+}
+.theme-toggle__knob svg { width: 11px; height: 11px; }
+.theme-toggle__knob .moon { display: none; }
+:root[data-theme='dark'] .theme-toggle__knob { left: 20px; right: 2px; }
+:root[data-theme='dark'] .theme-toggle__knob .sun { display: none; }
+:root[data-theme='dark'] .theme-toggle__knob .moon { display: block; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .theme-toggle .sun { display: none; }
-  :root:not([data-theme='light']) .theme-toggle .moon { display: block; }
+  :root:not([data-theme='light']) .theme-toggle__knob { left: 20px; right: 2px; }
+  :root:not([data-theme='light']) .theme-toggle__knob .sun { display: none; }
+  :root:not([data-theme='light']) .theme-toggle__knob .moon { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle__knob { transition: opacity .15s ease; }
 }
 
 /* ---- Cmd+K command palette (E4/sub-part c) ----------------------------
