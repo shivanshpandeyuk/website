@@ -72,5 +72,32 @@ const isCurrent = (href: string) => {
     sync();
     window.addEventListener('resize', placeIndicator);
     document.addEventListener('astro:page-load', sync);
+
+    // Nav compresses into a floating pill once the page has scrolled a
+    // little (E4/sub-part c). The header node is transition:persist'd so
+    // this whole script only ever runs once per SPA session -- safe to
+    // register the scroll listener here without a re-bind guard.
+    const header = document.querySelector('.site-header');
+    if (header) {
+      let compact = false;
+      let ticking = false;
+      const applyCompact = () => {
+        ticking = false;
+        const shouldCompact = window.scrollY > 24;
+        if (shouldCompact === compact) return;
+        compact = shouldCompact;
+        header.classList.toggle('site-header--compact', compact);
+      };
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(applyCompact);
+      };
+      applyCompact();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      // Astro resets scroll position on a client-side route change, so the
+      // header should un-compress along with it.
+      document.addEventListener('astro:page-load', applyCompact);
+    }
   })();
 </script>

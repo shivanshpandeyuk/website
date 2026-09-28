@@ -226,10 +226,36 @@ a { text-decoration: none; }
   background: color-mix(in oklab, var(--bg) 82%, transparent);
   backdrop-filter: saturate(1.1) blur(8px);
   border-bottom: 1px solid var(--border);
+  transition: border-color .32s ease;
 }
 .site-header__inner {
   display: flex; align-items: center; gap: 1.25rem;
   padding-block: .85rem; min-height: 56px;
+  border-radius: 0; border: 1px solid transparent;
+  transition:
+    padding-block .32s cubic-bezier(.22, 1.04, .36, 1),
+    min-height .32s cubic-bezier(.22, 1.04, .36, 1),
+    margin-block-start .32s cubic-bezier(.22, 1.04, .36, 1),
+    border-radius .32s cubic-bezier(.22, 1.04, .36, 1),
+    background-color .32s ease, border-color .32s ease, box-shadow .32s ease;
+}
+/* Nav compresses into a floating pill once the page scrolls (sub-part c);
+   toggled by Header.astro. --page-wide already insets the inner wrap from
+   the viewport edges, so rounding + a shadow reads as a capsule without
+   touching the wrap's width. Desktop only -- below 44rem the nav wraps
+   onto its own row (see the mobile override further down) where a pill
+   silhouette would look broken, so it's neutralised there. */
+.site-header--compact { border-bottom-color: transparent; }
+.site-header--compact .site-header__inner {
+  padding-block: .45rem; min-height: 44px;
+  margin-block-start: .55rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--surface) 94%, transparent);
+  border-color: var(--border);
+  box-shadow: 0 12px 28px -16px color-mix(in oklab, var(--text) 32%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header, .site-header__inner { transition: none; }
 }
 .brand {
   font-family: var(--font-sans);
@@ -413,6 +439,12 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
 @media (max-width: 44rem) {
   .site-header__inner { flex-wrap: wrap; row-gap: .25rem; padding-block: .5rem; min-height: 0; }
   .nav { margin-left: 0; width: 100%; gap: .1rem; }
+  /* Compact pill is desktop-only: a wrapped two-row nav can't read as a
+     capsule, so scroll-compression is a no-op here (mobile unchanged). */
+  .site-header--compact .site-header__inner {
+    padding-block: .5rem; min-height: 0; margin-block-start: 0;
+    border-radius: 0; background: transparent; border-color: transparent; box-shadow: none;
+  }
 }
 
 @media (max-width: 34rem) {
