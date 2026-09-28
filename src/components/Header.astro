@@ -74,9 +74,25 @@ const isCurrent = (href: string) => {
     const placeIndicator = () => {
       const active = links.find((a) => a.getAttribute('aria-current') === 'page');
       if (!indicator || !active) { if (indicator) indicator.style.opacity = '0'; return; }
+      const newLeft = active.offsetLeft;
+      const newRight = nav.clientWidth - (active.offsetLeft + active.offsetWidth);
+      // Two-edge spring (E4): give the edge travelling towards its new spot
+      // a faster duration than the edge it's leaving behind, so the pill
+      // stretches in the direction of travel then the trailing edge
+      // catches up and settles, rather than sliding uniformly.
+      const prevLeft = indicator.dataset.left === undefined ? null : parseFloat(indicator.dataset.left);
+      if (prevLeft !== null && prevLeft !== newLeft) {
+        const movingRight = newLeft > prevLeft;
+        indicator.style.setProperty('--nav-ind-left-dur', movingRight ? '.44s' : '.24s');
+        indicator.style.setProperty('--nav-ind-right-dur', movingRight ? '.24s' : '.44s');
+      } else {
+        indicator.style.setProperty('--nav-ind-left-dur', '.3s');
+        indicator.style.setProperty('--nav-ind-right-dur', '.3s');
+      }
+      indicator.dataset.left = String(newLeft);
       indicator.style.opacity = '1';
-      indicator.style.transform = `translateX(${active.offsetLeft}px)`;
-      indicator.style.width = `${active.offsetWidth}px`;
+      indicator.style.left = `${newLeft}px`;
+      indicator.style.right = `${newRight}px`;
     };
 
     const sync = () => {

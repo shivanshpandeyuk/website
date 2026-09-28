@@ -272,16 +272,22 @@ a { text-decoration: none; }
 }
 .nav a:hover { color: var(--text); background: var(--surface-2); }
 .nav a[aria-current='page'] { color: var(--text); font-weight: 600; }
-/* Two-edge-ish nav indicator (E2/E4): a pill slides under the active link
-   on navigation instead of the active state just appearing. Positioned in
-   JS (Header.astro) since it tracks a link's real layout box; desktop only
-   -- below 44rem the nav wraps onto its own row and aria-current's bold
-   text is enough (mobile stays visually unchanged per E3). */
+/* Two-edge nav indicator (E4): a pill slides under the active link on
+   navigation instead of the active state just appearing. Positioned in JS
+   (Header.astro) via independent `left`/`right` insets -- rather than
+   transform+width sharing one anchor edge -- so the edge in the direction
+   of travel (the leading edge) can run on a faster spring than the edge
+   being left behind (the trailing edge), giving the pill a genuine
+   stretch-then-settle motion instead of a uniform slide. Desktop only --
+   below 44rem the nav wraps onto its own row and aria-current's bold text
+   is enough (mobile stays visually unchanged per E3). */
 .nav-indicator {
-  position: absolute; left: 0; top: 0; height: 100%; z-index: 0;
+  position: absolute; top: 0; height: 100%; z-index: 0;
   border-radius: var(--radius-sm); background: var(--surface-2);
   opacity: 0; pointer-events: none;
-  transition: transform .38s cubic-bezier(.22, 1.04, .36, 1), width .38s cubic-bezier(.22, 1.04, .36, 1), opacity .15s ease;
+  transition: left var(--nav-ind-left-dur, .34s) cubic-bezier(.22, 1.04, .36, 1),
+    right var(--nav-ind-right-dur, .34s) cubic-bezier(.22, 1.04, .36, 1),
+    opacity .15s ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .nav-indicator { transition: opacity .15s ease; }
