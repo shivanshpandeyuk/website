@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Carousel from '../components/Carousel.astro';
 import PitchCard from '../components/PitchCard.astro';
+import PortfolioWidget from '../components/PortfolioWidget.astro';
 import { getCollection } from 'astro:content';
 import { SITE, SOCIALS } from '../consts';
 
@@ -98,6 +99,16 @@ const dissExcerpt = dissertation
           {pitches.map((p) => <PitchCard entry={p} />)}
         </Carousel>
       )}
+
+      <section class="reveal">
+        <div class="home-sec__head">
+          <h2>Portfolio</h2>
+        </div>
+        <p class="home-sec__lead">
+          My own Trading 212 portfolio, shown by weight only -- no position sizes or amounts.
+        </p>
+        <PortfolioWidget />
+      </section>
 
       {notesShown.length > 0 && (
         <section class="reveal">

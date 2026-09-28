@@ -1,0 +1,91 @@
+---
+// Reads public/data/portfolio.json at build time (percentages only, no
+// monetary amounts anywhere in this component -- see QUEUE.md item 6 and
+// DESIGN.md E4). Vite inlines the JSON import, so this is resolved once at
+// build time, never fetched client-side.
+import portfolio from '../../public/data/portfolio.json';
+
+interface Holding { ticker: string; weight_pct: number; return_pct: number }
+interface Portfolio { updated: string; total_return_pct: number; cash_pct: number; holdings: Holding[] }
+
+const data = portfolio as Portfolio;
+
+const SHOWN = 7;
+const sorted = [...data.holdings].sort((a, b) => b.weight_pct - a.weight_pct);
+const top = sorted.slice(0, SHOWN);
+const rest = sorted.slice(SHOWN);
+const restWeight = rest.reduce((sum, h) => sum + h.weight_pct, 0);
+const restReturn = rest.length
+  ? rest.reduce((sum, h) => sum + h.weight_pct * h.return_pct, 0) / restWeight
+  : 0;
+
+type Segment = { label: string; weight_pct: number; return_pct: number | null; fill: string };
+const toneFill = (tone: number | null) =>
+  tone === null ? 'var(--border-strong)' : `color-mix(in oklab, var(--accent) ${tone}%, var(--surface-2))`;
+
+const segments: Segment[] = [
+  ...top.map((h, i) => ({ label: h.ticker, weight_pct: h.weight_pct, return_pct: h.return_pct, fill: toneFill(92 - i * 11) })),
+  ...(rest.length ? [{ label: `Other (${rest.length})`, weight_pct: restWeight, return_pct: restReturn, fill: toneFill(null) }] : []),
+  { label: 'Cash', weight_pct: data.cash_pct, return_pct: null, fill: toneFill(null) },
+];
+
+const updated = new Date(data.updated).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+const fmtPct = (n: number) => `${n > 0 ? '+' : ''}${n.toFixed(1)}%`;
+---
+<div class="t212">
+  <div class="t212__head">
+    <span class="t212__brand">Trading 212</span>
+    <span class="t212__updated">Updated {updated}</span>
+  </div>
+  <dl class="tearsheet t212__stats">
+    <div><dt>Total return</dt><dd>{fmtPct(data.total_return_pct)}</dd></div>
+    <div><dt>Cash</dt><dd>{data.cash_pct.toFixed(1)}%</dd></div>
+    <div><dt>Holdings</dt><dd>{data.holdings.length}</dd></div>
+  </dl>
+  <div class="t212__bar">
+    {segments.map((s, i) => (
+      <div
+        class="t212__seg"
+        tabindex="0"
+        aria-label={`${s.label}: ${s.weight_pct.toFixed(1)}% of portfolio${s.return_pct !== null ? `, ${fmtPct(s.return_pct)} return` : ''}`}
+        style={`--w:${s.weight_pct}%; --fill:${s.fill}; --i:${i};`}
+      >
+        <span class="t212__tip" aria-hidden="true">
+          <b>{s.label}</b>
+          <span>{s.weight_pct.toFixed(1)}% of portfolio</span>
+          {s.return_pct !== null && <span>{fmtPct(s.return_pct)} return</span>}
+        </span>
+      </div>
+    ))}
+  </div>
+  <ul class="t212__legend">
+    {segments.map((s) => (
+      <li>
+        <span class="t212__dot" style={`--fill:${s.fill}`} aria-hidden="true"></span>
+        {s.label}
+        <span class="t212__legend-pct">{s.weight_pct.toFixed(1)}%</span>
+      </li>
+    ))}
+  </ul>
+  <p class="t212__note muted small">Allocation by weight. Percentages only -- no position sizes or amounts shown.</p>
+</div>
+
+<script>
+  const armPortfolioBars = () => {
+    const bars = Array.from(document.querySelectorAll<HTMLElement>('.t212__bar:not([data-armed])'));
+    if (!bars.length) return;
+    bars.forEach((bar) => { bar.dataset.armed = '1'; });
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('t212__bar--in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.2 });
+    bars.forEach((bar) => io.observe(bar));
+  };
+  armPortfolioBars();
+  document.addEventListener('astro:page-load', armPortfolioBars);
+</script>
