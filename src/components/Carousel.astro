@@ -65,6 +65,59 @@ const cid = id ?? 'car-' + Math.random().toString(36).slice(2, 8);
       track.addEventListener('scroll', () => window.requestAnimationFrame(update), { passive: true });
       window.addEventListener('resize', update);
       update();
+
+      // Draggable, rubber-band carousel for mouse/trackpad pointers. Touch
+      // already scrolls natively via overflow-x, so this only binds for
+      // pointer:fine devices and skips synthetic dragging on touch.
+      if (window.matchMedia('(pointer: fine)').matches) {
+        let dragging = false, moved = false, startX = 0, startScroll = 0, overshoot = 0, raf = null;
+        const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const maxScroll = () => track.scrollWidth - track.clientWidth;
+        const settle = () => {
+          if (raf) cancelAnimationFrame(raf);
+          if (reduceMotion() || overshoot === 0) { overshoot = 0; track.style.transform = ''; return; }
+          const step2 = () => {
+            overshoot *= 0.78;
+            if (Math.abs(overshoot) < 0.5) { overshoot = 0; track.style.transform = ''; raf = null; return; }
+            track.style.transform = `translateX(${overshoot}px)`;
+            raf = requestAnimationFrame(step2);
+          };
+          raf = requestAnimationFrame(step2);
+        };
+        const end = () => {
+          if (!dragging) return;
+          dragging = false;
+          track.classList.remove('car__track--dragging');
+          track.style.scrollSnapType = '';
+          settle();
+          if (moved) {
+            track.addEventListener('click', (ev) => { ev.preventDefault(); ev.stopPropagation(); }, { capture: true, once: true });
+          }
+        };
+        track.addEventListener('pointerdown', (e) => {
+          if (e.pointerType === 'touch') return;
+          dragging = true; moved = false;
+          startX = e.clientX; startScroll = track.scrollLeft;
+          track.classList.add('car__track--dragging');
+          track.style.scrollSnapType = 'none';
+          track.setPointerCapture(e.pointerId);
+        });
+        track.addEventListener('pointermove', (e) => {
+          if (!dragging) return;
+          const dx = e.clientX - startX;
+          if (Math.abs(dx) > 3) moved = true;
+          let target = startScroll - dx;
+          const max = maxScroll();
+          if (target < 0) { overshoot = -target * 0.35; target = 0; }
+          else if (target > max) { overshoot = (max - target) * 0.35; target = max; }
+          else { overshoot = 0; }
+          track.scrollLeft = target;
+          track.style.transform = overshoot ? `translateX(${overshoot}px)` : '';
+        });
+        track.addEventListener('pointerup', end);
+        track.addEventListener('pointercancel', end);
+        track.addEventListener('pointerleave', (e) => { if (dragging && e.buttons === 0) end(); });
+      }
     };
     const run = () => document.querySelectorAll('[data-car]').forEach(init);
     run();

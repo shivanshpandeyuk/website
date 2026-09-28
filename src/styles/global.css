@@ -478,6 +478,11 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   scroll-snap-align: start; flex: 0 0 auto;
   width: min(88%, 22rem);
 }
+@media (pointer: fine) {
+  .car__track { cursor: grab; }
+  .car__track--dragging { cursor: grabbing; scroll-behavior: auto; user-select: none; -webkit-user-select: none; }
+  .car__track--dragging > * { pointer-events: none; }
+}
 .car__dots { display: flex; justify-content: center; gap: .45rem; margin-top: 1rem; }
 .car__dot {
   width: 7px; height: 7px; padding: 0; border: none; border-radius: 999px;
