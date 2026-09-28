@@ -6,7 +6,7 @@ import { getCollection } from 'astro:content';
 const projects = (await getCollection('projects'))
   .sort((a, b) => (b.data.order - a.data.order) || ((b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)));
 ---
-<Base title="Projects" description="Programming and quantitative projects by Shivansh Pandey.">
+<Base title="Projects" description="Programming and quantitative projects by Shivansh Pandey." wide>
   <div class="article-head">
     <p class="eyebrow">Code &amp; quant</p>
     <h1>Projects</h1>

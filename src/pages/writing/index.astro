@@ -7,7 +7,7 @@ const posts = (await getCollection('writing', (p) => !p.data.draft))
 const cats = ['All', ...Array.from(new Set(posts.map((p) => p.data.category)))];
 const fmt = (d: Date) => d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
-<Base title="Writing" description="Essays and notes on investing and education by Shivansh Pandey.">
+<Base title="Writing" description="Essays and notes on investing and education by Shivansh Pandey." wide>
   <div class="article-head">
     <p class="eyebrow">Notebook</p>
     <h1>Writing</h1>

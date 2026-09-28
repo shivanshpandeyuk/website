@@ -71,6 +71,19 @@
   --radius-card: 14px;   /* deliberate larger radius on imagery cards only */
 }
 
+/* DESIGN.md E3: below 64rem nothing changes (mobile/tablet render is
+   untouched). From 64rem up the shell widens so desktop stops looking
+   capped for mobile — --page-wide reaches the full formula (index/home
+   grids use the room); --page (prose pages: notes, pitches, writing,
+   dissertations, 404, search) widens more modestly so the reading column
+   keeps breathing room either side without floating in empty page. */
+@media (min-width: 64rem) {
+  :root {
+    --page: min(100% - 2 * clamp(1.5rem, 4vw, 4rem), 70rem);
+    --page-wide: min(100% - 2 * clamp(1.5rem, 4vw, 4rem), 90rem);
+  }
+}
+
 /* ---- Tokens: dark ----------------------------------------------------- */
 :root[data-theme='dark'] {
   --bg:        #14140f;
@@ -289,7 +302,7 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
 .row__title { font-family: var(--font-sans); font-size: 1.12rem; font-weight: 540; letter-spacing: -0.015em; }
 .row a.row__title:hover { color: var(--accent); }
 .row__date { margin-left: auto; color: var(--faint); font-size: .85rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.row__desc { flex-basis: 100%; color: var(--muted); font-size: .95rem; margin-top: .1rem; }
+.row__desc { flex-basis: 100%; max-width: var(--measure); color: var(--muted); font-size: .95rem; margin-top: .1rem; }
 
 /* ---- Hero / about ----------------------------------------------------- */
 .hero { display: grid; gap: 1.1rem; max-width: var(--measure); }

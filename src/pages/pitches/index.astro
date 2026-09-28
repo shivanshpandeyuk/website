@@ -6,7 +6,7 @@ import { getCollection } from 'astro:content';
 const pitches = (await getCollection('pitches', (p) => p.data.status !== 'draft'))
   .sort((a, b) => (b.data.order - a.data.order) || (b.data.date.valueOf() - a.data.date.valueOf()));
 ---
-<Base title="Stock pitches" description="Equity research and stock pitches by Shivansh Pandey.">
+<Base title="Stock pitches" description="Equity research and stock pitches by Shivansh Pandey." wide>
   <div class="article-head">
     <p class="eyebrow">Equity research</p>
     <h1>Stock pitches</h1>
