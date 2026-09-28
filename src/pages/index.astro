@@ -121,7 +121,7 @@ const dissExcerpt = dissertation
                     <span class="gcard__tag">{n.data.section}</span>
                     <span class="gcard__tag">{n.data.year}</span>
                   </div>
-                  <h3 class="gcard__title">{n.data.title}</h3>
+                  <h3 class="gcard__title" transition:name={`note-title-${n.id}`}>{n.data.title}</h3>
                   <p class="gcard__desc">{n.data.description}</p>
                   <dl class="gcard__sheet">
                     <div><dt>Paper</dt><dd>{n.data.paper}</dd></div>
@@ -169,7 +169,7 @@ const dissExcerpt = dissertation
                     {p.data.status !== 'live' && <span class="gcard__tag gcard__tag--status">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
                     {p.data.tags.slice(0, 2).map((t) => <span class="gcard__tag">{t}</span>)}
                   </div>
-                  <h3 class="gcard__title">{p.data.title}</h3>
+                  <h3 class="gcard__title" transition:name={`project-title-${p.id}`}>{p.data.title}</h3>
                   <p class="gcard__desc">{p.data.description}</p>
                   {p.data.date && (
                     <dl class="gcard__sheet">

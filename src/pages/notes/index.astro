@@ -62,7 +62,7 @@ const files = (await getCollection('notes')).filter(n => n.data.files.length > 0
           <ul class="topic-list">
             {section.notes.map(note => <li class="topic-item" data-year={note.data.year} data-paper={note.data.paper} data-query={`${note.data.title} ${note.data.section} ${note.data.paper} ${note.data.year} ${note.data.description}`.toLocaleLowerCase('en-GB')}>
               <a href={`/notes/${note.id}/`}>
-                <h5>{note.data.title}</h5>
+                <h5 transition:name={`note-title-${note.id}`}>{note.data.title}</h5>
                 <p>{note.data.description}</p>
                 <span class="topic-read" aria-hidden="true">Read note →</span>
               </a>

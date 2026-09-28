@@ -15,7 +15,7 @@ const { Content } = await render(project);
     <header class="article-head">
       <a class="link small" href="/projects/">← Projects</a>
       <p class="eyebrow" style="margin-top:1.5rem">{project.data.tags.join(' · ')}</p>
-      <h1>{project.data.title}</h1>
+      <h1 transition:name={`project-title-${project.id}`}>{project.data.title}</h1>
       <p class="lead">{project.data.description}</p>
     </header>
     <div class="prose"><Content /></div>

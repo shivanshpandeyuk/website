@@ -6,10 +6,11 @@ const isCurrent = (href: string) => {
   return h === '/' ? path === '/' : path === h || path.startsWith(h + '/');
 };
 ---
-<header class="site-header">
+<header class="site-header" transition:persist="site-header">
   <div class="wrap-wide site-header__inner">
     <a href="/" class="brand">{SITE.shortName}</a>
     <nav class="nav" aria-label="Primary">
+      <span class="nav-indicator" aria-hidden="true"></span>
       {NAV.map((item) => (
         <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
       ))}
@@ -35,5 +36,41 @@ const isCurrent = (href: string) => {
       root.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch (e) {}
     });
+  })();
+</script>
+<script is:inline>
+  (() => {
+    // The header carries transition:persist (E2: it never flashes on
+    // navigation), so this DOM node and its scripts only run once for the
+    // whole SPA session. aria-current is baked in at build time per page, so
+    // after a client-side nav it goes stale on the persisted header unless we
+    // recompute it here on every astro:page-load.
+    const nav = document.querySelector('.nav');
+    if (!nav) return;
+    const indicator = nav.querySelector('.nav-indicator');
+    const links = Array.from(nav.querySelectorAll('a[href]')).filter((a) => a !== indicator && !a.classList.contains('search-link'));
+    const norm = (p) => p.replace(/\/$/, '') || '/';
+
+    const placeIndicator = () => {
+      const active = links.find((a) => a.getAttribute('aria-current') === 'page');
+      if (!indicator || !active) { if (indicator) indicator.style.opacity = '0'; return; }
+      indicator.style.opacity = '1';
+      indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+      indicator.style.width = `${active.offsetWidth}px`;
+    };
+
+    const sync = () => {
+      const path = norm(location.pathname);
+      links.forEach((a) => {
+        const href = norm(new URL(a.getAttribute('href'), location.href).pathname);
+        const current = href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+        if (current) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      });
+      placeIndicator();
+    };
+
+    sync();
+    window.addEventListener('resize', placeIndicator);
+    document.addEventListener('astro:page-load', sync);
   })();
 </script>

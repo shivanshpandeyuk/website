@@ -127,6 +127,34 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   ::view-transition-new(*) { animation: none !important; }
 }
 img, svg, video { display: block; max-width: 100%; height: auto; }
+
+/* ---- Page transitions (E2) --------------------------------------------
+   Astro's ClientRouter default crossfade is a ~90ms fade, too quick to read
+   as a transition. Replace it with a slower, directional swap: outgoing
+   content drifts up and blurs away, incoming content rises in behind it,
+   on a slightly overshooting spring curve (not bouncy/elastic). Cards that
+   carry a matching transition:name (pitch/project/note -> its detail page)
+   get the browser's own shared-element morph instead of this fade, because
+   the view-transition-group for a named pair is separate from ::root. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes vt-exit {
+    from { opacity: 1; transform: translateY(0); filter: blur(0); }
+    to   { opacity: 0; transform: translateY(-12px); filter: blur(4px); }
+  }
+  @keyframes vt-enter {
+    from { opacity: 0; transform: translateY(14px); filter: blur(4px); }
+    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  ::view-transition-old(root) {
+    animation: vt-exit 260ms cubic-bezier(.32, .72, 0, 1) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-enter 380ms cubic-bezier(.22, 1.04, .36, 1) 90ms both;
+  }
+  ::view-transition-group(*) {
+    animation-timing-function: cubic-bezier(.22, 1.04, .36, 1);
+  }
+}
 a { color: inherit; }
 
 body {
@@ -209,14 +237,32 @@ a { text-decoration: none; }
   white-space: nowrap;
 }
 .brand:hover { color: var(--accent); }
-.nav { margin-left: auto; display: flex; align-items: center; gap: .15rem; flex-wrap: wrap; }
+.nav { position: relative; margin-left: auto; display: flex; align-items: center; gap: .15rem; flex-wrap: wrap; }
 .nav a {
+  position: relative; z-index: 1;
   font-size: .92rem; color: var(--muted); font-weight: 500;
   padding: .38rem .6rem; border-radius: var(--radius-sm);
   transition: color .15s ease, background .15s ease;
 }
 .nav a:hover { color: var(--text); background: var(--surface-2); }
 .nav a[aria-current='page'] { color: var(--text); font-weight: 600; }
+/* Two-edge-ish nav indicator (E2/E4): a pill slides under the active link
+   on navigation instead of the active state just appearing. Positioned in
+   JS (Header.astro) since it tracks a link's real layout box; desktop only
+   -- below 44rem the nav wraps onto its own row and aria-current's bold
+   text is enough (mobile stays visually unchanged per E3). */
+.nav-indicator {
+  position: absolute; left: 0; top: 0; height: 100%; z-index: 0;
+  border-radius: var(--radius-sm); background: var(--surface-2);
+  opacity: 0; pointer-events: none;
+  transition: transform .38s cubic-bezier(.22, 1.04, .36, 1), width .38s cubic-bezier(.22, 1.04, .36, 1), opacity .15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-indicator { transition: opacity .15s ease; }
+}
+@media (max-width: 44rem) {
+  .nav-indicator { display: none; }
+}
 .theme-toggle {
   display: inline-grid; place-items: center;
   width: 34px; height: 34px; margin-left: .35rem;

@@ -8,7 +8,7 @@ const d = entry.data;
 const fmt = (x: Date) => x.toLocaleDateString('en-GB', { year: 'numeric', month: 'short' });
 ---
 <a class="pcard" href={`/pitches/${entry.id}`} style={d.cover ? `--cover:url('${d.cover}')` : ''}>
-  <div class="pcard__img"></div>
+  <div class="pcard__img" transition:name={`pitch-cover-${entry.id}`}></div>
   <span class="pcard__arrow" aria-hidden="true">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
   </span>
@@ -17,10 +17,10 @@ const fmt = (x: Date) => x.toLocaleDateString('en-GB', { year: 'numeric', month:
       {d.sector && <span class="pcard__tag">{d.sector}</span>}
       {d.exchange && <span class="pcard__tag">{d.exchange}</span>}
     </div>
-    <h3 class="pcard__title">{d.company}</h3>
+    <h3 class="pcard__title" transition:name={`pitch-title-${entry.id}`}>{d.company}</h3>
     <p class="pcard__thesis">{d.thesis}</p>
     <dl class="pcard__sheet">
-      <div><dt>Ticker</dt><dd>{d.ticker}</dd></div>
+      <div><dt>Ticker</dt><dd transition:name={`pitch-ticker-${entry.id}`}>{d.ticker}</dd></div>
       {d.recommendation && <div><dt>Stance</dt><dd>{d.recommendation}</dd></div>}
       <div><dt>Date</dt><dd>{fmt(d.date)}</dd></div>
     </dl>

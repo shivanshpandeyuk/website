@@ -18,14 +18,14 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
 
   {d.cover && (
     <div class="pitch-hero">
-      <div class="pitch-hero__img" style={`background-image:url('${d.cover}')`}></div>
+      <div class="pitch-hero__img" style={`background-image:url('${d.cover}')`} transition:name={`pitch-cover-${entry.id}`}></div>
       <div class="pitch-hero__cap">
         <div class="pcard__meta" style="margin-bottom:.3rem">
-          <span class="pcard__ticker" style="font-size:1rem">{d.ticker}</span>
+          <span class="pcard__ticker" style="font-size:1rem" transition:name={`pitch-ticker-${entry.id}`}>{d.ticker}</span>
           {d.exchange && <span style="font-size:.82rem;color:rgba(255,255,255,.72)">{d.exchange}</span>}
           {d.recommendation && <span class={'pcard__rec pcard__rec--' + d.recommendation.toLowerCase()}>{d.recommendation}</span>}
         </div>
-        <h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.6rem)">{d.company}</h1>
+        <h1 style="color:#fff;font-size:clamp(1.9rem,4vw,2.6rem)" transition:name={`pitch-title-${entry.id}`}>{d.company}</h1>
       </div>
     </div>
   )}
@@ -46,11 +46,11 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
         {!d.cover && (
           <>
             <div class="card__meta" style="font-size:.9rem">
-              <span class="card__ticker" style="font-size:1rem">{d.ticker}</span>
+              <span class="card__ticker" style="font-size:1rem" transition:name={`pitch-ticker-${entry.id}`}>{d.ticker}</span>
               {d.exchange && <span class="faint">{d.exchange}</span>}
               {d.recommendation && <span class={badgeClass(d.recommendation)}>{d.recommendation}</span>}
             </div>
-            <h1>{d.company}</h1>
+            <h1 transition:name={`pitch-title-${entry.id}`}>{d.company}</h1>
           </>
         )}
         <p class="lead" style="font-size:1.15rem">{d.thesis}</p>

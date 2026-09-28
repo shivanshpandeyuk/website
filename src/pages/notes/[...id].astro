@@ -25,7 +25,7 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
       <header class="article-head">
         <a class="link small" href="/notes/">← Cambridge notes</a>
         {note.data.draft && <p class="small muted" style="margin-top:1.5rem;margin-bottom:0">Draft — local preview only</p>}
-        <h1 style={note.data.draft ? 'margin-top:.4rem' : 'margin-top:1.5rem'}>{note.data.title}</h1>
+        <h1 style={note.data.draft ? 'margin-top:.4rem' : 'margin-top:1.5rem'} transition:name={`note-title-${note.id}`}>{note.data.title}</h1>
         <p class="lead">{note.data.description}</p>
       </header>
       <dl class="tearsheet">
