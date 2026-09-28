@@ -54,11 +54,16 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
           </>
         )}
         <p class="lead" style="font-size:1.15rem">{d.thesis}</p>
-        {d.pdf && (
-          <div class="article-meta">
-            <a class="link" href={d.pdf} target="_blank" rel="noopener">Full deck (PDF)</a>
-          </div>
-        )}
+        <div class="article-meta" data-pagefind-ignore>
+          {d.pdf && <a class="link" href={d.pdf} target="_blank" rel="noopener">Full deck (PDF)</a>}
+          <button type="button" class="copy-link" data-copy-link aria-label="Copy link to this page">
+            <span class="copy-link__icons" aria-hidden="true">
+              <svg class="copy-link__icon copy-link__icon--copy" viewBox="0 0 20 20" width="14" height="14"><path d="M7 3h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 7H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+              <svg class="copy-link__icon copy-link__icon--check" viewBox="0 0 20 20" width="14" height="14"><path d="M4 10.5 8 14l8-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span>Copy link</span>
+          </button>
+        </div>
       </div>
 
       <dl class="tearsheet">

@@ -1,4 +1,4 @@
-<!-- Shared progressive enhancements for article figures and wide tables. -->
+<!-- Shared progressive enhancements for article figures, wide tables and the copy-link control. -->
 <script>
   function enhanceReader() {
     const figures = document.querySelectorAll<HTMLImageElement>('.prose img');
@@ -29,6 +29,48 @@
   enhanceReader();
   // Re-run after client-side navigation (Astro view transitions).
   document.addEventListener('astro:page-load', enhanceReader);
+
+  // Copy-link button: writes the current URL to the clipboard, swaps its
+  // icon to a check mark, and raises a toast. Delegated on `document` and
+  // bound once (a `window` flag survives Astro's client-side navigation,
+  // where the script re-executes but `document` itself does not change).
+  function showToast(message: string) {
+    let host = document.getElementById('toast-host');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'toast-host';
+      host.className = 'toast-host';
+      host.setAttribute('role', 'status');
+      host.setAttribute('aria-live', 'polite');
+      document.body.append(host);
+    }
+    const toast = document.createElement('p');
+    toast.className = 'toast';
+    toast.textContent = message;
+    host.append(toast);
+    requestAnimationFrame(() => toast.classList.add('toast--in'));
+    window.setTimeout(() => {
+      toast.classList.remove('toast--in');
+      window.setTimeout(() => toast.remove(), 260);
+    }, 1800);
+  }
+  if (!(window as any).__copyLinkBound) {
+    (window as any).__copyLinkBound = true;
+    document.addEventListener('click', async (event) => {
+      const btn = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-copy-link]');
+      if (!btn) return;
+      event.preventDefault();
+      try {
+        await navigator.clipboard.writeText(location.href);
+      } catch {
+        return;
+      }
+      btn.classList.add('copy-link--done');
+      window.clearTimeout(Number(btn.dataset.copyTimer) || undefined);
+      btn.dataset.copyTimer = String(window.setTimeout(() => btn.classList.remove('copy-link--done'), 1600));
+      showToast('Link copied');
+    });
+  }
 </script>
 <style is:global>
   .prose th, .prose td { overflow-wrap:normal; }
@@ -36,4 +78,45 @@
   .prose .table-scroll:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
   .prose .figure-link { display:block; cursor:zoom-in; }
   .prose .figure-link:focus-visible { outline:2px solid var(--accent); outline-offset:4px; border-radius:var(--radius-sm); }
+
+  /* ---- Copy-link button + toast ---------------------------------------- */
+  .copy-link {
+    display: inline-flex; align-items: center; gap: .4rem;
+    font: inherit; font-size: .82rem; font-weight: 550;
+    padding: .4rem .75rem; border-radius: 999px;
+    border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--muted); cursor: pointer; line-height: 1;
+  }
+  .copy-link:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-link--done { border-color: var(--accent); color: var(--accent); }
+  .copy-link__icons { position: relative; width: 14px; height: 14px; display: inline-grid; place-items: center; }
+  .copy-link__icon { position: absolute; inset: 0; }
+  .copy-link__icon--check { color: var(--accent); opacity: 0; }
+  .copy-link--done .copy-link__icon--copy { opacity: 0; }
+  .copy-link--done .copy-link__icon--check { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .copy-link { transition: border-color .15s, color .15s; }
+    .copy-link__icon { transition: opacity .18s ease, transform .18s ease; }
+    .copy-link--done .copy-link__icon--copy { transform: scale(.6); }
+    .copy-link--done .copy-link__icon--check { transform: scale(1); }
+    .copy-link__icon--check { transform: scale(.6); }
+  }
+
+  .toast-host {
+    position: fixed; left: 50%; bottom: 1.75rem; transform: translateX(-50%);
+    z-index: 80; display: flex; flex-direction: column; gap: .5rem; align-items: center;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--text); color: var(--bg);
+    font-size: .82rem; font-weight: 550;
+    padding: .55rem 1.05rem; border-radius: 999px;
+    box-shadow: 0 10px 30px -12px rgba(0,0,0,.4);
+    opacity: 0; margin: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .toast { transform: translateY(8px); transition: opacity .22s ease, transform .22s ease; }
+    .toast--in { transform: translateY(0); }
+  }
+  .toast--in { opacity: 1; }
 </style>
