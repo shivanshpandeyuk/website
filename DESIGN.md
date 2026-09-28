@@ -83,6 +83,73 @@ across more than the 4 homepage sections, and Astro View Transitions for page-to
 under prefers-reduced-motion. (Done so far: the imagery-forward PROJECTS/NOTES homepage cards with
 circular-arrow, the notes PAPER/YEAR/TOPIC tearsheet, and the slow coverage marquee - see the log.)
 
+## E. v3 (2026-09-28) - SITEWIDE, VISIBLE TRANSITIONS, WIDER DESKTOP, MOTION PRINCIPLES
+Shiv feedback: (1) the design only reaches the homepage; (2) he sees no transition when clicking to
+other pages (ClientRouter is live but the default crossfade is too quick to register); (3) desktop has
+too much empty space left and right because the layout is capped for mobile. Mobile stays exactly as now.
+
+E1. Every page, not just home. Apply tokens, type, tearsheet metadata, imagery cards, hover states and
+scroll reveals to: notes index and every note page, pitches index and pitch pages, projects, writing
+index and posts, dissertation, search, 404. Shared header and footer. Audit each route by rendered
+screenshot; no page may still look like the old template.
+
+E2. Transitions you can see. Keep ClientRouter (Astro 7 per package.json; confirm the API in the
+installed version before editing). Add:
+- Shared-element morphs via transition:name: a pitch, project or note card morphs into that page title
+  block (title, ticker, cover each get a matching name), so a click grows the card into the page.
+- A designed default for other navigations: outgoing content fades and drifts up ~12px with a short
+  ~4px blur, incoming rises in; 350-450ms on a spring-like curve. Header persists (transition:persist)
+  so it never flashes. Nav active indicator slides to the new item.
+- Reduced-motion: instant swap.
+Verify by clicking through in a real browser and capturing frames mid-transition. A transition that
+cannot be seen at normal speed does not count.
+
+E3. Wider desktop, mobile unchanged. The cap --page 46rem / --page-wide 62rem is the cause. Below
+64rem nothing changes. From 64rem up:
+- Shell container about min(100% - 2 x clamp(1.5rem, 4vw, 4rem), 90rem).
+- Homepage: main column + resume rail span the shell; larger hero headline; card grids 3 columns
+  (4 on very wide).
+- Index pages (notes, pitches, projects, writing): full-shell grids or tables, not a narrow column.
+- Note and pitch pages: prose keeps a readable measure (~70ch) but the page uses the width with a
+  sticky left table of contents and a right tearsheet/metadata column, so the reading column sits in a
+  full layout instead of floating in empty space.
+- Hero and cover images may go full-bleed.
+Screenshot at 1440 and 1920 wide plus 390 phone; the phone render must match the current one.
+
+E4. Motion principles (adapted from a UI-motion prompt Shiv liked; principles only, not a video spec):
+- One shape, never cut: elements change state by morphing size, radius and colour rather than
+  swapping to a different element. On this site: the search icon morphs into a Cmd+K / Ctrl+K command
+  palette (type to filter notes, pitches, projects; Enter navigates); cards morph into their page (E2);
+  the sticky nav compresses into a floating pill on scroll and expands back.
+- Content swapping inside a morphing container cross-fades with a short blur; outgoing and incoming
+  text get separate exit and enter timing so they never overlap.
+- Springs everywhere, at most a tiny overshoot (damping ratio ~0.85-0.9), via CSS linear() spring
+  curves or a small closed-form spring in JS. No bouncy or elastic easing.
+- Two-edge indicators: nav and filter indicators (notes index by year and paper) move the leading
+  edge on a faster spring than the trailing edge, so the pill stretches then settles. Same for the
+  light/dark toggle knob.
+- Charts draw themselves: the Trading 212 allocation chart draws in on scroll-in with a hover tooltip
+  (percentages only, never amounts). Extend count-ups beyond the homepage.
+- Direct manipulation: carousels follow the cursor or finger while dragged and spring back from
+  wherever released, with a slight rubber-band past the ends.
+- Small confirmations: copy-email and copy-link buttons morph to a check, then a short toast.
+- Every hover, press and focus answers within ~100ms; no dead states.
+- Banned: bouncy easing, particles, glows, gradients on UI chrome (buttons, nav, cards, pills),
+  mismatched icon stroke widths, anything template-like. The hero accent radial wash counts as a glow:
+  remove it; the hero moves through the headline reveal and morphing elements instead.
+- Never put will-change on anything that gets scaled (text goes blurry). Animate transform and
+  opacity; blur only briefly during swaps.
+- Hanken Grotesk stays the single UI font; Fraunces italic only for one accent word in editorial
+  headlines. No Geist, no mono.
+- prefers-reduced-motion: every item degrades to an instant state change.
+
+E5. Content guardrails. Never name the stocks Shiv covered at Rothschild & Co / Redburn Atlantic
+anywhere (see the hard rule in the local queue). Any role titles shown read Intern, never Analyst.
+
+E6. Order: (a) E3 width + E1 sitewide shell, (b) E2 transitions, (c) E4 components (command palette,
+nav pill, two-edge indicators, T212 chart, carousel drag, copy-confirm). Each increment: build, rendered
+screenshots desktop 1440/1920 + phone 390, deploy, then log it in the INCREMENT LOG.
+
 ## INCREMENT LOG
 ### Increment 1 - tokens + type (2026-09-07, claude)
 - Fonts self-hosted in public/fonts (woff2, SIL OFL, no external requests):
