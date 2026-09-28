@@ -496,6 +496,43 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   font-variant-numeric: tabular-nums lining-nums;
 }
 
+/* ---- Reader shell: sticky left TOC + right tearsheet on note/pitch pages
+   (DESIGN.md E3). Below 64rem this is inert (display:block) and the two
+   asides are hidden, so the article renders exactly as it did before this
+   -- the mobile-visible contents/tearsheet stay inline in .reader-shell__main
+   as today. From 64rem up it becomes a 3-column grid and the inline copies
+   step aside for the sticky columns, so nothing is shown twice. ---- */
+.reader-shell { display: block; }
+.reader-shell__toc, .reader-shell__side { display: none; }
+@media (min-width: 64rem) {
+  .reader-shell {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr) 13rem;
+    gap: 1.75rem;
+    align-items: start;
+  }
+  .reader-shell__main { min-width: 0; }
+  .reader-shell__toc, .reader-shell__side { display: block; position: sticky; top: 5.25rem; }
+  .reader-shell__main > .tearsheet, .reader-shell__main > .contents { display: none; }
+  /* Pitch pages have no right-hand aside (only a left tearsheet) --
+     drop the unfilled third column so the content isn't stranded with
+     dead space on the right. */
+  .reader-shell--two-col { grid-template-columns: 13rem minmax(0, 1fr); }
+}
+.reader-shell__label {
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--faint); margin-bottom: .8rem;
+}
+.reader-shell__toc nav ul { list-style: none; font-size: .88rem; }
+.reader-shell__toc nav li { margin: .45rem 0; }
+.reader-shell__toc nav .subtopic { padding-left: .9rem; font-size: .92em; }
+.reader-shell__toc nav a { color: var(--muted); }
+.reader-shell__toc nav a:hover { color: var(--accent); }
+.reader-shell__side .tearsheet {
+  display: flex; flex-direction: column; gap: 1rem;
+  max-width: none; margin: 0; padding-top: .95rem; border-top: 1px solid var(--border);
+}
+
 /* ---- Inline pitch figures (Substack flow) ----------------------------- */
 .figure { margin: 1.9rem 0; }
 .figure img {

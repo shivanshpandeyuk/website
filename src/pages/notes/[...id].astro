@@ -12,28 +12,46 @@ const { Content, headings } = await render(note);
 const sections = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
 ---
 <Base title={note.data.title} description={note.data.description} ogType="article">
-  <article>
-    <header class="article-head">
-      <a class="link small" href="/notes/">← Cambridge notes</a>
-      {note.data.draft && <p class="small muted" style="margin-top:1.5rem;margin-bottom:0">Draft — local preview only</p>}
-      <h1 style={note.data.draft ? 'margin-top:.4rem' : 'margin-top:1.5rem'}>{note.data.title}</h1>
-      <p class="lead">{note.data.description}</p>
-    </header>
-    <dl class="tearsheet">
-      <div><dt>Paper</dt><dd>{note.data.paper}</dd></div>
-      <div><dt>Year</dt><dd>{note.data.year}</dd></div>
-      <div><dt>Topic</dt><dd>{note.data.section}</dd></div>
-    </dl>
-    <details class="contents" data-pagefind-ignore>
-      <summary>On this page</summary>
-      <nav aria-label="Contents">
-        <ul>{sections.map(section => <li class:list={{ subtopic: section.depth === 3 }}><a href={`#${section.slug}`}>{section.text}</a></li>)}</ul>
-      </nav>
-    </details>
-    <p class="figure-help small muted" hidden>Open any figure to view it at full size in a new tab.</p>
-    <div class="prose note-body"><Content /></div>
-    <p class="note-end" data-pagefind-ignore><a class="link" href="/notes/">← Back to all notes</a></p>
-  </article>
+  <div class="reader-shell">
+    {sections.length > 0 && (
+      <aside class="reader-shell__toc" data-pagefind-ignore>
+        <p class="reader-shell__label">On this page</p>
+        <nav aria-label="Contents">
+          <ul>{sections.map(section => <li class:list={{ subtopic: section.depth === 3 }}><a href={`#${section.slug}`}>{section.text}</a></li>)}</ul>
+        </nav>
+      </aside>
+    )}
+    <article class="reader-shell__main">
+      <header class="article-head">
+        <a class="link small" href="/notes/">← Cambridge notes</a>
+        {note.data.draft && <p class="small muted" style="margin-top:1.5rem;margin-bottom:0">Draft — local preview only</p>}
+        <h1 style={note.data.draft ? 'margin-top:.4rem' : 'margin-top:1.5rem'}>{note.data.title}</h1>
+        <p class="lead">{note.data.description}</p>
+      </header>
+      <dl class="tearsheet">
+        <div><dt>Paper</dt><dd>{note.data.paper}</dd></div>
+        <div><dt>Year</dt><dd>{note.data.year}</dd></div>
+        <div><dt>Topic</dt><dd>{note.data.section}</dd></div>
+      </dl>
+      <details class="contents" data-pagefind-ignore>
+        <summary>On this page</summary>
+        <nav aria-label="Contents">
+          <ul>{sections.map(section => <li class:list={{ subtopic: section.depth === 3 }}><a href={`#${section.slug}`}>{section.text}</a></li>)}</ul>
+        </nav>
+      </details>
+      <p class="figure-help small muted" hidden>Open any figure to view it at full size in a new tab.</p>
+      <div class="prose note-body"><Content /></div>
+      <p class="note-end" data-pagefind-ignore><a class="link" href="/notes/">← Back to all notes</a></p>
+    </article>
+    <aside class="reader-shell__side" data-pagefind-ignore>
+      <p class="reader-shell__label">Details</p>
+      <dl class="tearsheet">
+        <div><dt>Paper</dt><dd>{note.data.paper}</dd></div>
+        <div><dt>Year</dt><dd>{note.data.year}</dd></div>
+        <div><dt>Topic</dt><dd>{note.data.section}</dd></div>
+      </dl>
+    </aside>
+  </div>
   <ReaderEnhancements />
 </Base>
 
