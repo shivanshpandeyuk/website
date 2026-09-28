@@ -45,8 +45,22 @@ const files = (await getCollection('notes')).filter(n => n.data.files.length > 0
   </nav>
   <form class="library-filters" id="library-filters" role="search" aria-label="Filter notes" hidden>
     <label class="filter-query">Find a topic<input id="topic-query" type="search" placeholder="For example, cointegration or matching" /></label>
-    <label>Year<select id="year-filter"><option value="">All years</option>{years.map(year => <option>{year}</option>)}</select></label>
-    <label>Paper<select id="paper-filter"><option value="">All papers</option>{papers.map(paper => <option>{paper}</option>)}</select></label>
+    <div class="filter-group">
+      <span class="filter-group__label" id="year-filter-label">Year</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="year-filter-label" id="year-filter">
+        <span class="segmented__indicator" aria-hidden="true"></span>
+        <button type="button" class="segmented__btn" role="radio" aria-checked="true" tabindex="0" data-value="">All years</button>
+        {years.map(year => <button type="button" class="segmented__btn" role="radio" aria-checked="false" tabindex="-1" data-value={year}>{year}</button>)}
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-group__label" id="paper-filter-label">Paper</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="paper-filter-label" id="paper-filter">
+        <span class="segmented__indicator" aria-hidden="true"></span>
+        <button type="button" class="segmented__btn" role="radio" aria-checked="true" tabindex="0" data-value="">All papers</button>
+        {papers.map(paper => <button type="button" class="segmented__btn" role="radio" aria-checked="false" tabindex="-1" data-value={paper}>{paper}</button>)}
+      </div>
+    </div>
     <button type="reset" class="btn">Reset</button>
   </form>
   <p class="library-count small muted" id="library-count" role="status" aria-live="polite">{topics.length} notes</p>
@@ -127,20 +141,86 @@ const files = (await getCollection('notes')).filter(n => n.data.files.length > 0
 </Base>
 
 <script>
+// Segmented pill filter (year/paper): same two-edge spring technique as the
+// nav indicator and theme-toggle knob in Header.astro (leading edge -- the
+// one travelling toward its new spot -- runs a faster transition than the
+// trailing edge, so the pill stretches then settles rather than sliding
+// uniformly). Uses left+width rather than left+right because the track can
+// scroll horizontally on narrow screens, and an absolutely positioned
+// descendant's `right` offset doesn't track a scrolling ancestor's content
+// the way `left`/`width` do.
+function setupSegmented(root: HTMLElement, onChange: () => void) {
+  const indicator = root.querySelector<HTMLElement>('.segmented__indicator');
+  const btns = [...root.querySelectorAll<HTMLButtonElement>('.segmented__btn')];
+  if (!indicator || btns.length === 0) return { value: () => '', reset: () => {} };
+
+  const place = () => {
+    const active = btns.find(b => b.getAttribute('aria-checked') === 'true');
+    if (!active) { indicator.style.opacity = '0'; return; }
+    const newLeft = active.offsetLeft;
+    const newWidth = active.offsetWidth;
+    const prevLeft = indicator.dataset.left === undefined ? null : parseFloat(indicator.dataset.left);
+    if (prevLeft !== null && prevLeft !== newLeft) {
+      const movingRight = newLeft > prevLeft;
+      indicator.style.setProperty('--seg-ind-left-dur', movingRight ? '.44s' : '.24s');
+      indicator.style.setProperty('--seg-ind-right-dur', movingRight ? '.24s' : '.44s');
+    } else {
+      indicator.style.setProperty('--seg-ind-left-dur', '.3s');
+      indicator.style.setProperty('--seg-ind-right-dur', '.3s');
+    }
+    indicator.dataset.left = String(newLeft);
+    indicator.style.opacity = '1';
+    indicator.style.left = `${newLeft}px`;
+    indicator.style.width = `${newWidth}px`;
+  };
+
+  const select = (btn: HTMLButtonElement, { focus = false } = {}) => {
+    btns.forEach(b => { const on = b === btn; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; });
+    place();
+    if (focus) btn.focus();
+    btn.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    onChange();
+  };
+
+  btns.forEach((btn, i) => {
+    btn.addEventListener('click', () => select(btn));
+    btn.addEventListener('keydown', event => {
+      const dir = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1
+        : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1
+        : event.key === 'Home' ? -Infinity
+        : event.key === 'End' ? Infinity
+        : 0;
+      if (!dir) return;
+      event.preventDefault();
+      const next = btns[Math.max(0, Math.min(btns.length - 1, dir === Infinity ? btns.length - 1 : dir === -Infinity ? 0 : i + dir))];
+      select(next, { focus: true });
+    });
+  });
+
+  window.addEventListener('resize', place);
+  place();
+  return {
+    value: () => btns.find(b => b.getAttribute('aria-checked') === 'true')?.dataset.value ?? '',
+    reset: () => select(btns[0]),
+  };
+}
+
 function setupLibraryFilters() {
   const form = document.querySelector<HTMLFormElement>('#library-filters');
   const query = document.querySelector<HTMLInputElement>('#topic-query');
-  const year = document.querySelector<HTMLSelectElement>('#year-filter');
-  const paper = document.querySelector<HTMLSelectElement>('#paper-filter');
+  const yearRoot = document.querySelector<HTMLElement>('#year-filter');
+  const paperRoot = document.querySelector<HTMLElement>('#paper-filter');
   const items = [...document.querySelectorAll<HTMLElement>('.topic-item')];
-  if (!form || form.dataset.ready) return;
+  if (!form || form.dataset.ready || !query || !yearRoot || !paperRoot) return;
   function filterNotes() {
     const words = query!.value.trim().toLocaleLowerCase('en-GB').split(/\s+/).filter(Boolean);
+    const yearValue = year.value();
+    const paperValue = paper.value();
     let count = 0;
     for (const item of items) {
       item.hidden = !words.every(word => item.dataset.query!.includes(word)) ||
-        (!!year!.value && item.dataset.year !== year!.value) ||
-        (!!paper!.value && item.dataset.paper !== paper!.value);
+        (!!yearValue && item.dataset.year !== yearValue) ||
+        (!!paperValue && item.dataset.paper !== paperValue);
       if (!item.hidden) count++;
     }
     document.querySelectorAll<HTMLElement>('.topic-section, .paper-group, .year-group').forEach(group => {
@@ -149,13 +229,13 @@ function setupLibraryFilters() {
     document.querySelector('#library-count')!.textContent = `${count} ${count === 1 ? 'note' : 'notes'}`;
     (document.querySelector('#no-notes') as HTMLElement).hidden = count !== 0;
   }
-  if (form && query && year && paper) {
-    form.dataset.ready = '1';
-    form.hidden = false;
-    form.addEventListener('submit', event => event.preventDefault());
-    form.addEventListener('input', filterNotes);
-    form.addEventListener('reset', () => { query.value = ''; year.value = ''; paper.value = ''; filterNotes(); });
-  }
+  const year = setupSegmented(yearRoot, filterNotes);
+  const paper = setupSegmented(paperRoot, filterNotes);
+  form.dataset.ready = '1';
+  form.hidden = false;
+  form.addEventListener('submit', event => event.preventDefault());
+  form.addEventListener('input', filterNotes);
+  form.addEventListener('reset', () => { query.value = ''; year.reset(); paper.reset(); filterNotes(); });
 }
 setupLibraryFilters();
 // Re-run after client-side navigation (Astro view transitions).
@@ -172,8 +252,40 @@ document.addEventListener('astro:page-load', setupLibraryFilters);
   [hidden] { display:none !important; }
   .library-filters label { display:grid; gap:.4rem; font-size:.8rem; font-weight:600; flex:1 1 10rem; }
   .library-filters .filter-query { flex:2 1 18rem; }
-  input, select { width:100%; min-width:0; min-height:44px; padding:.6rem .75rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); font:inherit; font-weight:400; font-size:.9rem; }
-  input:focus-visible, select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  input { width:100%; min-width:0; min-height:44px; padding:.6rem .75rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); background:var(--surface); color:var(--text); font:inherit; font-weight:400; font-size:.9rem; }
+  input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  /* Segmented year/paper filter (DESIGN.md E4): replaces plain <select>s
+     with a pill radiogroup carrying the same two-edge spring indicator as
+     the nav pill and theme-toggle knob in Header.astro (see setupSegmented
+     below) -- the leading edge (the one moving toward its new spot) runs a
+     faster transition than the trailing edge, so the pill visibly
+     stretches then settles rather than sliding uniformly. */
+  .filter-group { display:flex; flex-direction:column; gap:.4rem; flex:1 1 14rem; min-width:0; }
+  .filter-group__label { font-size:.8rem; font-weight:600; }
+  .segmented {
+    position:relative; display:flex; gap:.15rem; min-height:44px;
+    padding:.2rem; border:1px solid var(--border-strong); border-radius:999px;
+    background:var(--surface); overflow-x:auto; scrollbar-width:none;
+  }
+  .segmented::-webkit-scrollbar { display:none; }
+  .segmented__indicator {
+    position:absolute; top:.2rem; bottom:.2rem; left:0; z-index:0;
+    border-radius:999px; background:var(--surface-2); opacity:0; pointer-events:none;
+    transition: left var(--seg-ind-left-dur, .34s) cubic-bezier(.22, 1.04, .36, 1),
+      width var(--seg-ind-right-dur, .34s) cubic-bezier(.22, 1.04, .36, 1), opacity .15s ease;
+  }
+  .segmented__btn {
+    position:relative; z-index:1; flex:0 0 auto; white-space:nowrap;
+    padding:.5rem .85rem; font:inherit; font-size:.82rem; font-weight:500;
+    color:var(--muted); background:transparent; border:0; border-radius:999px;
+    cursor:pointer; transition:color .15s ease;
+  }
+  .segmented__btn:hover { color:var(--text); }
+  .segmented__btn[aria-checked='true'] { color:var(--text); font-weight:600; }
+  .segmented__btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .segmented__indicator { transition: opacity .15s ease; }
+  }
   .library-count { margin-top:1rem; }
   .year-group { margin-top:4rem; scroll-margin-top:6rem; }
   .year-group:first-child { margin-top:1.5rem; }
