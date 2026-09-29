@@ -1069,3 +1069,13 @@ a.gcard:is(:hover, :focus-visible) .gcard__arrow { background: var(--accent); co
       calc(var(--reveal-delay, 0ms) + var(--reveal-item-delay, 0ms)), 0ms, 0ms;
   }
 }
+
+/* ---- Dissertation card: reading column + details column (desktop) ---- */
+.diss-card { padding: 1.5rem 1.6rem; display: grid; gap: 1.75rem; }
+.diss-card__title { font-size: 1.5rem; margin: .35rem 0 .8rem; }
+.diss-card__side { display: flex; flex-direction: column; gap: 1.25rem; align-items: flex-start; }
+.diss-card__side .tearsheet { display: flex; flex-direction: column; gap: 1rem; margin: 0; padding-top: .95rem; border-top: 1px solid var(--border); width: 100%; max-width: none; }
+@media (min-width: 64rem) {
+  .diss-card { grid-template-columns: minmax(0, 1fr) 17rem; gap: 3rem; padding: 2.2rem 2.4rem; }
+  .diss-card__side { position: sticky; top: 6rem; align-self: start; }
+}

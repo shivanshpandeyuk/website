@@ -42,12 +42,14 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
         <div><dt>Year</dt><dd>{note.data.year}</dd></div>
         <div><dt>Topic</dt><dd>{note.data.section}</dd></div>
       </dl>
+      {sections.length > 0 && (
       <details class="contents" data-pagefind-ignore>
         <summary>On this page</summary>
         <nav aria-label="Contents">
           <ul>{sections.map(section => <li class:list={{ subtopic: section.depth === 3 }}><a href={`#${section.slug}`}>{section.text}</a></li>)}</ul>
         </nav>
       </details>
+      )}
       <p class="figure-help small muted" hidden>Open any figure to view it at full size in a new tab.</p>
       <div class="prose note-body"><Content /></div>
       <p class="note-end" data-pagefind-ignore><a class="link" href="/notes/">← Back to all notes</a></p>

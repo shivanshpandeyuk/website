@@ -18,22 +18,24 @@ const rendered = await Promise.all(items.map(async (e) => ({ e, Content: (await 
   ) : (
     <div class="stack" style="--gap:2rem">
       {rendered.map(({ e, Content }) => (
-        <article class="card" style="padding:1.5rem 1.6rem">
-          <div class="card__meta">
-            <span class="tag">{e.data.level}</span>
-            <span class="faint">{e.data.year}</span>
-            {e.data.grade && <span class="badge">{e.data.grade}</span>}
-          </div>
-          <h2 style="font-size:1.4rem; margin-top:.3rem">{e.data.title}</h2>
-          <div class="prose" style="margin-top:.6rem">
-            <p class="muted"><strong style="color:var(--text)">Abstract.</strong> {e.data.abstract}</p>
-            <Content />
-          </div>
-          {e.data.pdf && (
-            <div style="margin-top:1rem">
-              <a class="btn btn--accent" href={e.data.pdf} target="_blank" rel="noopener">Read the full dissertation (PDF)</a>
+        <article class="card diss-card">
+          <div class="diss-card__main">
+            <p class="eyebrow">{e.data.level}</p>
+            <h2 class="diss-card__title">{e.data.title}</h2>
+            <div class="prose">
+              <p class="muted"><strong style="color:var(--text)">Abstract.</strong> {e.data.abstract}</p>
+              <Content />
             </div>
-          )}
+          </div>
+          <aside class="diss-card__side">
+            <dl class="tearsheet">
+              <div><dt>Degree</dt><dd>{e.data.level}</dd></div>
+              <div><dt>Year</dt><dd>{e.data.year}</dd></div>
+              {e.data.grade && <div><dt>Recognition</dt><dd>{e.data.grade}</dd></div>}
+              {e.data.tags?.length > 0 && <div><dt>Methods</dt><dd>{e.data.tags.join(' · ')}</dd></div>}
+            </dl>
+            {e.data.pdf && <a class="btn btn--accent" href={e.data.pdf} target="_blank" rel="noopener">Read the full dissertation (PDF)</a>}
+          </aside>
         </article>
       ))}
     </div>
