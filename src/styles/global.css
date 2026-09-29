@@ -392,7 +392,7 @@ a { text-decoration: none; }
   --pf-border: var(--border-strong);
   --pf-border-focus: var(--accent);
   --pf-hover: var(--surface-2);
-  --pf-mark: var(--accent-soft);
+  --pf-mark: var(--accent); --pf-outline-focus: var(--accent); --pf-font: var(--font-sans);
 }
 .cmdk__body pagefind-summary { display: block; margin-block: .75rem; }
 @media (prefers-reduced-motion: no-preference) {

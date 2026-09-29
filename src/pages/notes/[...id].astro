@@ -37,7 +37,7 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
           </button>
         </div>
       </header>
-      <dl class="tearsheet">
+      <dl class="tearsheet" data-pagefind-ignore>
         <div><dt>Paper</dt><dd>{note.data.paper}</dd></div>
         <div><dt>Year</dt><dd>{note.data.year}</dd></div>
         <div><dt>Topic</dt><dd>{note.data.section}</dd></div>
@@ -56,7 +56,7 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
     </article>
     <aside class="reader-shell__side" data-pagefind-ignore>
       <p class="reader-shell__label">Details</p>
-      <dl class="tearsheet">
+      <dl class="tearsheet" data-pagefind-ignore>
         <div><dt>Paper</dt><dd>{note.data.paper}</dd></div>
         <div><dt>Year</dt><dd>{note.data.year}</dd></div>
         <div><dt>Topic</dt><dd>{note.data.section}</dd></div>

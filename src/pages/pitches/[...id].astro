@@ -35,7 +35,7 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
   <div class:list={["reader-shell", sections.length === 0 && "reader-shell--two-col"]}>
     <aside class="reader-shell__toc" data-pagefind-ignore>
       <p class="reader-shell__label">Tearsheet</p>
-      <dl class="tearsheet">
+      <dl class="tearsheet" data-pagefind-ignore>
         <div><dt>Ticker</dt><dd>{d.ticker}</dd></div>
         {d.exchange && <div><dt>Exchange</dt><dd>{d.exchange}</dd></div>}
         {d.sector && <div><dt>Sector</dt><dd>{d.sector}</dd></div>}
@@ -68,7 +68,7 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
         </div>
       </div>
 
-      <dl class="tearsheet">
+      <dl class="tearsheet" data-pagefind-ignore>
         <div><dt>Ticker</dt><dd>{d.ticker}</dd></div>
         {d.exchange && <div><dt>Exchange</dt><dd>{d.exchange}</dd></div>}
         {d.sector && <div><dt>Sector</dt><dd>{d.sector}</dd></div>}
