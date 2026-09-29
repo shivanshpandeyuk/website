@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Carousel from '../../components/Carousel.astro';
 import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects'))
@@ -16,24 +15,27 @@ const projects = (await getCollection('projects'))
   {projects.length === 0 ? (
     <p class="muted">Projects are being written up shortly.</p>
   ) : (
-    <Carousel title="Selected work">
+    <div class="gcard-grid">
       {projects.map((p) => (
-        <div class="card">
-          <div class="card__meta">
-            {p.data.status !== 'live' && <span class="tag">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
+        <a class="gcard" href={`/projects/${p.id}/`}>
+          <span class="gcard__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+          </span>
+          <div class="gcard__body">
+            <div class="gcard__tags">
+              {p.data.status !== 'live' && <span class="gcard__tag gcard__tag--status">{p.data.status === 'wip' ? 'work in progress' : 'archived'}</span>}
+              {p.data.tags.slice(0, 2).map((t) => <span class="gcard__tag">{t}</span>)}
+            </div>
+            <h3 class="gcard__title" transition:name={`project-title-${p.id}`}>{p.data.title}</h3>
+            <p class="gcard__desc">{p.data.description}</p>
+            {p.data.date && (
+              <dl class="gcard__sheet">
+                <div><dt>Year</dt><dd>{p.data.date.getFullYear()}</dd></div>
+              </dl>
+            )}
           </div>
-          <h3 transition:name={`project-title-${p.id}`}><a href={`/projects/${p.id}/`}>{p.data.title}</a></h3>
-          <p class="muted small">{p.data.description}</p>
-          <div style="display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.3rem">
-            {p.data.tags.map((t) => <span class="tag">{t}</span>)}
-          </div>
-          <div style="display:flex; gap:.6rem; margin-top:auto; padding-top:.6rem">
-            <a class="link small" href={`/projects/${p.id}/`}>Read about it →</a>
-            {p.data.repo && <a class="link small" href={p.data.repo} target="_blank" rel="noopener">Code →</a>}
-            {p.data.url && <a class="link small" href={p.data.url} target="_blank" rel="noopener">Live →</a>}
-          </div>
-        </div>
+        </a>
       ))}
-    </Carousel>
+    </div>
   )}
 </Base>
