@@ -70,7 +70,7 @@ const cid = id ?? 'car-' + Math.random().toString(36).slice(2, 8);
       // already scrolls natively via overflow-x, so this only binds for
       // pointer:fine devices and skips synthetic dragging on touch.
       if (window.matchMedia('(pointer: fine)').matches) {
-        let dragging = false, moved = false, startX = 0, startScroll = 0, overshoot = 0, raf = null;
+        let dragging = false, moved = false, startX = 0, startScroll = 0, overshoot = 0, raf = null, pid = null;
         const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const maxScroll = () => track.scrollWidth - track.clientWidth;
         const settle = () => {
@@ -98,14 +98,20 @@ const cid = id ?? 'car-' + Math.random().toString(36).slice(2, 8);
           if (e.pointerType === 'touch') return;
           dragging = true; moved = false;
           startX = e.clientX; startScroll = track.scrollLeft;
-          track.classList.add('car__track--dragging');
-          track.style.scrollSnapType = 'none';
-          track.setPointerCapture(e.pointerId);
+          pid = e.pointerId;
         });
         track.addEventListener('pointermove', (e) => {
           if (!dragging) return;
           const dx = e.clientX - startX;
-          if (Math.abs(dx) > 3) moved = true;
+          if (!moved && Math.abs(dx) <= 4) return;
+          if (!moved) {
+            // Only take over the pointer once this is clearly a drag, so a plain
+            // click still reaches the card link underneath.
+            moved = true;
+            track.classList.add('car__track--dragging');
+            track.style.scrollSnapType = 'none';
+            try { track.setPointerCapture(pid); } catch (_) {}
+          }
           let target = startScroll - dx;
           const max = maxScroll();
           if (target < 0) { overshoot = -target * 0.35; target = 0; }

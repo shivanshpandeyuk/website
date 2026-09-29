@@ -24,7 +24,7 @@ const toneFill = (tone: number | null) =>
   tone === null ? 'var(--border-strong)' : `color-mix(in oklab, var(--accent) ${tone}%, var(--surface-2))`;
 
 const segments: Segment[] = [
-  ...top.map((h, i) => ({ label: h.ticker, weight_pct: h.weight_pct, return_pct: h.return_pct, fill: toneFill(92 - i * 11) })),
+  ...top.map((h, i) => ({ label: h.ticker.replace(/[a-z]$/, ''), weight_pct: h.weight_pct, return_pct: h.return_pct, fill: toneFill(92 - i * 11) })),
   ...(rest.length ? [{ label: `Other (${rest.length})`, weight_pct: restWeight, return_pct: restReturn, fill: toneFill(null) }] : []),
   { label: 'Cash', weight_pct: data.cash_pct, return_pct: null, fill: toneFill(null) },
 ];
@@ -67,7 +67,7 @@ const fmtPct = (n: number) => `${n > 0 ? '+' : ''}${n.toFixed(1)}%`;
       </li>
     ))}
   </ul>
-  <p class="t212__note muted small">Allocation by weight. Percentages only -- no position sizes or amounts shown.</p>
+  <p class="t212__note muted small">Allocation by weight. Percentages only. No position sizes or amounts shown.</p>
 </div>
 
 <script>

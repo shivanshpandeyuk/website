@@ -51,9 +51,8 @@ const isCurrent = (href: string) => {
     const btn = document.getElementById('theme-toggle');
     if (!btn) return;
     const knob = btn.querySelector('.theme-toggle__knob');
-    const isDark = () => document.documentElement.getAttribute('data-theme')
-      === 'dark' || (!document.documentElement.getAttribute('data-theme')
-        && matchMedia('(prefers-color-scheme: dark)').matches);
+    // Light is the default for everyone; dark only when chosen via this toggle.
+    const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
     btn.setAttribute('aria-checked', String(isDark()));
     btn.addEventListener('click', () => {
       const root = document.documentElement;

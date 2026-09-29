@@ -31,7 +31,7 @@ function reviewedPublicFiles() {
 // user GitHub Pages site (shivanshpandey.github.io), Netlify, or your own domain
 // with zero changes.
 export default defineConfig({
-  site: 'https://a-lazy-panda.github.io',
+  site: 'https://shivanshpandeyuk.github.io',
   base: '/',
   trailingSlash: 'ignore',
   image: {

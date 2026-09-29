@@ -44,19 +44,21 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* ---- Tokens: light (default) ------------------------------------------ */
+/* ---- Tokens: light (default) ------------------------------------------
+   Paper and ink with one deep claret accent. Light is the default for
+   everyone; dark is opt-in via the header toggle. ---- */
 :root {
-  --bg:        #fbfaf7;
-  --surface:   #ffffff;
-  --surface-2: #f4f2ec;
-  --text:      #191917;
-  --muted:     #5f5d57;
-  --faint:     #8a877f;
-  --border:    #e6e2d8;
-  --border-strong: #d6d1c4;
-  --accent:    #1f5d4e;   /* deep teal-green — the one deliberate accent */
-  --accent-2:  #164438;
-  --accent-soft: #e6f0ec;
+  --bg:        #f2efe9;   /* warm paper */
+  --surface:   #fbfaf7;
+  --surface-2: #e9e5dd;
+  --text:      #141414;   /* ink */
+  --muted:     #58544d;
+  --faint:     #726d64;
+  --border:    #dcd6cb;
+  --border-strong: #c7c0b3;
+  --accent:    #7a1f2e;   /* claret: the one accent */
+  --accent-2:  #5c1522;
+  --accent-soft: #efe1df;
 
   --font-serif: 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
   --font-sans:  'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -86,32 +88,17 @@
 
 /* ---- Tokens: dark ----------------------------------------------------- */
 :root[data-theme='dark'] {
-  --bg:        #14140f;
-  --surface:   #1b1b16;
-  --surface-2: #232219;
-  --text:      #ecebe4;
-  --muted:     #b0ada2;
-  --faint:     #85837a;
-  --border:    #2f2e26;
-  --border-strong: #3d3b31;
-  --accent:    #7cc9ac;
-  --accent-2:  #a2ddc6;
-  --accent-soft: #17251f;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg:        #14140f;
-    --surface:   #1b1b16;
-    --surface-2: #232219;
-    --text:      #ecebe4;
-    --muted:     #b0ada2;
-    --faint:     #85837a;
-    --border:    #2f2e26;
-    --border-strong: #3d3b31;
-    --accent:    #7cc9ac;
-    --accent-2:  #a2ddc6;
-    --accent-soft: #17251f;
-  }
+  --bg:        #0e0e0f;
+  --surface:   #161618;
+  --surface-2: #1e1e21;
+  --text:      #ece8e1;
+  --muted:     #a8a39a;
+  --faint:     #7a766f;
+  --border:    #29292c;
+  --border-strong: #37373b;
+  --accent:    #c8646f;
+  --accent-2:  #d98892;
+  --accent-soft: #241416;
 }
 
 /* ---- Reset ------------------------------------------------------------ */
@@ -137,22 +124,38 @@ img, svg, video { display: block; max-width: 100%; height: auto; }
    get the browser's own shared-element morph instead of this fade, because
    the view-transition-group for a named pair is separate from ::root. */
 @media (prefers-reduced-motion: no-preference) {
+  /* Slower and smoother than the first cut (feedback 2026-09-29): the old
+     page drifts up and softens out, the new one settles in behind it. No
+     overshoot. Named pairs (card -> page title/cover) morph over the same
+     timescale. */
   @keyframes vt-exit {
     from { opacity: 1; transform: translateY(0); filter: blur(0); }
-    to   { opacity: 0; transform: translateY(-12px); filter: blur(4px); }
+    to   { opacity: 0; transform: translateY(-16px); filter: blur(6px); }
   }
   @keyframes vt-enter {
-    from { opacity: 0; transform: translateY(14px); filter: blur(4px); }
+    from { opacity: 0; transform: translateY(22px); filter: blur(6px); }
     to   { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
   ::view-transition-old(root) {
-    animation: vt-exit 260ms cubic-bezier(.32, .72, 0, 1) both;
+    animation: vt-exit 420ms cubic-bezier(.4, 0, .2, 1) both;
   }
   ::view-transition-new(root) {
-    animation: vt-enter 380ms cubic-bezier(.22, 1.04, .36, 1) 90ms both;
+    animation: vt-enter 760ms cubic-bezier(.16, 1, .3, 1) 160ms both;
   }
   ::view-transition-group(*) {
-    animation-timing-function: cubic-bezier(.22, 1.04, .36, 1);
+    animation-duration: 680ms;
+    animation-timing-function: cubic-bezier(.16, 1, .3, 1);
+  }
+  /* Header stays put across pages so it never flashes. */
+  ::view-transition-old(site-header), ::view-transition-new(site-header) { animation: none; }
+
+  /* Sitewide page motion (components/Motion.astro): slower than the homepage. */
+  .m-rise { animation: m-rise 1s cubic-bezier(.16, 1, .3, 1) var(--m-delay, 0ms) both; }
+  @keyframes m-rise { from { opacity: 0; transform: translateY(20px); filter: blur(3px); } to { opacity: 1; transform: none; filter: blur(0); } }
+  .m-reveal { opacity: 0; transform: translateY(22px); }
+  .m-reveal.m-reveal--in {
+    opacity: 1; transform: none;
+    transition: opacity .9s cubic-bezier(.16, 1, .3, 1) var(--m-delay, 0ms), transform .9s cubic-bezier(.16, 1, .3, 1) var(--m-delay, 0ms);
   }
 }
 a { color: inherit; }
@@ -247,7 +250,7 @@ a { text-decoration: none; }
    silhouette would look broken, so it's neutralised there. */
 .site-header--compact { border-bottom-color: transparent; }
 .site-header--compact .site-header__inner {
-  padding-block: .45rem; min-height: 44px;
+  padding-block: .45rem; padding-inline: 1.4rem; min-height: 44px;
   margin-block-start: .55rem;
   border-radius: 999px;
   background: color-mix(in oklab, var(--surface) 94%, transparent);
@@ -324,11 +327,6 @@ a { text-decoration: none; }
 :root[data-theme='dark'] .theme-toggle__knob { left: 20px; right: 2px; }
 :root[data-theme='dark'] .theme-toggle__knob .sun { display: none; }
 :root[data-theme='dark'] .theme-toggle__knob .moon { display: block; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .theme-toggle__knob { left: 20px; right: 2px; }
-  :root:not([data-theme='light']) .theme-toggle__knob .sun { display: none; }
-  :root:not([data-theme='light']) .theme-toggle__knob .moon { display: block; }
-}
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle__knob { transition: opacity .15s ease; }
 }
@@ -432,9 +430,9 @@ a { text-decoration: none; }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .btn:active { transform: translateY(1px); }
 .btn--accent { background: var(--accent); border-color: var(--accent); color: #fff; }
-:root[data-theme='dark'] .btn--accent { color: #10161c; }
+:root[data-theme='dark'] .btn--accent { color: #0e0e0f; }
 .btn--accent:hover { background: var(--accent-2); border-color: var(--accent-2); color: #fff; }
-:root[data-theme='dark'] .btn--accent:hover { color: #10161c; }
+:root[data-theme='dark'] .btn--accent:hover { color: #0e0e0f; }
 
 .tag {
   display: inline-block; font-size: .72rem; font-weight: 500;
@@ -662,7 +660,7 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
 .pcard__arrow svg { width: 1.05rem; height: 1.05rem; }
-.pcard:is(:hover, :focus-visible) .pcard__arrow { background: #fff; color: #14140f; border-color: #fff; }
+.pcard:is(:hover, :focus-visible) .pcard__arrow { background: #fff; color: #141414; border-color: #fff; }
 
 .car__track > .pcard { width: min(85%, 21rem); }
 
@@ -698,7 +696,9 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
     gap: 1.75rem;
     align-items: start;
   }
-  .reader-shell__main { min-width: 0; }
+  .reader-shell__main { min-width: 0; grid-column: 2; grid-row: 1; }
+  .reader-shell__toc { grid-column: 1; grid-row: 1; }
+  .reader-shell__side { grid-column: 3; grid-row: 1; }
   .reader-shell__toc, .reader-shell__side { display: block; position: sticky; top: 5.25rem; }
   .reader-shell__main > .tearsheet, .reader-shell__main > .contents { display: none; }
   /* Pitch pages have no right-hand aside (only a left tearsheet) --
@@ -752,21 +752,11 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
   transition: border-color .2s ease;
 }
 a.gcard:is(:hover, :focus-visible) { border-color: var(--border-strong); }
-.gcard__wash {
-  position: relative; overflow: hidden;
-  height: 4.5rem; flex: none; border-bottom: 1px solid var(--border);
-}
-.gcard__wash::before {
-  content: ""; position: absolute; inset: 0;
-  background:
-    radial-gradient(circle at 82% 22%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 68%),
-    linear-gradient(120deg, var(--surface-2), color-mix(in oklab, var(--accent) 10%, var(--surface-2)));
-}
 .gcard__body {
   flex: 1 1 auto; display: flex; flex-direction: column; gap: .5rem;
-  padding: 1.1rem 1.25rem 1.2rem;
+  padding: 1.25rem 1.25rem 1.2rem;
 }
-.gcard__tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.gcard__tags { display: flex; flex-wrap: wrap; gap: .4rem; padding-right: 3rem; min-height: 2.2rem; align-items: center; }
 .gcard__tag {
   font-size: .64rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
   padding: .18rem .55rem; border-radius: 999px;
@@ -805,7 +795,7 @@ a.gcard:is(:hover, :focus-visible) .gcard__title { color: var(--accent); }
 }
 .gcard__arrow svg { width: 1rem; height: 1rem; }
 a.gcard:is(:hover, :focus-visible) .gcard__arrow { background: var(--accent); color: #fff; border-color: var(--accent); }
-:root[data-theme='dark'] a.gcard:is(:hover, :focus-visible) .gcard__arrow { color: #14140f; }
+:root[data-theme='dark'] a.gcard:is(:hover, :focus-visible) .gcard__arrow { color: #0e0e0f; }
 /* Card interaction uses translate independently of the scroll reveal's transform.
    Tags remain readable at rest; interaction replays a short staggered reveal. */
 @media (prefers-reduced-motion: no-preference) {

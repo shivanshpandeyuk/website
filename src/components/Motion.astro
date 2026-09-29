@@ -1,0 +1,79 @@
+---
+// Sitewide motion for every page except the homepage (which has its own,
+// faster choreography in index.astro). Two jobs:
+//  1. First load only: the page head (.article-head / .pitch-hero children)
+//     rises in on a slow stagger. On client-side navigation the page
+//     transition (global.css, "Page transitions") does that job instead, so
+//     nothing animates twice.
+//  2. Scroll reveals: cards, rows, list items, figures and prose blocks that
+//     start below the fold fade and rise in as they arrive, staggered when
+//     several arrive together. Anything already on screen is never hidden.
+// Reduced motion: does nothing; all content is visible without JS.
+---
+<script>
+  let navigated = false;
+  document.addEventListener('astro:before-preparation', () => { navigated = true; });
+
+  const HEAD = ':is(.article-head, .pitch-hero__cap) > *';
+  const ITEMS = [
+    '.pcard-grid > *', '.gcard', '.card', '.rows > .row', '.topic-list > li',
+    '.paper-heading', '.tearsheet > div',
+    '.prose > :is(p, ul, ol, h2, h3, h4, figure, blockquote, table, pre, .katex-display, img)',
+    '.prose > p > img', '.figure',
+  ].join(', ');
+
+  const run = () => {
+    if (document.querySelector('.home__main')) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const main = document.querySelector('main');
+    if (!main || main.dataset.motionArmed) return;
+    main.dataset.motionArmed = '1';
+
+    if (!navigated) {
+      Array.from(main.querySelectorAll(HEAD)).slice(0, 8).forEach((el, i) => {
+        (el as HTMLElement).style.setProperty('--m-delay', 60 + i * 90 + 'ms');
+        el.classList.add('m-rise');
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) return;
+    const vh = window.innerHeight;
+    const items = Array.from(new Set(main.querySelectorAll(ITEMS))) as HTMLElement[];
+    const set = new Set(items);
+    // Skip anything nested inside another revealed item, so nothing moves twice.
+    const outer = items.filter((el) => { let a = el.parentElement; while (a && a !== main) { if (set.has(a)) return false; a = a.parentElement; } return true; });
+    const below = outer.filter((el) => el.getBoundingClientRect().top > vh * 0.96 && !el.closest('.m-rise'));
+    if (!navigated) {
+      // First load: cards and rows already on screen follow the head in.
+      const headCount = main.querySelectorAll('.m-rise').length;
+      outer.filter((el) => el.getBoundingClientRect().top <= vh * 0.96 && !el.closest('.m-rise') && el.matches('.pcard-grid > *, .gcard, .card, .rows > .row, .topic-list > li, .paper-heading'))
+        .slice(0, 12)
+        .forEach((el, i) => { el.style.setProperty('--m-delay', 60 + (headCount + i) * 80 + 'ms'); el.classList.add('m-rise'); });
+    }
+    below.forEach((el) => el.classList.add('m-reveal'));
+
+    let batch: HTMLElement[] = [];
+    let queued = false;
+    const flush = () => {
+      queued = false;
+      batch.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+      batch.forEach((el, i) => {
+        el.style.setProperty('--m-delay', Math.min(i, 6) * 70 + 'ms');
+        el.classList.add('m-reveal--in');
+      });
+      batch = [];
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        batch.push(e.target as HTMLElement);
+      });
+      if (batch.length && !queued) { queued = true; requestAnimationFrame(flush); }
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.04 });
+    below.forEach((el) => io.observe(el));
+  };
+
+  run();
+  document.addEventListener('astro:page-load', run);
+</script>

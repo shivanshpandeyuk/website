@@ -7,12 +7,12 @@ export const SITE = {
   description:
     'Shivansh Pandey — B.A. Economics, Cambridge and M.S. Statistics, LSE. My Cambridge economics notes, the stock pitches I have worked up, writing on investing and how to think about it, some code, and my dissertation.',
   email: 'shivanshpandeyuk@gmail.com',
-  url: 'https://a-lazy-panda.github.io',
+  url: 'https://shivanshpandeyuk.github.io',
 } as const;
 
 export const SOCIALS: { label: string; href: string }[] = [
   { label: 'Email', href: 'mailto:shivanshpandeyuk@gmail.com' },
-  { label: 'GitHub', href: 'https://github.com/A-Lazy-Panda' },
+  { label: 'GitHub', href: 'https://github.com/shivanshpandeyuk' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/shivansh-pandey-uk/' },
 ];
 
