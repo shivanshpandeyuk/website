@@ -1079,3 +1079,18 @@ a.gcard:is(:hover, :focus-visible) .gcard__arrow { background: var(--accent); co
   .diss-card { grid-template-columns: minmax(0, 1fr) 17rem; gap: 3rem; padding: 2.2rem 2.4rem; }
   .diss-card__side { position: sticky; top: 6rem; align-self: start; }
 }
+
+/* Pitch pages: right-hand contents list (mirrors the note TOC styling). */
+.pitch-toc ul { list-style: none; padding: .95rem 0 0; border-top: 1px solid var(--border); font-size: .88rem; }
+.pitch-toc li { margin: .45rem 0; }
+.pitch-toc a { color: var(--muted); text-decoration: none; }
+.pitch-toc a:hover { color: var(--accent); }
+
+/* Pitch hero: the ticker set large in the italic serif, faint, at the right. */
+.pitch-hero__ghost {
+  position: absolute; z-index: 1; right: -.04em; top: 50%; translate: 0 -54%;
+  font-family: var(--font-accent); font-style: italic; font-weight: 600;
+  font-size: clamp(6rem, 17vw, 13.5rem); line-height: 1; letter-spacing: -0.02em;
+  color: rgba(236, 232, 225, .09); white-space: nowrap; pointer-events: none; user-select: none;
+}
+@media (max-width: 40rem) { .pitch-hero__ghost { display: none; } }

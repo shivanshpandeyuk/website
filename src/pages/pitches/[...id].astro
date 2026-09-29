@@ -8,7 +8,8 @@ export async function getStaticPaths() {
   return pitches.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
 }
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const sections = headings.filter((h) => h.depth === 2);
 const d = entry.data;
 const fmt = (x: Date) => x.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase();
@@ -19,6 +20,7 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
   {d.cover && (
     <div class="pitch-hero">
       <div class="pitch-hero__img" style={`background-image:url('${d.cover}')`} transition:name={`pitch-cover-${entry.id}`}></div>
+      <span class="pitch-hero__ghost" aria-hidden="true">{d.ticker}</span>
       <div class="pitch-hero__cap">
         <div class="pcard__meta" style="margin-bottom:.3rem">
           <span class="pcard__ticker" style="font-size:1rem" transition:name={`pitch-ticker-${entry.id}`}>{d.ticker}</span>
@@ -30,7 +32,7 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
     </div>
   )}
 
-  <div class="reader-shell reader-shell--two-col">
+  <div class:list={["reader-shell", sections.length === 0 && "reader-shell--two-col"]}>
     <aside class="reader-shell__toc" data-pagefind-ignore>
       <p class="reader-shell__label">Tearsheet</p>
       <dl class="tearsheet">
@@ -83,6 +85,14 @@ const badgeClass = (r?: string) => 'badge badge--' + (r ?? 'watch').toLowerCase(
         For information and discussion only. Not investment advice, not a recommendation, and not a solicitation. Figures are tagged [R] reported, [C] calculated, [E] estimate, [U] unverified; check them against primary sources before you rely on any of them.
       </p>
     </article>
+    {sections.length > 0 && (
+      <aside class="reader-shell__side" data-pagefind-ignore>
+        <p class="reader-shell__label">On this page</p>
+        <nav aria-label="Contents" class="pitch-toc">
+          <ul>{sections.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+        </nav>
+      </aside>
+    )}
   </div>
   <ReaderEnhancements />
 </Base>
