@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Rebuild the site and publish it to https://a-lazy-panda.github.io
+# Rebuild the site and publish it to https://shivanshpandeyuk.github.io
 set -e
 cd "$(dirname "$0")"
 npm install --no-audit --no-fund
+python3 scripts/sync-apple-books.py || true   # refresh /reading from Apple Books
 npm run build
 git push origin HEAD:main 2>/dev/null || true  # keep source repo current
 cd dist

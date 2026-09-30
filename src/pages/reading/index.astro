@@ -1,0 +1,525 @@
+---
+import Base from '../../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+
+const all = (await getCollection('books', (b) => !b.data.hidden));
+const fmtMonth = (d?: Date) => d ? d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) : '';
+const statusRank = { reading: 0, finished: 1, shelf: 2 } as const;
+// Default order: reading now (most progress first), then finished (latest
+// first), then the rest of the shelf (latest added first).
+const books = all.sort((a, b) =>
+  statusRank[a.data.status] - statusRank[b.data.status] ||
+  (a.data.status === 'reading' ? b.data.progress - a.data.progress : 0) ||
+  ((b.data.finished?.valueOf() ?? 0) - (a.data.finished?.valueOf() ?? 0)) ||
+  ((b.data.added?.valueOf() ?? 0) - (a.data.added?.valueOf() ?? 0)) ||
+  (a.data.series ?? '').localeCompare(b.data.series ?? '') ||
+  (a.data.seriesIndex ?? 0) - (b.data.seriesIndex ?? 0) ||
+  a.data.title.localeCompare(b.data.title));
+
+const rendered = await Promise.all(books.map(async (b) => {
+  const { Content } = await render(b);
+  const hasBody = (b.body ?? '').replace(/<!--[\s\S]*?-->/g, '').trim().length > 0;
+  const series = b.data.series
+    ? books.filter((o) => o.data.series === b.data.series).sort((x, y) => (x.data.seriesIndex ?? 0) - (y.data.seriesIndex ?? 0))
+    : [];
+  return { b, Content, hasBody, series };
+}));
+
+const count = (s: string) => books.filter((b) => b.data.status === s).length;
+const genres = [...new Set(books.map((b) => b.data.genre))].sort();
+const reading = books.filter((b) => b.data.status === 'reading');
+const lastDone = books.filter((b) => b.data.status === 'finished').sort((a, b) => (b.data.finished?.valueOf() ?? 0) - (a.data.finished?.valueOf() ?? 0))[0];
+const statusLine = (d: typeof books[number]['data']) =>
+  d.status === 'finished' ? (d.finished ? `Finished ${fmtMonth(d.finished)}` : 'Finished')
+  : d.status === 'reading' ? `Reading, ${d.progress}%`
+  : 'On the shelf';
+const seriesLabel = (d: typeof books[number]['data']) => d.series ? (d.seriesIndex ? `${d.series} · ${d.seriesIndex}` : d.series) : '';
+---
+<Base title="Reading" description="Books Shiv Pandey has finished, is reading and has lined up next." wide>
+  <div class="article-head">
+    <p class="eyebrow">Bookshelf</p>
+    <h1>What I'm <span class="accent">reading</span></h1>
+    <p class="lead">Straight from my Apple Books library: what I've finished, what I'm partway through, and what's next on the pile.</p>
+  </div>
+
+  <dl class="shelf-stats" data-pagefind-ignore>
+    <div><dt>Finished</dt><dd>{count('finished')}</dd></div>
+    <div><dt>Reading now</dt><dd>{count('reading')}</dd></div>
+    <div><dt>On the shelf</dt><dd>{count('shelf')}</dd></div>
+    {lastDone && <div class="shelf-stats__wide"><dt>Last finished</dt><dd><button type="button" class="shelf-link" data-open={lastDone.id}>{lastDone.data.title}</button>, {fmtMonth(lastDone.data.finished)}</dd></div>}
+  </dl>
+
+  {reading.length > 0 && (
+    <section class="now" aria-labelledby="now-h">
+      <h2 id="now-h" class="now__label">Reading now</h2>
+      <div class="now__row">
+        {reading.map((b) => (
+          <button type="button" class="now__item" data-open={b.id}>
+            <Image src={b.data.cover} alt="" widths={[120, 240]} sizes="4.5rem" class="now__cover" />
+            <span class="now__text">
+              <span class="now__title">{b.data.title}</span>
+              <span class="now__author">{b.data.author}{b.data.series && ` · ${seriesLabel(b.data)}`}</span>
+              <span class="now__bar" style={`--p:${b.data.progress}`}><span></span></span>
+              <span class="now__pct">{b.data.progress}% read</span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <div class="shelf-controls" data-pagefind-ignore>
+    <div class="segmented" role="radiogroup" aria-label="Status" id="status-filter">
+      <span class="segmented__indicator" aria-hidden="true"></span>
+      <button type="button" class="segmented__btn" role="radio" aria-checked="true" tabindex="0" data-value="">All <span class="n">{books.length}</span></button>
+      <button type="button" class="segmented__btn" role="radio" aria-checked="false" tabindex="-1" data-value="finished">Finished <span class="n">{count('finished')}</span></button>
+      <button type="button" class="segmented__btn" role="radio" aria-checked="false" tabindex="-1" data-value="reading">Reading <span class="n">{count('reading')}</span></button>
+      <button type="button" class="segmented__btn" role="radio" aria-checked="false" tabindex="-1" data-value="shelf">On the shelf <span class="n">{count('shelf')}</span></button>
+    </div>
+    <div class="segmented" role="radiogroup" aria-label="Genre" id="genre-filter">
+      <span class="segmented__indicator" aria-hidden="true"></span>
+      <button type="button" class="segmented__btn" role="radio" aria-checked="true" tabindex="0" data-value="">All genres</button>
+      {genres.map((g) => <button type="button" class="segmented__btn" role="radio" aria-checked="false" tabindex="-1" data-value={g}>{g}</button>)}
+    </div>
+    <div class="shelf-sort">
+      <label class="sr-only" for="shelf-sort">Sort</label>
+      <select id="shelf-sort">
+        <option value="recent">Recent</option>
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+        <option value="series">Series</option>
+      </select>
+      <button type="button" class="shelf-shuffle" id="shelf-shuffle" aria-label="Shuffle the shelf">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        <span>Shuffle</span>
+      </button>
+    </div>
+  </div>
+
+  <ol class="shelf-grid" id="shelf">
+    {books.map((b, i) => (
+      <li class="book" data-slug={b.id} data-status={b.data.status} data-genre={b.data.genre}
+          data-title={b.data.title} data-author={b.data.author.split(' ').slice(-1)[0]} data-series={`${b.data.series ?? '~'} ${String(b.data.seriesIndex ?? 0).padStart(2, '0')}`} data-order={i}>
+        <button type="button" class="book__btn" data-open={b.id} aria-label={`${b.data.title} by ${b.data.author}`}>
+          <span class="book__cover">
+            <Image src={b.data.cover} alt="" widths={[240, 360, 480]} sizes="(min-width: 64rem) 11rem, 42vw" loading={i < 12 ? 'eager' : 'lazy'} />
+          </span>
+          <span class="book__meta">
+            <span class="book__title">{b.data.title}</span>
+            <span class="book__author">{b.data.author}</span>
+            {b.data.series && <span class="book__series">{seriesLabel(b.data)}</span>}
+            {b.data.rating && <span class="stars" aria-label={`${b.data.rating} out of 5`}>{[1,2,3,4,5].map((n) => <span class:list={['star', n <= b.data.rating! && 'star--on']}>★</span>)}</span>}
+            {b.data.take && <span class="book__take">{b.data.take}</span>}
+            {b.data.status === 'reading'
+              ? <span class="book__progress" style={`--p:${b.data.progress}`}><span class="book__bar"><span></span></span><span class="book__pct">{b.data.progress}%</span></span>
+              : <span class:list={['book__status', `book__status--${b.data.status}`]}>{statusLine(b.data)}</span>}
+          </span>
+        </button>
+      </li>
+    ))}
+  </ol>
+  <p class="shelf-empty muted" id="shelf-empty" hidden>Nothing here with those filters.</p>
+
+  <p class="shelf-foot small muted">Synced from Apple Books. Ratings and write-ups are added by hand as I get to them.</p>
+
+  <!-- One template per book: cloned into the dialog when a book opens. -->
+  {rendered.map(({ b, Content, hasBody, series }) => (
+    <template id={`book-${b.id}`}>
+      <div class="spread__page spread__page--left">
+        <div class="spread__cover"><Image src={b.data.cover} alt={`Cover of ${b.data.title}`} widths={[400, 640]} sizes="(min-width: 48rem) 16rem, 55vw" /></div>
+        <h2 class="spread__title">{b.data.title}</h2>
+        <p class="spread__author">{b.data.author}</p>
+        {b.data.rating && <p class="stars stars--lg" aria-label={`${b.data.rating} out of 5`}>{[1,2,3,4,5].map((n) => <span class:list={['star', n <= b.data.rating! && 'star--on']}>★</span>)}</p>}
+        {b.data.take && <p class="spread__take">{b.data.take}</p>}
+        <dl class="tearsheet spread__sheet">
+          {b.data.series && <div><dt>Series</dt><dd>{seriesLabel(b.data)}</dd></div>}
+          <div><dt>Genre</dt><dd>{b.data.genre}</dd></div>
+          {b.data.firstPublished && <div><dt>First published</dt><dd>{b.data.firstPublished}</dd></div>}
+          <div><dt>Status</dt><dd>{statusLine(b.data)}</dd></div>
+        </dl>
+        <button type="button" class="spread__copy" data-copy-book={b.id}>Copy link</button>
+      </div>
+      <div class="spread__page spread__page--right">
+        {hasBody ? (
+          <div class="prose spread__prose"><Content /></div>
+        ) : (
+          <div class="spread__record">
+            <p class="reader-shell__label">Reading record</p>
+            {b.data.status === 'reading' && (
+              <div class="spread__progress" style={`--p:${b.data.progress}`}>
+                <span class="spread__bar"><span></span></span>
+                <span class="spread__pct">{b.data.progress}% read</span>
+              </div>
+            )}
+            <dl class="tearsheet spread__sheet">
+              {b.data.added && <div><dt>Added to library</dt><dd>{fmtMonth(b.data.added)}</dd></div>}
+              {b.data.finished && <div><dt>Finished</dt><dd>{fmtMonth(b.data.finished)}</dd></div>}
+            </dl>
+            {series.length > 1 && (
+              <div class="spread__series">
+                <p class="reader-shell__label">{b.data.series}, in my library</p>
+                <ol>
+                  {series.map((s) => (
+                    <li class:list={[s.id === b.id && 'is-current']}>
+                      <button type="button" data-open={s.id} disabled={s.id === b.id}>
+                        <span class="idx">{s.data.seriesIndex ?? ''}</span>
+                        <span class="t">{s.data.title}</span>
+                        <span class="st">{statusLine(s.data)}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+            <p class="spread__none">No write-up yet.</p>
+          </div>
+        )}
+      </div>
+    </template>
+  ))}
+
+  <dialog class="spread" id="book-dialog" aria-labelledby="book-dialog-title">
+    <button type="button" class="spread__close" aria-label="Close" data-close>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <div class="spread__book" id="book-dialog-body"></div>
+  </dialog>
+</Base>
+
+<script>
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Two-edge spring pill (same technique as the notes index filters).
+  function setupSegmented(root: HTMLElement, onChange: () => void) {
+    const ind = root.querySelector<HTMLElement>('.segmented__indicator')!;
+    const btns = [...root.querySelectorAll<HTMLButtonElement>('.segmented__btn')];
+    const place = () => {
+      const a = btns.find((b) => b.getAttribute('aria-checked') === 'true');
+      if (!a) return;
+      const prev = ind.dataset.left === undefined ? null : parseFloat(ind.dataset.left);
+      const right = prev !== null && a.offsetLeft > prev;
+      ind.style.setProperty('--seg-ind-left-dur', prev === null || prev === a.offsetLeft ? '.3s' : right ? '.44s' : '.24s');
+      ind.style.setProperty('--seg-ind-right-dur', prev === null || prev === a.offsetLeft ? '.3s' : right ? '.24s' : '.44s');
+      ind.dataset.left = String(a.offsetLeft);
+      ind.style.opacity = '1'; ind.style.left = a.offsetLeft + 'px'; ind.style.width = a.offsetWidth + 'px';
+    };
+    const select = (btn: HTMLButtonElement, fire = true) => {
+      btns.forEach((b) => { const on = b === btn; b.setAttribute('aria-checked', String(on)); b.tabIndex = on ? 0 : -1; });
+      place(); if (fire) onChange();
+    };
+    btns.forEach((b, i) => {
+      b.addEventListener('click', () => select(b));
+      b.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return; e.preventDefault();
+        const n = btns[Math.max(0, Math.min(btns.length - 1, i + d))]; select(n); n.focus();
+      });
+    });
+    window.addEventListener('resize', place);
+    requestAnimationFrame(place);
+    return {
+      value: () => btns.find((b) => b.getAttribute('aria-checked') === 'true')?.dataset.value ?? '',
+      set: (v: string) => { const b = btns.find((x) => (x.dataset.value ?? '') === v); if (b) select(b, false); },
+    };
+  }
+
+  function initShelf() {
+    const grid = document.getElementById('shelf');
+    if (!grid || grid.dataset.ready) return;
+    grid.dataset.ready = '1';
+    const items = [...grid.querySelectorAll<HTMLElement>('.book')];
+    const sortSel = document.getElementById('shelf-sort') as HTMLSelectElement;
+    const empty = document.getElementById('shelf-empty')!;
+    const params = new URLSearchParams(location.search);
+
+    // Animate re-ordering: record positions, reorder, then play each card
+    // from its old spot to the new one (FLIP) on a spring-ish curve.
+    const reorder = (sorted: HTMLElement[]) => {
+      const first = new Map(items.map((el) => [el, el.getBoundingClientRect()]));
+      sorted.forEach((el) => grid.appendChild(el));
+      if (reduce()) return;
+      sorted.forEach((el) => {
+        if (el.hidden) return;
+        const a = first.get(el)!, b = el.getBoundingClientRect();
+        const dx = a.left - b.left, dy = a.top - b.top;
+        if (!dx && !dy) return;
+        el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }],
+          { duration: 620, easing: 'cubic-bezier(.22, 1.06, .36, 1)' });
+      });
+    };
+    const sortBy = (key: string, shuffle = false) => {
+      const arr = [...items];
+      if (shuffle) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } }
+      else if (key === 'recent') arr.sort((a, b) => +a.dataset.order! - +b.dataset.order!);
+      else arr.sort((a, b) => (a.dataset[key] ?? '').localeCompare(b.dataset[key] ?? '') || +a.dataset.order! - +b.dataset.order!);
+      reorder(arr);
+    };
+    const syncUrl = () => {
+      const p = new URLSearchParams(location.search);
+      const s = status.value(), g = genre.value(), o = sortSel.value;
+      s ? p.set('status', s) : p.delete('status');
+      g ? p.set('genre', g) : p.delete('genre');
+      o !== 'recent' ? p.set('sort', o) : p.delete('sort');
+      history.replaceState(history.state, '', location.pathname + (p.toString() ? '?' + p : ''));
+    };
+    const filter = () => {
+      const s = status.value(), g = genre.value();
+      let shown = 0;
+      items.forEach((el) => {
+        const on = (!s || el.dataset.status === s) && (!g || el.dataset.genre === g);
+        if (on && el.hidden && !reduce()) el.animate([{ opacity: 0, transform: 'translateY(10px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.16, 1, .3, 1)' });
+        el.hidden = !on; if (on) shown++;
+      });
+      empty.hidden = shown > 0;
+      syncUrl();
+    };
+    const status = setupSegmented(document.getElementById('status-filter')!, filter);
+    const genre = setupSegmented(document.getElementById('genre-filter')!, filter);
+    if (params.get('status')) status.set(params.get('status')!);
+    if (params.get('genre')) genre.set(params.get('genre')!);
+    if (params.get('sort')) { sortSel.value = params.get('sort')!; sortBy(sortSel.value); }
+    filter();
+    sortSel.addEventListener('change', () => { sortBy(sortSel.value); syncUrl(); });
+    document.getElementById('shelf-shuffle')!.addEventListener('click', () => sortBy('', true));
+
+    // ---- Book spread ---------------------------------------------------
+    const dialog = document.getElementById('book-dialog') as HTMLDialogElement;
+    const body = document.getElementById('book-dialog-body')!;
+    let current: string | null = null;
+    const gridCover = (slug: string) => document.querySelector<HTMLElement>(`.book[data-slug="${slug}"] .book__cover`);
+    const viewTransition = (fn: () => void) => {
+      const vt = (document as any).startViewTransition;
+      if (!vt || reduce()) { fn(); return Promise.resolve(); }
+      document.documentElement.classList.add('vt-book');
+      const t = vt.call(document, fn);
+      return t.finished.finally(() => document.documentElement.classList.remove('vt-book'));
+    };
+    const fill = (slug: string) => {
+      const tpl = document.getElementById('book-' + slug) as HTMLTemplateElement | null;
+      if (!tpl) return false;
+      body.replaceChildren(tpl.content.cloneNode(true));
+      body.querySelector('.spread__title')?.setAttribute('id', 'book-dialog-title');
+      body.scrollTop = 0; body.querySelector('.spread__page--right')?.scrollTo(0, 0);
+      return true;
+    };
+    const open = (slug: string, { push = true, animate = true } = {}) => {
+      if (!document.getElementById('book-' + slug)) return;
+      const from = dialog.open ? null : gridCover(slug);
+      const swap = () => {
+        if (from) from.style.viewTransitionName = '';
+        fill(slug);
+        if (!dialog.open) dialog.showModal();
+        const to = body.querySelector<HTMLElement>('.spread__cover');
+        if (to && from) to.style.viewTransitionName = 'book-cover';
+      };
+      if (from && animate) from.style.viewTransitionName = 'book-cover';
+      const done = animate ? viewTransition(swap) : (swap(), Promise.resolve());
+      done.then(() => { const to = body.querySelector<HTMLElement>('.spread__cover'); if (to) to.style.viewTransitionName = ''; });
+      current = slug;
+      if (push) { const p = new URLSearchParams(location.search); p.set('book', slug); history.pushState({ book: slug }, '', '?' + p); }
+      document.title = (body.querySelector('.spread__title')?.textContent ?? 'Reading') + ' · Reading · Shiv Pandey';
+    };
+    const close = ({ push = true } = {}) => {
+      if (!dialog.open) return;
+      const slug = current;
+      const to = slug ? gridCover(slug) : null;
+      const from = body.querySelector<HTMLElement>('.spread__cover');
+      if (from && to) from.style.viewTransitionName = 'book-cover';
+      viewTransition(() => {
+        if (from) from.style.viewTransitionName = '';
+        dialog.close();
+        if (to && !to.closest('.book')!.hidden) to.style.viewTransitionName = 'book-cover';
+      }).then(() => { if (to) to.style.viewTransitionName = ''; });
+      current = null;
+      document.title = 'Reading · Shiv Pandey';
+      if (push) { const p = new URLSearchParams(location.search); p.delete('book'); history.pushState({}, '', location.pathname + (p.toString() ? '?' + p : '')); }
+      if (to) to.closest('button')?.focus({ preventScroll: true });
+    };
+    // Listeners live on <main>, which is replaced on client-side navigation,
+    // so revisiting the page never stacks duplicate handlers.
+    const main = document.querySelector('main')!;
+    main.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      const opener = t.closest<HTMLElement>('[data-open]');
+      if (opener) { e.preventDefault(); open(opener.dataset.open!); return; }
+      if (t.closest('[data-close]')) { close(); return; }
+      const copy = t.closest<HTMLElement>('[data-copy-book]');
+      if (copy) {
+        const url = location.origin + location.pathname + '?book=' + copy.dataset.copyBook;
+        navigator.clipboard?.writeText(url).then(() => { copy.textContent = 'Link copied'; setTimeout(() => { copy.textContent = 'Copy link'; }, 1600); });
+      }
+    });
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) close(); });
+    dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    (window as any).__shelf = { open, close };
+    if (!(window as any).__shelfPop) {
+      (window as any).__shelfPop = true;
+      window.addEventListener('popstate', () => {
+        const api = (window as any).__shelf;
+        if (!api || !document.getElementById('shelf')) return;
+        const slug = new URLSearchParams(location.search).get('book');
+        if (slug) api.open(slug, { push: false }); else api.close({ push: false });
+      });
+    }
+    const initial = params.get('book');
+    if (initial) open(initial, { push: false, animate: false });
+  }
+
+  initShelf();
+  document.addEventListener('astro:page-load', initShelf);
+</script>
+
+<style>
+  .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+  /* Summary strip, tearsheet style */
+  .shelf-stats { display:flex; flex-wrap:wrap; gap:1.25rem 2.5rem; margin:1.75rem 0 0; padding:1rem 0; border-block:1px solid var(--border); }
+  .shelf-stats > div { display:flex; flex-direction:column; gap:.15rem; }
+  .shelf-stats dt { font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
+  .shelf-stats dd { font-size:1.35rem; font-weight:500; letter-spacing:-.01em; font-variant-numeric:tabular-nums lining-nums; }
+  .shelf-stats__wide dd { font-size:1rem; padding-top:.3rem; }
+  .shelf-link { font:inherit; color:var(--accent); background:none; border:0; padding:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }
+
+  /* Reading now */
+  .now { margin-top:2.25rem; }
+  .now__label { font-size:.66rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:.9rem; font-family:var(--font-sans); }
+  .now__row { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap:1rem; }
+  .now__item { display:flex; gap:1rem; align-items:center; text-align:left; font:inherit; color:inherit; padding:.85rem; border:1px solid var(--border); border-radius:var(--radius-card); background:var(--surface); cursor:pointer; transition:border-color .2s ease, translate .4s cubic-bezier(.22,1.06,.36,1); }
+  .now__item:hover, .now__item:focus-visible { border-color:var(--border-strong); translate:0 -2px; }
+  .now__item :global(.now__cover) { width:4.5rem; height:auto; aspect-ratio:2/3; object-fit:cover; border-radius:3px; box-shadow:0 1px 1px rgba(0,0,0,.08), 0 8px 18px -10px rgba(20,18,16,.45); flex:none; }
+  .now__text { display:flex; flex-direction:column; gap:.2rem; min-width:0; flex:1; }
+  .now__title { font-weight:560; font-size:1.05rem; letter-spacing:-.01em; }
+  .now__author { font-size:.85rem; color:var(--muted); }
+  .now__bar, .book__bar, .spread__bar { display:block; height:3px; border-radius:3px; background:var(--border); overflow:hidden; margin-top:.45rem; }
+  .now__bar > span, .book__bar > span, .spread__bar > span { display:block; height:100%; width:calc(var(--p) * 1%); background:var(--accent); border-radius:inherit; transform-origin:left; }
+  .now__pct { font-size:.75rem; color:var(--faint); font-variant-numeric:tabular-nums; }
+  @media (prefers-reduced-motion: no-preference) {
+    .now__bar > span, .book__bar > span { animation: bar-grow 1.2s cubic-bezier(.16,1,.3,1) .35s both; }
+    @keyframes bar-grow { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  }
+
+  /* Controls */
+  .shelf-controls { display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; margin:2.5rem 0 1.75rem; }
+  .segmented { position:relative; display:flex; gap:.15rem; min-height:42px; padding:.2rem; border:1px solid var(--border-strong); border-radius:999px; background:var(--surface); overflow-x:auto; scrollbar-width:none; max-width:100%; }
+  .segmented::-webkit-scrollbar { display:none; }
+  .segmented__indicator { position:absolute; top:.2rem; bottom:.2rem; left:0; z-index:0; border-radius:999px; background:var(--surface-2); opacity:0; pointer-events:none;
+    transition: left var(--seg-ind-left-dur,.34s) cubic-bezier(.22,1.04,.36,1), width var(--seg-ind-right-dur,.34s) cubic-bezier(.22,1.04,.36,1), opacity .15s ease; }
+  .segmented__btn { position:relative; z-index:1; flex:0 0 auto; white-space:nowrap; padding:.45rem .85rem; font:inherit; font-size:.82rem; font-weight:500; color:var(--muted); background:transparent; border:0; border-radius:999px; cursor:pointer; transition:color .15s ease; }
+  .segmented__btn:hover { color:var(--text); }
+  .segmented__btn[aria-checked='true'] { color:var(--text); font-weight:600; }
+  .segmented__btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .segmented__btn .n { font-size:.72rem; color:var(--faint); font-weight:500; margin-left:.2rem; font-variant-numeric:tabular-nums; }
+  .shelf-sort { display:flex; gap:.5rem; margin-left:auto; }
+  .shelf-sort select, .shelf-shuffle { font:inherit; font-size:.82rem; color:var(--text); min-height:42px; padding:0 .95rem; border:1px solid var(--border-strong); border-radius:999px; background:var(--surface); cursor:pointer; }
+  .shelf-sort select { appearance:none; padding-right:2rem; background-image:linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position:calc(100% - 16px) 52%, calc(100% - 11px) 52%; background-size:5px 5px; background-repeat:no-repeat; }
+  .shelf-shuffle { display:inline-flex; align-items:center; gap:.45rem; transition:border-color .2s ease; }
+  .shelf-shuffle:hover { border-color:var(--text); }
+  .shelf-shuffle:active svg { transform:rotate(180deg); }
+  .shelf-shuffle svg { transition:transform .5s cubic-bezier(.22,1.06,.36,1); }
+  @media (max-width:40rem) { .shelf-sort { margin-left:0; } }
+
+  /* Grid of books */
+  .shelf-grid { list-style:none; padding:0; display:grid; gap:2.25rem 1.6rem; grid-template-columns:repeat(auto-fill, minmax(min(42vw, 10.5rem), 1fr)); }
+  @media (min-width:64rem) { .shelf-grid { grid-template-columns:repeat(auto-fill, minmax(11rem, 1fr)); gap:2.6rem 2rem; } }
+  .book[hidden] { display:none; }
+  .book__btn { display:flex; flex-direction:column; gap:.85rem; width:100%; padding:0; text-align:left; font:inherit; color:inherit; background:none; border:0; cursor:pointer; perspective:900px; }
+  .book__cover { position:relative; display:block; aspect-ratio:2/3; border-radius:3px 4px 4px 3px; overflow:hidden; background:var(--surface-2);
+    box-shadow:0 1px 1px rgba(0,0,0,.08), 0 14px 26px -16px rgba(20,18,16,.55);
+    transform-origin:left center; transition: transform .6s cubic-bezier(.22,1.06,.36,1), box-shadow .6s cubic-bezier(.22,1.06,.36,1); }
+  .book__cover :global(img) { width:100%; height:100%; object-fit:cover; display:block; }
+  /* spine: a soft fold near the left edge, like a real paperback */
+  .book__cover::after { content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(90deg, rgba(0,0,0,.22) 0, rgba(255,255,255,.12) 1.6%, rgba(0,0,0,.08) 3.2%, transparent 7%, transparent 94%, rgba(0,0,0,.06) 100%); }
+  @media (hover:hover) and (prefers-reduced-motion: no-preference) {
+    .book__btn:hover .book__cover { transform: translateY(-6px) rotateY(-11deg); box-shadow:0 1px 1px rgba(0,0,0,.08), 18px 26px 34px -18px rgba(20,18,16,.55); }
+  }
+  .book__btn:focus-visible .book__cover { outline:2px solid var(--accent); outline-offset:4px; }
+  .book__meta { display:flex; flex-direction:column; gap:.18rem; }
+  .book__title { font-weight:560; font-size:.98rem; line-height:1.25; letter-spacing:-.01em; transition:color .2s ease; }
+  .book__btn:hover .book__title { color:var(--accent); }
+  .book__author { font-size:.84rem; color:var(--muted); }
+  .book__series { font-size:.74rem; color:var(--faint); font-variant-numeric:tabular-nums; }
+  .book__take { font-size:.84rem; color:var(--muted); line-height:1.4; margin-top:.2rem; }
+  .book__status { margin-top:.35rem; font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); }
+  .book__status--finished { color:var(--accent); }
+  .book__progress { display:flex; align-items:center; gap:.5rem; margin-top:.3rem; }
+  .book__progress .book__bar { flex:1; margin-top:0; }
+  .book__pct { font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .stars { display:inline-flex; gap:.1rem; font-size:.8rem; color:var(--border-strong); margin-top:.15rem; }
+  .stars .star--on { color:var(--text); }
+  .stars--lg { font-size:1.05rem; }
+  .shelf-empty { margin-top:1rem; }
+  .shelf-foot { margin-top:3.5rem; padding-top:1rem; border-top:1px solid var(--border); }
+
+  /* ---- Book spread (dialog) --------------------------------------------- */
+  .spread { padding:0; border:0; margin:auto; background:transparent; color:var(--text); max-width:none; max-height:none;
+    width:min(1180px, 94vw); height:min(780px, 90dvh); overflow:visible; }
+  .spread::backdrop { background:rgba(20,18,16,.42); backdrop-filter:blur(3px); }
+  .spread__book { position:relative; display:grid; grid-template-columns:1fr 1fr; height:100%; border-radius:10px; overflow:hidden;
+    background:var(--surface); box-shadow:0 40px 90px -30px rgba(10,8,6,.55), 0 2px 6px rgba(10,8,6,.12); }
+  /* the gutter where the pages meet */
+  .spread__book::after { content:''; position:absolute; top:0; bottom:0; left:calc(50% - 26px); width:52px; pointer-events:none; z-index:2;
+    background:linear-gradient(90deg, transparent, rgba(0,0,0,.045) 38%, rgba(0,0,0,.13) 50%, rgba(0,0,0,.045) 62%, transparent); }
+  .spread__page { min-width:0; overflow-y:auto; padding:clamp(1.75rem, 4vw, 3.25rem); scrollbar-width:thin; }
+  .spread__page--left { display:flex; flex-direction:column; align-items:center; text-align:center; background:linear-gradient(90deg, var(--surface), color-mix(in oklab, var(--surface) 96%, var(--text))); }
+  .spread__page--right { background:linear-gradient(270deg, var(--surface), color-mix(in oklab, var(--surface) 97%, var(--text))); }
+  .spread__cover { width:min(16rem, 62%); aspect-ratio:2/3; border-radius:3px 5px 5px 3px; overflow:hidden; flex:none;
+    box-shadow:0 2px 3px rgba(0,0,0,.1), 0 24px 40px -22px rgba(20,18,16,.6); position:relative; }
+  .spread__cover::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.2) 0, rgba(255,255,255,.1) 1.6%, rgba(0,0,0,.06) 3.2%, transparent 7%); }
+  .spread__cover :global(img) { width:100%; height:100%; object-fit:cover; display:block; }
+  .spread__title { margin-top:1.6rem; font-size:clamp(1.5rem, 2.4vw, 1.9rem); line-height:1.15; }
+  .spread__author { color:var(--muted); margin-top:.3rem; }
+  .spread__take { margin-top:.8rem; max-width:28rem; font-family:var(--font-accent); font-style:italic; font-size:1.1rem; color:var(--text); }
+  .spread__sheet { display:flex; flex-wrap:wrap; justify-content:center; gap:.9rem 1.75rem; margin:1.4rem 0 0; padding-top:1rem; border-top:1px solid var(--border); width:100%; max-width:26rem; }
+  .spread__sheet > div { display:flex; flex-direction:column; gap:.15rem; }
+  .spread__copy { margin-top:1.3rem; font:inherit; font-size:.82rem; color:var(--text); padding:.45rem 1rem; border:1px solid var(--border-strong); border-radius:999px; background:transparent; cursor:pointer; transition:border-color .2s ease, color .2s ease; }
+  .spread__copy:hover { border-color:var(--text); }
+  .spread__page--right .spread__sheet { justify-content:flex-start; max-width:none; margin-top:0; }
+  .spread__record { display:flex; flex-direction:column; gap:1.1rem; padding-top:.4rem; }
+  .spread__progress { display:flex; align-items:center; gap:.75rem; max-width:26rem; }
+  .spread__progress .spread__bar { flex:1; margin:0; height:4px; }
+  .spread__pct { font-size:.85rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .spread__series ol { list-style:none; padding:0; border-top:1px solid var(--border); }
+  .spread__series li button { display:grid; grid-template-columns:1.6rem 1fr auto; gap:.75rem; align-items:baseline; width:100%; padding:.7rem 0; font:inherit; font-size:.92rem; color:inherit; text-align:left; background:none; border:0; border-bottom:1px solid var(--border); cursor:pointer; }
+  .spread__series li button:hover:not(:disabled) .t { color:var(--accent); }
+  .spread__series li button:disabled { cursor:default; }
+  .spread__series .idx { color:var(--faint); font-variant-numeric:tabular-nums; }
+  .spread__series .is-current .t { font-weight:600; }
+  .spread__series .st { font-size:.78rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .spread__none { color:var(--faint); font-size:.9rem; font-style:italic; margin-top:.4rem; }
+  .spread__prose { max-width:36rem; }
+  .spread__close { position:absolute; top:.9rem; right:.9rem; z-index:5; display:grid; place-items:center; width:40px; height:40px; border-radius:999px; border:1px solid var(--border); background:color-mix(in oklab, var(--surface) 92%, transparent); color:var(--text); cursor:pointer; transition:border-color .2s ease, transform .4s cubic-bezier(.22,1.06,.36,1); }
+  .spread__close:hover { border-color:var(--text); transform:rotate(90deg); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .spread[open]::backdrop { animation: spread-fade .35s ease both; }
+    .spread[open] .spread__page--left { animation: page-in .7s cubic-bezier(.16,1,.3,1) both; }
+    .spread[open] .spread__page--right { animation: page-in .7s cubic-bezier(.16,1,.3,1) .09s both; }
+    .spread[open] .spread__title, .spread[open] .spread__author, .spread[open] .spread__sheet, .spread[open] .spread__copy, .spread[open] .spread__take, .spread[open] .stars { animation: page-in .75s cubic-bezier(.16,1,.3,1) .16s both; }
+    @keyframes spread-fade { from { opacity:0; } to { opacity:1; } }
+    @keyframes page-in { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+  }
+
+  /* Phones: the spread becomes a single full-screen sheet */
+  @media (max-width:48rem) {
+    .spread { width:100vw; height:100dvh; margin:0; }
+    .spread__book { grid-template-columns:1fr; border-radius:0; overflow-y:auto; }
+    .spread__book::after { display:none; }
+    .spread__page { overflow:visible; padding:1.5rem 1.25rem; }
+    .spread__page--left { padding-top:3.5rem; }
+    .spread__cover { width:min(11rem, 50%); }
+    .spread__page--right { border-top:1px solid var(--border); }
+  }
+</style>
+<style is:global>
+  /* Opening a book: the clicked cover flies into the spread. The rest of the
+     page only cross-fades (not the drift used for page-to-page navigation). */
+  @media (prefers-reduced-motion: no-preference) {
+    html.vt-book::view-transition-old(root) { animation: vt-book-out .3s ease both; }
+    html.vt-book::view-transition-new(root) { animation: vt-book-in .3s ease both; }
+    html.vt-book::view-transition-group(book-cover) { animation-duration: .62s; animation-timing-function: cubic-bezier(.22, 1.04, .36, 1); }
+    @keyframes vt-book-out { to { opacity: 0; } }
+    @keyframes vt-book-in { from { opacity: 0; } }
+  }
+</style>

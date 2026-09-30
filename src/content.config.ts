@@ -95,4 +95,30 @@ const topics = defineCollection({
   }),
 });
 
-export const collections = { pitches, writing, projects, dissertations, notes, topics };
+
+// --- Reading (bookshelf, synced from Apple Books) -----------------------
+// Status fields (status/progress/finished/added) are refreshed by
+// scripts/sync-apple-books.py. rating, take and the Markdown body are Shiv's
+// own words and are never touched by the sync.
+const books = defineCollection({
+  loader: glob({ base: './src/content/books', pattern: '**/*.md' }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    author: z.string(),
+    series: z.string().optional(),
+    seriesIndex: z.number().optional(),
+    genre: z.string(),
+    firstPublished: z.number().optional(),
+    cover: image(),
+    status: z.enum(['finished', 'reading', 'shelf']),
+    progress: z.number().min(0).max(100).default(0),
+    finished: z.coerce.date().optional(),
+    added: z.coerce.date().optional(),
+    appleBooksFile: z.string().optional(),
+    rating: z.number().min(1).max(5).optional(),
+    take: z.string().optional(),
+    hidden: z.boolean().default(false),
+  }),
+});
+
+export const collections = { pitches, writing, projects, dissertations, notes, topics, books };

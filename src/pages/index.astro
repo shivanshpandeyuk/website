@@ -9,6 +9,8 @@ import { SITE, SOCIALS } from '../consts';
 const pitches = (await getCollection('pitches', (p) => p.data.status !== 'draft'))
   .sort((a, b) => (b.data.order - a.data.order) || (b.data.date.valueOf() - a.data.date.valueOf()));
 
+const readingNow = (await getCollection('books', (b) => b.data.status === 'reading' && !b.data.hidden))
+  .sort((a, b) => b.data.progress - a.data.progress);
 const notes = (await getCollection('topics', (t) => !t.data.draft))
   .sort((a, b) =>
     a.data.year.localeCompare(b.data.year, undefined, { numeric: true }) ||
@@ -247,6 +249,20 @@ const dissExcerpt = dissertation
           <span>M.S. Statistics</span>
           <time>From autumn 2026</time>
         </div>
+
+        {readingNow.length > 0 && (
+          <>
+            <h3>Reading</h3>
+            {readingNow.map((b) => (
+              <div class="home-rail__item">
+                <b><a class="link" href={`/reading/?book=${b.id}`}>{b.data.title}</a></b>
+                <span>{b.data.author}</span>
+                <time>{b.data.progress}% read</time>
+              </div>
+            ))}
+            <p class="small"><a class="link" href="/reading/">The whole shelf →</a></p>
+          </>
+        )}
 
         <hr />
         <p class="muted small">

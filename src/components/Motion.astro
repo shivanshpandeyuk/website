@@ -16,7 +16,7 @@
 
   const HEAD = ':is(.article-head, .pitch-hero__cap) > *';
   const ITEMS = [
-    '.pcard-grid > *', '.gcard', '.card', '.rows > .row', '.topic-list > li',
+    '.pcard-grid > *', '.shelf-grid > *', '.now__item', '.gcard', '.card', '.rows > .row', '.topic-list > li',
     '.paper-heading', '.tearsheet > div',
     '.prose > :is(p, ul, ol, h2, h3, h4, figure, blockquote, table, pre, .katex-display, img)',
     '.prose > p > img', '.figure',
@@ -46,7 +46,7 @@
     if (!navigated) {
       // First load: cards and rows already on screen follow the head in.
       const headCount = main.querySelectorAll('.m-rise').length;
-      outer.filter((el) => el.getBoundingClientRect().top <= vh * 0.96 && !el.closest('.m-rise') && el.matches('.pcard-grid > *, .gcard, .card, .rows > .row, .topic-list > li, .paper-heading'))
+      outer.filter((el) => el.getBoundingClientRect().top <= vh * 0.96 && !el.closest('.m-rise') && el.matches('.pcard-grid > *, .shelf-grid > *, .now__item, .gcard, .card, .rows > .row, .topic-list > li, .paper-heading'))
         .slice(0, 12)
         .forEach((el, i) => { el.style.setProperty('--m-delay', 60 + (headCount + i) * 80 + 'ms'); el.classList.add('m-rise'); });
     }
