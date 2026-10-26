@@ -42,20 +42,21 @@ const dissExcerpt = dissertation
         <p class="eyebrow">Shivansh Pandey</p>
         <h1>Economics, <span class="accent">statistics</span>,<br />and equity research.</h1>
         <p class="lead">
-          I read Economics at Gonville &amp; Caius, Cambridge, and I am starting an M.S.
-          in Statistics at LSE this autumn. This site has my Cambridge economics notes,
-          stock pitches, programming projects and dissertation. I want it to be an
-          investment blog and an education blog at once.
+          I'm doing an M.S. in Statistics at LSE, after reading Economics at Gonville &amp; Caius,
+          Cambridge. I also run the long/short equities pod at the LSE Hedge Fund Society.
+          This is where I keep my notes from both degrees, the stocks I've pitched, some code
+          and what I'm reading. I'd like it to work as an investing blog and a set of study notes at once.
         </p>
         <div class="home-hero__cta">
           <a class="btn btn--accent" href="/pitches">Stock pitches</a>
-          <a class="btn" href="/notes">Cambridge notes</a>
+          <a class="btn" href="/notes">Notes</a>
           <a class="btn" href="/writing">Writing</a>
         </div>
         <p class="home-hero__now">
-          <strong>Currently</strong>
-          <span class="dot">·</span> M.S. Statistics, LSE (from autumn 2026)
-          <span class="dot">·</span> last summer, equity research at Rothschild &amp; Co / Redburn Atlantic
+          <strong>Now</strong>
+          <span class="dot">·</span> M.S. Statistics, LSE
+          <span class="dot">·</span> running the long/short equities pod, LSE Hedge Fund Society
+          <span class="dot">·</span> this summer, equity research at Rothschild &amp; Co / Redburn Atlantic
         </p>
         <a class="home-hero__scroll" href="#about" aria-label="Scroll to introduction">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -83,17 +84,16 @@ const dissExcerpt = dissertation
       )}
 
       <section id="about" class="reveal">
-        <p class="prose home-about">
-          At Cambridge I finished with a first, and <span class="countup" data-countup-to="84">84</span>% in my final year. The faculty
-          gave my dissertation its prize for the best piece of econometrics that year:
-          it looked at the UK's superfast broadband subsidies and found a "copper trap",
-          where subsidies for copper broadband held back the rollout of fibre.
-          I spent summer 2026 on Rothschild
-          &amp; Co / Redburn Atlantic's software and cloud desk, building two stock
-          models from scratch and a live tracker of the datacentre build-out
-          worldwide; before that a $<span class="countup" data-countup-to="500">500</span>m software acquisition at Bending Spoons, and
-          infrastructure valuations at EY-Parthenon.
-        </p>
+        <div class="prose home-about">
+          <p>I finished Cambridge with a first, and <span class="countup" data-countup-to="84">84</span>% in my final year.
+          My dissertation won the faculty prize for the best piece of econometrics that year. It looked at
+          the UK's superfast broadband subsidies and found a "copper trap": paying to speed up copper
+          broadband held back the rollout of full fibre in the areas that got the money.</p>
+          <p>This summer I interned on the software and cloud desk at Rothschild &amp; Co / Redburn Atlantic,
+          where I built two stock models from scratch and a live tracker of datacentre construction around
+          the world. Before that I worked on a $<span class="countup" data-countup-to="500">500</span>m software
+          acquisition at Bending Spoons and did infrastructure valuations at EY-Parthenon.</p>
+        </div>
       </section>
 
       {pitches.length > 0 && (
@@ -224,6 +224,13 @@ const dissExcerpt = dissertation
           <a href={`mailto:${SITE.email}`}>Email</a>
         </p>
 
+        <h3>Now</h3>
+        <div class="home-rail__item">
+          <b>LSE Hedge Fund Society</b>
+          <span>Runs the long/short equities pod</span>
+          <time>Since autumn 2026</time>
+        </div>
+
         <h3>Experience</h3>
         <div class="home-rail__item">
           <b>Rothschild &amp; Co / Redburn Atlantic</b>
@@ -242,12 +249,12 @@ const dissExcerpt = dissertation
         <h3>Education</h3>
         <div class="home-rail__item">
           <b>University of Cambridge</b>
-          <span>B.A. Economics — first, <span class="countup" data-countup-to="84">84</span>% in final year; faculty prize for the best dissertation in econometrics</span>
+          <span>B.A. Economics, first, <span class="countup" data-countup-to="84">84</span>% in final year; faculty prize for the best dissertation in econometrics</span>
         </div>
         <div class="home-rail__item">
           <b>London School of Economics</b>
           <span>M.S. Statistics</span>
-          <time>From autumn 2026</time>
+          <time>Since Sept 2026</time>
         </div>
 
         {readingNow.length > 0 && (

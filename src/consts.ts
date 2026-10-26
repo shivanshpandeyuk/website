@@ -5,7 +5,7 @@ export const SITE = {
   title: 'Shivansh Pandey',
   tagline: 'Economics, statistics, and equity research.',
   description:
-    'Shivansh Pandey — B.A. Economics, Cambridge and M.S. Statistics, LSE. My Cambridge economics notes, the stock pitches I have worked up, writing on investing and how to think about it, some code, and my dissertation.',
+    'Shivansh Pandey: M.S. Statistics at LSE, B.A. Economics from Cambridge. Notes from both degrees, stock pitches, code, my dissertation and what I am reading.',
   email: 'shivanshpandeyuk@gmail.com',
   url: 'https://shivanshpandeyuk.github.io',
 } as const;
