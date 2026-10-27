@@ -30,11 +30,11 @@ const yearGroups = years.map((year, yi) => {
 });
 const files = (await getCollection('notes')).filter(n => n.data.files.length > 0);
 ---
-<Base title="Cambridge notes" description="Economics notes from the Cambridge Tripos by Shivansh Pandey." wide>
+<Base title="Notes" description="Notes from my Cambridge economics degree and my LSE statistics master's, by Shivansh Pandey." wide>
   <div class="article-head">
-    <p class="eyebrow">Cambridge Economics Tripos</p>
-    <h1>Cambridge notes</h1>
-    <p class="lead">My economics notes from Cambridge, organised by year, paper and topic. Shared in the spirit of the notes friends shared with me. Corrections welcome.</p>
+    <p class="eyebrow">Cambridge and LSE</p>
+    <h1>Notes</h1>
+    <p class="lead">My notes from the Cambridge economics degree and the LSE statistics master's, organised by year, course and topic. Shared in the spirit of the notes friends shared with me. Corrections welcome.</p>
   </div>
 
   <nav class="paper-nav" aria-label="Jump to a year and paper">
@@ -70,7 +70,7 @@ const files = (await getCollection('notes')).filter(n => n.data.files.length > 0
     {yearGroups.map(yg => <section class="year-group" id={yg.id}>
       <h2 class="year-heading">{yg.year}</h2>
       {yg.papers.map(group => <section class="paper-group" id={group.id}>
-        <div class="paper-heading"><p class="eyebrow">Economics Tripos</p><h3>{group.paper}</h3></div>
+        <div class="paper-heading"><p class="eyebrow">{yg.year.includes('LSE') ? 'M.S. Statistics' : 'Economics Tripos'}</p><h3>{group.paper}</h3></div>
         {group.sections.map(section => <section class="topic-section">
           <h4>{section.title}</h4>
           <ul class="topic-list">
