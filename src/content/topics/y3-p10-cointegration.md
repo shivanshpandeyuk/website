@@ -1,4 +1,5 @@
 ---
+draft: false
 title: "Cointegration"
 paper: "Paper 10 — Econometrics"
 year: "Year 3 (Part IIB)"
@@ -7,6 +8,8 @@ description: "Spurious regression, shared stochastic trends and estimating long-
 order: 70
 tags: ["economics"]
 ---
+
+Part IIB Econometrics (Paper 10), Time Series. Reading: Pesaran, *Time Series and Panel Data Econometrics*, Ch. 22. The slide figures are extracts from the course lecture notes, the Pesaran section quotes the textbook, and the past question is Cambridge Economics Tripos Paper 10, 2017.
 
 ## Lecture Notes
 
@@ -30,20 +33,20 @@ y_t = \beta x_t + u_t
 $$
 Our estimate $\hat \beta$ has some results Phillips (1986), **the Phillips result**:
 
-1. **Inconsistent - **$\hat \beta \rightarrow_{p} \text{non-normal random variable} \neq 0$** **
+1. **Inconsistent** - $\hat \beta \rightarrow_{p} \text{non-normal random variable} \neq 0$
     1. i.e. it does not converge to zero
     2. this is the spurious regression phenomenon
 
-1. **High **$R^2$** - **$\lim_{T\rightarrow \infin} \ R^2 \rightarrow 1$
+1. **High** $R^2$ - $\lim_{T\rightarrow \infin} \ R^2 \rightarrow 1$
     1. it looks like a good regression even though misspecified!
 
-1. **Siginificant t-stats** - $\lim_{T\rightarrow \infin} \ t_{\hat \beta} \rightarrow ±\infin$
+1. **Significant t-stats** - $\lim_{T\rightarrow \infin} \ t_{\hat \beta} \rightarrow ±\infin$
     1. it looks like we have significant parameters!
 
 1. **Residuals are non-stationary** - $\hat u_t \sim I(1)$
     1. That is why non-stationarity of residuals is considered a red flag
 
-#### Granger and Newbolt Rule of Thumb
+#### Granger and Newbold Rule of Thumb
 
 This is a rule of thumb
 $$
@@ -56,11 +59,12 @@ $$
 ### Why does it happen?
 
 The OLS formula is Cov(X,Y) divided by Var(X)
-![](../../assets/notes/y3-p10-cointegration/01.png)
+
+![Author's handwritten note: y_t = βx_t + u_t, and the least-squares estimator β̂ = Σ(y_t − ȳ)(x_t − x̄) / Σ(x_t − x̄)².](../../assets/notes/y3-p10-cointegration/01.png)
 
 Well this is dumb! $X \sim I(1)$, and they have infinite variance!
 
-Also numerator expands to$E[y(x-\bar x)] = \text{stuff}… E[u(x-\bar x]$, which normally we say that last term is 0 but we can’t do that if we have non-stationarity
+Also numerator expands to $E[y(x-\bar x)] = \text{stuff}… E[u(x-\bar x)]$, which normally we say that last term is 0 but we can’t do that if we have non-stationarity
 
 ### Overcoming Spurious Regression
 
@@ -93,21 +97,21 @@ The residual term is thus
 $$
 y_t - \beta x_t = u_t \\ \ \\ \implies u_t = [C_y\sum^t_{i=1}\epsilon_i - \beta  C_x\sum^t_{i=1}\eta_i] + y_0-\beta x_0 + \text{stationary}
 $$
-So in general this tells us that $u_t = I(1)$, **but there is a special case when the stochastic trends knock each other out. **That is in scenario where
+So in general this tells us that $u_t = I(1)$, **but there is a special case when the stochastic trends knock each other out.** That is in scenario where
 $$
 [C_y\sum^t_{i=1}\epsilon_i - \beta  C_x\sum^t_{i=1}\eta_i] = 0\ \forall t
 $$
-That means **y and x are co-integrated, **with co-integrating vector ( $1$ $-\beta$ )
+That means **y and x are co-integrated,** with co-integrating vector ( $1$ $-\beta$ )
 $$
 y_t - \beta x_t \sim I(0)
 $$
 To ensure that a spurious regression has not been estimated, it is therefore necessary to ensure that the residuals are stationary. If they are stationary, then we are happy.
 
-#### Visualizing Co-integration
+#### Visualising Co-integration
 
-![](../../assets/notes/y3-p10-cointegration/02.png)
+![Lecture-note extract: Y1_t and Y2_t are cointegrated; they wander around but never deviate too much from their equilibrium relationship. Simulated series Y1 (blue) and Y2 (red) over about 240 periods, with the stationary difference Y2 − Y1 (green) fluctuating around zero.](../../assets/notes/y3-p10-cointegration/02.png)
 - Green line is the error term see that it is stationary
-![](../../assets/notes/y3-p10-cointegration/03.png)
+![Lecture-note extract: the simulated processes Y1_t = Y1_{t−1} + ε_t, Y2_t = Y1_{t−1} + u_t, with u_t = 0.4u_{t−1} + ξ_t.](../../assets/notes/y3-p10-cointegration/03.png)
 - There is a common stochastic trend here as both are the same AR(1)
 
 #### Examples
@@ -128,10 +132,10 @@ When there’s an equilibrium relationship between variables that themselves cou
 
 Recall the idea of granger causality, that having the history of a variable x and y can improve an estimate of y, just using y’s history means that x granger causes y.
 
-Now let’s suppose x and y are co-integrated.** Granger said the following: if variables are cointegrated, then there’s a valid ECM representation of the data, and vice versa.**
+Now let’s suppose x and y are co-integrated. **Granger said the following: if variables are cointegrated, then there’s a valid ECM representation of the data, and vice versa.**
 
 That is to say,
-![](../../assets/notes/y3-p10-cointegration/04.png)
+![Lecture-note extract: the ECM representations Δy_t = γ − λ(y_{t−1} − βx_{t−1}) + Σ_{h=1}^{k} θ_h Δy_{t−h} + Σ_{j=1}^{k} φ_j Δx_{t−j} + ξ_{yt} and Δx_t = γ′ + λ′(y_{t−1} − βx_{t−1}) + Σ_{h=1}^{k} θ′_h Δy_{t−h} + Σ_{j=1}^{k} φ′_j Δx_{t−j} + ξ_{xt}.](../../assets/notes/y3-p10-cointegration/04.png)
 For,  Granger causality in at least one direction at least one of:
 $$
 \lambda \text{ and or } \lambda' \neq 0
@@ -198,7 +202,7 @@ If it is not known, then first we have to estimate it.
 #### Engle-Granger Method
 
 Again we continue to assume that there is a unique co-integrating vector.
-Suppose we have a variable $y_t$ and a set of explanatory variables$x_{1t},x_{2t},...,x_{kt}$. 
+Suppose we have a variable $y_t$ and a set of explanatory variables $x_{1t},x_{2t},...,x_{kt}$. 
 Suppose each of these series is individually known (we usually pre-test) to be I(1).
 
 1. Estimate the static regression  by OLS
@@ -217,13 +221,13 @@ $$
 \Delta e_t = \rho e_{t-1} + ξ_t
 $$
 - $H_0: \rho = 0$ (unit root → no cointegration) vs. $H_1: \rho < 0$ (stationary)
-![](../../assets/notes/y3-p10-cointegration/05.png)
+![Lecture-note extract: Engle and Granger’s two-step procedure. (1) Estimate y_t = β_0 + β_1x_{1t} + ... + β_kx_{kt} + u_t. (2) Construct û_t and test for a unit root, Δû_t = ρû_{t−1} + ξ_t. (3) If ρ = 0 is rejected in favour of ρ < 0, there is cointegration; estimate the ECM.](../../assets/notes/y3-p10-cointegration/05.png)
 
 If we have established that there is co-integration. Then the next step is to understand by what process exactly does $y_t$ return to its long-run value, we estimate an ECM. (Every co-integrated process can be represented as an ECM).
 
 1. Estimate the error-correcting model, with the error from last period (s.t. correction), j lags of $\Delta x$ for all $k$ regressors and finally, h lags of $\Delta y$ 
 $$
-\Delta y_t = \phi_0 +\phi_1 \Delta y_{t1} + \dots \phi_h \Delta_h y_{t-h} + \sum_{j=0}^k \psi_j \ \Delta x_{t-j} + \lambda \hat u_{t-1} + \epsilon_t
+\Delta y_t = \phi_0 +\phi_1 \Delta y_{t-1} + \dots \phi_h \Delta_h y_{t-h} + \sum_{j=0}^k \psi_j \ \Delta x_{t-j} + \lambda \hat u_{t-1} + \epsilon_t
 $$
 Note that this formulation ensures that the long-run implied equilibrium relationship from the dynamic regression is exactly that implied by the cointegration regression. The coefficient λ (which should be negative) calibrates how quickly the equilibrium relationship is restored.
 
@@ -231,7 +235,7 @@ Forecasting
 This also ensures that long horizon forecasts obey the equilibrium relationship but it does still leave the problem of how do we forecast the x’s.
 - What we would like in many circumstances is a structure that produces forecasts for both x and y together.
 - Also, when there is more than one cointegrating vector the above single equation methods will not work.
-    - In general if the vector zt has n components there may be r linearly independent<br>cointegrating vectors where r ≤ n − 1. 
+    - In general if the vector zt has n components there may be r linearly independent cointegrating vectors where $r \le n - 1$. 
 To proceed an approach based on system estimation must be used
 
 Care Needs to be Taken
@@ -239,43 +243,41 @@ Care Needs to be Taken
 - The appropriate critical values differ from the usual Dickey-Fuller ones. The critical values for residual based cointegrating tests are tabulated by Engle and Yoo.
     - This procedure suffers from the fact that these critical values depend on the number of regressors in the model
 - To remove serial correlation could have added lagged values of $\Delta e_t$
-- **Coefficient estimates are super-consistent, **in that they approach their true values at rate T rather than the conventional √T.
+- **Coefficient estimates are super-consistent,** in that they approach their true values at rate T rather than the conventional √T.
 
 #### Durbin Watson Method
 
 An alternative test for cointegration is based on the Durbin-Watson statistic from the cointegrating regression.
-** If there is no cointegration then the residuals will have a unit root and the DW statistic should be near zero.**
+**If there is no cointegration then the residuals will have a unit root and the DW statistic should be near zero.**
 
 ## Pesaran Ch.22
 
 ### Cointegration
 
-![](../../assets/notes/y3-p10-cointegration/06.png)
+![Extract from Pesaran, Time Series and Panel Data Econometrics, Ch. 22: cointegration was introduced by Granger (1986) and developed in Engle and Granger (1987). For m variables y_it ~ I(1), the m × 1 vector y_t is cointegrated if there is an m × r matrix β (r ≥ 1) such that β′y_t = ξ_t ~ I(0).](../../assets/notes/y3-p10-cointegration/06.png)
 r = dimension of cointegrating space i.e. no. of cointegrating vectors
 
 The co-integrating relations summarised in the r x 1 vector are also known **as long-run relations.**
 
 ### Testing Cointegration
 
-The Engle-Granger Method
-![](../../assets/notes/y3-p10-cointegration/07.png)
-![](../../assets/notes/y3-p10-cointegration/08.png)
+The Engle-Granger Method: see the lecture-note procedure above.
 
 ## Past Question
 
 ### Q2 2017: Engle-Granger vs VECM
 
-![](../../assets/notes/y3-p10-cointegration/09.png)
-![](../../assets/notes/y3-p10-cointegration/10.png)
-![](../../assets/notes/y3-p10-cointegration/11.png)
-This is the Engle and Granger 2-step methid to test for co-integration. 
+![Tripos Paper 10, 2017, Q2: an econometrician develops an investment strategy between US government bonds and AAA corporate bonds, using monthly US data on the 10-year Treasury rate (GS10), Moody’s AAA and Moody’s BAA corporate bond yields, graphed from 1959 to about 2016.](../../assets/notes/y3-p10-cointegration/09.png)
+![Tripos Paper 10, 2017, Q2 results table with the author’s handwritten annotations: columns (1)–(2) are ADF regressions for ΔGS10_t and ΔAAA_t; column (3) is the equilibrium relation GS10_t = −1.4636 + 1.0670 AAA_t (DW .06); column (4) regresses Δû_t on û_{t−1} (−.0332, s.e. .009); columns (5)–(6) are ECMs for ΔGS10_t and ΔAAA_t with û_{t−1} coefficients .0043 (.019) and .0319 (.015). Annotations ask whether deviations from equilibrium die out and whether disequilibrium leads to adjustment.](../../assets/notes/y3-p10-cointegration/10.png)
+![Tripos Paper 10, 2017, Q2 part (a): explain what hypotheses are tested in Columns (1)–(6) and what the estimates say about the time-series properties of the variables.](../../assets/notes/y3-p10-cointegration/11.png)
+This is the Engle and Granger 2-step method to test for co-integration. 
 What you do is: 
 1. First establish whether two variables, Y1 Y2, have a unit root, using ADF test
     1. If both are I(1), proceed. 
 2. Estimate the long-run relationship by just running a typical OLS.
     1. This could be significant relationship because of spurious regression
     2. We need to go further: extract the residuals $\hat u_t$, 
-3. We test wether residuals of LR relation have a unit root, using ADF test. 
+3. We test whether residuals of LR relation have a unit root, using ADF test. 
     1. We want to reject the unit root null, that implies residuals are I(0).
     2. If $\hat u_t$ is I(0), proceed, the variables are co-integrated. 
 4. Estimate the individual ECMs for each variable, **by regressing the change in Y against the lagged error term, to see if Y reacts to disequilibrium with other Y.**
@@ -283,6 +285,6 @@ What you do is:
     2. Key parameter here is $\lambda$, other terms are just to mop up auto-correlation. 
 5. Find which ECMs have significant $\lambda$ parameters. If there is significance then that variable ‘adjusts’ to the other one’s fluctuations, so it is ‘Granger caused’ by it. 
     1. i.e. $\lambda_1 \ \ \text{significant} \implies Y_1 \text{ is granger caused by } Y_2$
-![](../../assets/notes/y3-p10-cointegration/12.png)
-*Note to self that a a transposition operation runs anti-clockwise.*
-![](../../assets/notes/y3-p10-cointegration/15.png)
+![Tripos Paper 10, 2017, Q2 part (b): z_t = (GS10_t, BAA_t, AAA_t)′ with a unit root in each element; the model Δz_t = γ + ΓΔz_{t−1} + αβ′z_{t−1} + ε_t, with α and β both 3 × 2, is estimated over 1960M3–2015M12, giving the reported α̂ and β̂ (β̂ normalised with an identity block and bottom row −1.0687, −1.0928).](../../assets/notes/y3-p10-cointegration/12.png)
+*Note to self that a transposition operation runs anti-clockwise.*
+![Tripos Paper 10, 2017, Q2 part (c): what are the advantages and disadvantages of the approaches in (a) and (b) for investigating such relationships?](../../assets/notes/y3-p10-cointegration/15.png)
