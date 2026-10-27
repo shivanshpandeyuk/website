@@ -1,26 +1,15 @@
 ---
+draft: false
 title: "Dynamic regression and ARDL models"
 paper: "Paper 10 — Econometrics"
 year: "Year 3 (Part IIB)"
 section: "Time Series"
-description: "Distributed lags, autocorrelated errors and the assumptions behind time-series OLS."
+description: "Autocorrelated errors, Prais-Winsten and Cochrane-Orcutt GLS, and ARDL models with their short- and long-run responses."
 order: 30
 tags: ["economics"]
 ---
 
-#### **The Time Series OLS Checklist**
-
-
-
-| **The OLS Assumption** | **What Breaks It in Time Series?** | **The Consequence for OLS** | **The Standard Fix** |
-| --- | --- | --- | --- |
-| **Errors are independent** $E(u_t u_s) = 0$ | **Autocorrelation.** Omitted dynamics leave momentum in the residuals. | Unbiased, but inefficient. Standard errors are artificially tiny (False positives). | ARDL Model, or HAC / Newey-West Standard Errors. |
-| **Variables are stationary** | **Stochastic Trends (**$I(1)$**).** Regressing two random walks. | **Spurious Regression.** Completely meaningless results disguised by high $R^2$ | ADF test first. Difference data to $I(0)$ or use Cointegration tests. |
-| **X is strictly exogenous** $E(u_t \| x_t) = 0$ | **Simultaneity.** Feedback loops where $Y$ also causes $X$. | **Biased and Inconsistent.** The estimated coefficient is permanently wrong. | Instrumental Variables (IV) or Vector Autoregression (VAR). |
-| **Variance is constant** ($E(u_t^2) = \sigma^2)$ | **Volatility Clustering.** Calm periods followed by chaotic periods (ARCH effects). | Unbiased, but inefficient. Standard errors are wrong. | HAC / Newey-West Standard Errors, or ARCH/GARCH modeling. |
-| **Parameters are constant** | **Structural Breaks.** Policy changes or economic crises shift the true $\beta$. | Averaged, meaningless coefficients that fit neither regime. | Chow Test and interaction Dummy Variables. |
-
-
+Part IIB Econometrics (Paper 10), Time Series. Reading: Pesaran, *Time Series and Panel Data Econometrics*, Ch. 6. The matrix figures are extracts from the course lecture notes, and the Pesaran section quotes the textbook.
 
 ## Lecture Notes
 
@@ -35,9 +24,9 @@ $$
 will not be efficient if there is autocorrelation.
 
 There are three ways to eliminate this autocorrelation, namely, 
-1. **Make errors uncorrelated** - by using Prais-Winsten or Cochrae-Orcutt methods to specify the relation i.e. this is a GLS method
-2. **Include the ommitted dynamics** - we use ARDL models that will overcome the misspecification of ommitted dynamics.
-3. **HAC standard errors** (heteroscedacity, and auto-correlation corrected)
+1. **Make errors uncorrelated** - by using Prais-Winsten or Cochrane-Orcutt methods to specify the relation i.e. this is a GLS method
+2. **Include the omitted dynamics** - we use ARDL models that will overcome the misspecification of omitted dynamics.
+3. **HAC standard errors** (heteroscedasticity, and auto-correlation corrected)
 
 ### Prais-Winsten, Cochrane-Orcutt (GLS)
 
@@ -45,7 +34,7 @@ We seek to estimate the auto-correlation, we believe it is an AR(1) process
 $$
 y_t = \beta x_t + u_t \\ \ \\ u_t = \rho u_{t-1} + \epsilon_t
 $$
-- where $\epsilon$ is not introducing endogenity as $E(\epsilon | x) = 0$ and, $E(\epsilon^2 | X) = \sigma^2 I_t$, $I_t$ is identity matrix
+- where $\epsilon$ is not introducing endogeneity as $E(\epsilon | x) = 0$ and, $E(\epsilon^2 | X) = \sigma^2 I_t$, $I_t$ is identity matrix
 
 Define the set of errors over time as
 $$
@@ -60,44 +49,43 @@ $$
 #### Variance-Covariance Matrix
 
 The variance-covariance matrix of $u$ is 
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/01.png)
+![Variance-covariance matrix of AR(1) errors, Omega = sigma_u squared times the matrix of powers of rho](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/01.png)
 - **The Diagonal:** Notice the $1$s running down the center. This represents the variance of the error at any given time $t$.
 - **The Off-Diagonal:** Notice the $\rho, \rho^2, \rho^3...$ terms. These show that the error today is correlated with the error tomorrow ($\rho$), day after ($\rho^2$), etc.
 - **The Meaning:** Because the off-diagonals are not zero, we cannot use regular OLS. We need a "weighting matrix" to clean this up.
 - $\sigma^2_u$ = unconditional variance, so for diagonals it is active for off-diagonals it is dampened.
 
-#### **The **$P$** Matrix**
+#### The $P$ Matrix
 
 In GLS, we look for a matrix $P$ that "whitens" the errors. Think of $P$ as a **filter**. When we multiply our data by $P$, it removes the patterns in the errors, leaving only the white noise.
 
 The matrix $P$ is a specific construction designed so that $P \Omega P' = I$.
 
-**To find **$P$**, we effectively need to find the "square root" of the inverse of **$\Omega$**. **We use a method called Cholesky Decomposition.
+**To find $P$, we effectively need to find the "square root" of the inverse of $\Omega$.** We use a method called Cholesky Decomposition.
 $$
-\Omega = \sigma^2_u (\text{Correlation Matix}) \\ \ \\ \implies \Omega^{-1} = \sigma_u^{-2} (\text{Correlation Matix})^{-1}
+\Omega = \sigma^2_u (\text{Correlation Matrix}) \\ \ \\ \implies \Omega^{-1} = \sigma_u^{-2} (\text{Correlation Matrix})^{-1}
 $$
 but the inverse correlation matrix is the standard AR(1) tridiagonal form.
-This final part requires **Cholesky decomposition, **it finds a lower-triangular matrix M s.t. M’M = M
+This final part requires **Cholesky decomposition**, it finds a lower-triangular matrix $M$ s.t. $M'M = \Omega^{-1}$
 $$
  \implies \sqrt{\Omega^{-1}} = P =  \frac{\sigma_u^{-1}}{\sqrt {1-\rho^2}} \times \sqrt {(\text{Scaled Correlation Matrix}^{-1})}
 $$
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/03.png)
+![The whitening matrix P for AR(1) errors, with sqrt(1 - rho squared) top left and -rho on the sub-diagonal](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/03.png)
 - Note that the top left is the only one that is 1, this is because $y_0$ is a known constant.
 
 Thus GLS here amounts to regressing 
 $$
-\text{for t =1: } \sqrt{1 - \rho^2} \ y_1 = \sqrt{1 - \rho^2} \ \beta x_1 + \sqrt{1 - \rho^2} \ u_1 \\ \ \\ \text{for t > 1: }y_t - \rho y_{t-1} = (x_t - \rho x_{t-1}) \beta x_1 + u_t - \rho u_{t-1}
+\text{for t =1: } \sqrt{1 - \rho^2} \ y_1 = \sqrt{1 - \rho^2} \ \beta x_1 + \sqrt{1 - \rho^2} \ u_1 \\ \ \\ \text{for t > 1: }y_t - \rho y_{t-1} = (x_t - \rho x_{t-1}) \beta + u_t - \rho u_{t-1}
 $$
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/04.png)
 
 
 | **Observation** | **Transformed Equation** |
 | --- | --- |
-| **First **$t=1$ | $\sqrt{1-\rho^2}y_1 = \beta(\sqrt{1-\rho^2}x_1) + \text{error}$ |
-| **Others **$t>1$ | $(y_t - \rho y_{t-1}) = \beta(x_t - \rho x_{t-1}) + \varepsilon_t$ |
+| **First** $t=1$ | $\sqrt{1-\rho^2}y_1 = \beta(\sqrt{1-\rho^2}x_1) + \text{error}$ |
+| **Others** $t>1$ | $(y_t - \rho y_{t-1}) = \beta(x_t - \rho x_{t-1}) + \varepsilon_t$ |
 
 
-- Prais-Winsten method** does this scalar transform to the first observation **so that it can be kept.
+- **Prais-Winsten** does this scalar transform to the first observation so that it can be kept.
 - Cochrane-Orcutt **discards the first observation** and only uses the quasi-differenced equations. 
 
 In small datasets, losing the first observation (Cochrane-Orcutt) can lead to a significant loss of statistical power. 
@@ -115,12 +103,12 @@ y_t = \beta x_t + u_t
 $$
 Even though OLS is inefficient here, it is still "consistent," meaning the residuals $(\hat{u}_t)$ you get are good estimates of the actual errors.
 
-1. Estimate $\rho$
+2. Estimate $\rho$
 You run the second regression to specify the AR(1) 
 $$
 \hat u = \rho \hat u_{t-1} + \epsilon _t
 $$
-1. Do the GLS regression
+3. Do the GLS regression
 You then use $\hat \rho$, in your P matrix to transform the data and do the final clean regression.
 
 ### ARDL Models
@@ -142,15 +130,8 @@ lie **outside the unit circle**
 #### Consistency
 
 Let $\theta_t = (\alpha, \phi_1, ... \phi_{h}, \beta_1 ...,  \beta_h)$ and let $Z_t = (1, y_{t-1},...  , y_{t-h}, x_{t-1}, ..., x_{t-k})'$ and so the OLS estimator is 
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/05.png)
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/06.png)
+![OLS estimator of theta as the inverse of the sum of Z_t Z_t transpose times the sum of Z_t y_t](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/05.png)
 
-
-| **Simple Algebra** | **Matrix Notation** | **Role in OLS** |
-| --- | --- | --- |
-| $\sum x_i y_i$ | $\sum_{t=1}^{T} Z_t y_t$ | The relationship (covariance) between predictors and the outcome. |
-| $\sum x_i^2$ | $\sum_{t=1}^{T} Z_t Z_t'$ | The variance/spread of the predictors themselves. |
-| Division ($1/x$) | Inverse $( \dots )^{-1}$ | Dividing by the variance to "isolate" the effect of the predictors ($\hat{\theta}$). |
 
 
 For this to be consistent as T tends to $\infin$, we have two sufficient rules.
@@ -164,7 +145,7 @@ $$
 - i.e. each individual $x_t$ is stationary
 - and overall characteristic equation meets the stability condition
 
-1. **Exogeneity**
+2. **Exogeneity**
 $$
 T^{-1} \sum Z_t u_t \rightarrow \text{zero vector}
 $$
@@ -208,7 +189,7 @@ $$
 
 This time we have that 
 $$
-y_t = \alpha + \frac{\beta(L)}{\lambda(L)} + v_t
+y_t = \alpha + \frac{\beta(L)}{\lambda(L)} x_t + v_t
 $$
 - $\lambda(L) = \lambda_0 + \lambda_1L + ... \lambda_p L^p$
 
@@ -237,18 +218,18 @@ $$
 There is a unit root if $\lambda(1) =0$, explosive case if $\lambda(z) = 0$ has roots that lies *inside* the unit circle
 
 **k regressors**
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/07.png)
+![Pesaran extract: ARDL(p, q1, ..., qk) model with k regressors, each with its own lag polynomial](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/07.png)
 - each regressor has its own lag polynomial for its betas
 - $\beta_j(L, q_j)$ reflects the lag polynomial of regressor j, where $q_j$ is the specified number of lags used
 
 **Estimation of ARDL Models**
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/08.png)
+![Pesaran extract, section 6.2.1: OLS estimation of ARDL models and the two sufficient conditions for consistency](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/08.png)
 - The first condition is indeed stationarity
-    ![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/09.png)
-    ![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/10.png)
+    ![Pesaran extract: the first condition holds if z_t is covariance stationary, with x_t an infinite moving average](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/09.png)
+    ![Pesaran extract: u_t as an infinite moving average with absolutely summable coefficients; condition 1 alone does not guarantee consistency](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/10.png)
 
 #### **Partial adjustment model**
 
 This is why ARDL models are natural; they reflect the presence of adjustment costs.
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/11.png)
-![](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/12.png)
+![Pesaran extract: the partial adjustment model, equations 6.9 to 6.13, giving an ARDL(1,0) specification](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/11.png)
+![Pesaran extract: equation 6.14, showing the adjustment coefficient lambda = 1/(1 + theta)](../../assets/notes/y3-p10-dynamic-regressions-autocorrelation-and-ardl-models/12.png)
