@@ -508,6 +508,8 @@ a.card:hover { border-color: var(--border-strong); transform: translateY(-2px); 
 .prose code { font-family: var(--font-mono); font-size: .88em; background: var(--surface-2); padding: .12em .35em; border-radius: 4px; }
 .prose pre { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; overflow-x: auto; }
 .prose pre code { background: none; padding: 0; }
+/* wide display maths scrolls inside its own box instead of widening the page on phones */
+.prose .katex-display { overflow-x: auto; overflow-y: hidden; padding-block: .15rem; }
 .prose img { border-radius: var(--radius-sm); border: 1px solid var(--border); }
 .prose hr { border: none; border-top: 1px solid var(--border); margin-block: 2rem; }
 .prose table { width: 100%; border-collapse: collapse; font-size: .92rem; }
