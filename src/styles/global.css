@@ -209,6 +209,7 @@ p, ul, ol { color: var(--text); }
   color: var(--accent);
 }
 .muted { color: var(--muted); }
+.note-credit { margin-top: .6rem; }
 .faint { color: var(--faint); }
 small, .small { font-size: .85rem; }
 

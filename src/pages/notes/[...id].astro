@@ -27,6 +27,10 @@ const sections = headings.filter(heading => heading.depth === 2 || heading.depth
         {note.data.draft && <p class="small muted" style="margin-top:1.5rem;margin-bottom:0">Draft — local preview only</p>}
         <h1 style={note.data.draft ? 'margin-top:.4rem' : 'margin-top:1.5rem'} transition:name={`note-title-${note.id}`}>{note.data.title}</h1>
         <p class="lead">{note.data.description}</p>
+        {/* LSE notes are AI-assisted; Shiv chose to publish them with this line (5 Nov 2026). Same wording on every one. */}
+        {note.data.year.startsWith('M.S.') && (
+          <p class="note-credit small muted" data-pagefind-ignore>Revision notes written with Claude from my annotated lectures.</p>
+        )}
         <div class="article-meta" data-pagefind-ignore>
           <button type="button" class="copy-link" data-copy-link aria-label="Copy link to this page">
             <span class="copy-link__icons" aria-hidden="true">
