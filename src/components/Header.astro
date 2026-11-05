@@ -11,9 +11,11 @@ const isCurrent = (href: string) => {
     <a href="/" class="brand">{SITE.shortName}</a>
     <nav class="nav" aria-label="Primary">
       <span class="nav-indicator" aria-hidden="true"></span>
-      {NAV.map((item) => (
-        <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
-      ))}
+      <div class="nav__links">
+        {NAV.map((item) => (
+          <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
+        ))}
+      </div>
       <a href="/search/" aria-label="Search this site (⌘K)" title="Search (⌘K)" class="search-link" id="cmdk-trigger">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
       </a>
@@ -118,6 +120,13 @@ const isCurrent = (href: string) => {
         if (current) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
       });
       placeIndicator();
+      // Phone: the links sit in one sideways-scrolling row; bring the current page's link into view.
+      const row = nav.querySelector('.nav__links');
+      const active = links.find((a) => a.getAttribute('aria-current') === 'page');
+      if (row && active && row.scrollWidth > row.clientWidth) {
+        const r = active.getBoundingClientRect(), rr = row.getBoundingClientRect();
+        if (r.right > rr.right - 16 || r.left < rr.left) row.scrollLeft += r.left - rr.left - 12;
+      }
     };
 
     sync();

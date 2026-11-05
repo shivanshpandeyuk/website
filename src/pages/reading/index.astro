@@ -376,14 +376,14 @@ const seriesLabel = (d: typeof books[number]['data']) => d.series ? (d.seriesInd
   /* Summary strip, tearsheet style */
   .shelf-stats { display:flex; flex-wrap:wrap; gap:1.25rem 2.5rem; margin:1.75rem 0 0; padding:1rem 0; border-block:1px solid var(--border); }
   .shelf-stats > div { display:flex; flex-direction:column; gap:.15rem; }
-  .shelf-stats dt { font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
+  .shelf-stats dt { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
   .shelf-stats dd { font-size:1.35rem; font-weight:500; letter-spacing:-.01em; font-variant-numeric:tabular-nums lining-nums; }
   .shelf-stats__wide dd { font-size:1rem; padding-top:.3rem; }
   .shelf-link { font:inherit; color:var(--accent); background:none; border:0; padding:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }
 
   /* Reading now */
   .now { margin-top:2.25rem; }
-  .now__label { font-size:.66rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:.9rem; font-family:var(--font-sans); }
+  .now__label { font-size:.75rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:.9rem; font-family:var(--font-sans); }
   .now__row { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap:1rem; }
   .now__item { display:flex; gap:1rem; align-items:center; text-align:left; font:inherit; color:inherit; padding:.85rem; border:1px solid var(--border); border-radius:var(--radius-card); background:var(--surface); cursor:pointer; transition:border-color .2s ease, translate .4s cubic-bezier(.22,1.06,.36,1); }
   .now__item:hover, .now__item:focus-visible { border-color:var(--border-strong); translate:0 -2px; }
@@ -409,7 +409,7 @@ const seriesLabel = (d: typeof books[number]['data']) => d.series ? (d.seriesInd
   .segmented__btn:hover { color:var(--text); }
   .segmented__btn[aria-checked='true'] { color:var(--text); font-weight:600; }
   .segmented__btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-  .segmented__btn .n { font-size:.72rem; color:var(--faint); font-weight:500; margin-left:.2rem; font-variant-numeric:tabular-nums; }
+  .segmented__btn .n { font-size:.75rem; color:var(--faint); font-weight:500; margin-left:.2rem; font-variant-numeric:tabular-nums; }
   .shelf-sort { display:flex; gap:.5rem; margin-left:auto; }
   .shelf-sort select, .shelf-shuffle { font:inherit; font-size:.82rem; color:var(--text); min-height:42px; padding:0 .95rem; border:1px solid var(--border-strong); border-radius:999px; background:var(--surface); cursor:pointer; }
   .shelf-sort select { appearance:none; padding-right:2rem; background-image:linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position:calc(100% - 16px) 52%, calc(100% - 11px) 52%; background-size:5px 5px; background-repeat:no-repeat; }
@@ -439,13 +439,13 @@ const seriesLabel = (d: typeof books[number]['data']) => d.series ? (d.seriesInd
   .book__title { font-weight:560; font-size:.98rem; line-height:1.25; letter-spacing:-.01em; transition:color .2s ease; }
   .book__btn:hover .book__title { color:var(--accent); }
   .book__author { font-size:.84rem; color:var(--muted); }
-  .book__series { font-size:.74rem; color:var(--faint); font-variant-numeric:tabular-nums; }
+  .book__series { font-size:.75rem; color:var(--faint); font-variant-numeric:tabular-nums; }
   .book__take { font-size:.84rem; color:var(--muted); line-height:1.4; margin-top:.2rem; }
-  .book__status { margin-top:.35rem; font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); }
+  .book__status { margin-top:.35rem; font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); }
   .book__status--finished { color:var(--accent); }
   .book__progress { display:flex; align-items:center; gap:.5rem; margin-top:.3rem; }
   .book__progress .book__bar { flex:1; margin-top:0; }
-  .book__pct { font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .book__pct { font-size:.75rem; color:var(--muted); font-variant-numeric:tabular-nums; }
   .stars { display:inline-flex; gap:.1rem; font-size:.8rem; color:var(--border-strong); margin-top:.15rem; }
   .stars .star--on { color:var(--text); }
   .stars--lg { font-size:1.05rem; }

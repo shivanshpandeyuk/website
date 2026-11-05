@@ -68,8 +68,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <Header />
-    <main data-pagefind-body={searchIndex || undefined} data-pagefind-ignore={searchIndex ? undefined : 'all'}>
+    <main id="main" tabindex="-1" data-pagefind-body={searchIndex || undefined} data-pagefind-ignore={searchIndex ? undefined : 'all'}>
       <div class={wide ? 'wrap-wide' : 'wrap'}>
         <slot />
       </div>

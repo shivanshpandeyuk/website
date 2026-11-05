@@ -11,12 +11,27 @@ const pitches = (await getCollection('pitches', (p) => p.data.status !== 'draft'
 
 const readingNow = (await getCollection('books', (b) => b.data.status === 'reading' && !b.data.hidden))
   .sort((a, b) => b.data.progress - a.data.progress);
+// Homepage notes lead with the newest work (Shiv, 5 Nov 2026): LSE first, then Cambridge Year 3, then earlier years.
+const yearRank = (y: string) => (y.startsWith('M.S.') ? 0 : y.startsWith('Year 3') ? 1 : y.startsWith('Year 2') ? 2 : 3);
 const notes = (await getCollection('topics', (t) => !t.data.draft))
-  .sort((a, b) =>
-    a.data.year.localeCompare(b.data.year, undefined, { numeric: true }) ||
-    a.data.paper.localeCompare(b.data.paper, undefined, { numeric: true }) ||
-    a.data.title.localeCompare(b.data.title, undefined, { numeric: true }));
-const notesShown = notes.slice(0, 6);
+  .sort((a, b) => yearRank(a.data.year) - yearRank(b.data.year) || (b.data.order ?? 0) - (a.data.order ?? 0));
+// Latest lecture from up to two LSE courses, then the latest Year 3 note; fill from the ranked list if short.
+const notesShown: typeof notes = [];
+for (const n of notes) {
+  const lseShown = notesShown.filter((s) => yearRank(s.data.year) === 0);
+  if (yearRank(n.data.year) === 0 && lseShown.length < 2 && !lseShown.some((s) => s.data.paper === n.data.paper)) notesShown.push(n);
+}
+// Kept off the homepage until reviewed (queue item 9): live but never committed or checked.
+// Model comparison is a single AI-style summary table awaiting Shiv's call.
+const notOnHome = new Set([
+  'y3-p10-time-series-model-comparison',
+  'y3-p10-non-linear-models',
+  'y3-p10-multiple-regression-sur-models-gls',
+]);
+const latestY3 = notes.find((n) => yearRank(n.data.year) === 1 && !notOnHome.has(n.id));
+if (latestY3) notesShown.push(latestY3);
+for (const n of notes) { if (notesShown.length >= 3) break; if (!notesShown.includes(n)) notesShown.push(n); }
+notesShown.splice(3);
 
 const projects = (await getCollection('projects'))
   .sort((a, b) => (b.data.order - a.data.order) || ((b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)));
@@ -102,15 +117,24 @@ const dissExcerpt = dissertation
         </Carousel>
       )}
 
-      <section class="reveal">
-        <div class="home-sec__head">
-          <h2>Portfolio</h2>
-        </div>
-        <p class="home-sec__lead">
-          My own Trading 212 portfolio, shown by weight only -- no position sizes or amounts.
-        </p>
-        <PortfolioWidget />
-      </section>
+      {dissertation && (
+        <section class="reveal">
+          <div class="home-sec__head">
+            <h2>Dissertation</h2>
+            <a class="more" href="/dissertations">Read in full →</a>
+          </div>
+          <a class="home-diss" href="/dissertations">
+            <div class="home-diss__meta">
+              <span class="eyebrow">{dissertation.data.level}</span>
+              {dissertation.data.grade && <span class="badge badge--long">{dissertation.data.grade}</span>}
+              <span class="row__date">{dissertation.data.year}</span>
+            </div>
+            <h3>{dissertation.data.title}</h3>
+            <p>{dissExcerpt}</p>
+            <span class="home-diss__more">Read the dissertation →</span>
+          </a>
+        </section>
+      )}
 
       {notesShown.length > 0 && (
         <section class="reveal">
@@ -140,24 +164,6 @@ const dissExcerpt = dissertation
                   </dl>
                 </div>
               </a>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {writing.length > 0 && (
-        <section class="reveal">
-          <div class="home-sec__head">
-            <h2>Writing</h2>
-            <a class="more" href="/writing">All writing →</a>
-          </div>
-          <div class="rows">
-            {writing.map((w) => (
-              <div class="row">
-                <a class="row__title" href={`/writing/${w.id}`}>{w.data.title}</a>
-                <span class="row__date">{w.data.category} · {fmt(w.data.date)}</span>
-                <p class="row__desc">{w.data.description}</p>
-              </div>
             ))}
           </div>
         </section>
@@ -194,24 +200,33 @@ const dissExcerpt = dissertation
         </section>
       )}
 
-      {dissertation && (
+      {writing.length > 0 && (
         <section class="reveal">
           <div class="home-sec__head">
-            <h2>Dissertation</h2>
-            <a class="more" href="/dissertations">Read in full →</a>
+            <h2>Writing</h2>
+            <a class="more" href="/writing">All writing →</a>
           </div>
-          <a class="home-diss" href="/dissertations">
-            <div class="home-diss__meta">
-              <span class="eyebrow">{dissertation.data.level}</span>
-              {dissertation.data.grade && <span class="badge badge--long">{dissertation.data.grade}</span>}
-              <span class="row__date">{dissertation.data.year}</span>
-            </div>
-            <h3>{dissertation.data.title}</h3>
-            <p>{dissExcerpt}</p>
-            <span class="home-diss__more">Read the dissertation →</span>
-          </a>
+          <div class="rows">
+            {writing.map((w) => (
+              <div class="row">
+                <a class="row__title" href={`/writing/${w.id}`}>{w.data.title}</a>
+                <span class="row__date">{w.data.category} · {fmt(w.data.date)}</span>
+                <p class="row__desc">{w.data.description}</p>
+              </div>
+            ))}
+          </div>
         </section>
       )}
+
+      <section class="reveal">
+        <div class="home-sec__head">
+          <h2>Portfolio</h2>
+        </div>
+        <p class="home-sec__lead">
+          My own Trading 212 portfolio, shown by weight only -- no position sizes or amounts.
+        </p>
+        <PortfolioWidget />
+      </section>
     </div>
 
     <aside class="home-rail">
@@ -276,16 +291,10 @@ const dissExcerpt = dissertation
           Reach me at <a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a>.
           Corrections on anything here are welcome, especially on the notes and the numbers.
         </p>
-        <div class="li-badge">
-          <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="shivansh-pandey-uk" data-version="v1">
-            <a class="badge-base__link LI-simple-link" href="https://uk.linkedin.com/in/shivansh-pandey-uk?trk=profile-badge">Shivansh P.</a>
-          </div>
-        </div>
       </div>
     </aside>
   </div>
 
-  <script is:inline src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
   <script>
     const armHomeReveals = () => {
       const els = Array.from(document.querySelectorAll('.home__main > section.reveal, .home__main > .car'));
